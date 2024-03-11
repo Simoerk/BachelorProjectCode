@@ -178,6 +178,7 @@ min_val = np.min(sigma_el_filtered)
 max_val = np.max(sigma_el_filtered)
 # Scale the array
 sigma_el_filtered_scaled = (sigma_el_filtered - min_val) / (max_val - min_val)
+print("max: ", max_val)
 
 
 
