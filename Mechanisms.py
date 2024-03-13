@@ -19,6 +19,10 @@ print("Loading the el dataset...")
 df_el = pd.read_csv("./Data/PrivIndustryConsumptionSumHour.csv")
 print("Dataset loaded successfully!")
 
+
+df_el=df_el.groupby('HourUTC')['ConsumptionkWh'].sum().reset_index()
+print("df_el:", df_el)
+
 # Select the 'Diabetes_binary' column as a numpy array
 print("Selecting the 'ConsumptionkWh' column...")
 sigma_el = df_el['ConsumptionkWh'].to_numpy()
@@ -141,8 +145,6 @@ epsilon = 10  # Privacy parameter
 
 #Revese sigma because new entreis are added at the end
 sigma_el_flipped = np.flip(sigma_el)
-
-
 
 
 
