@@ -107,7 +107,7 @@ def binary_mechanism(T, epsilon, stream):
     return B
 
 
-
+"""
 #T for Diabetes
 T = len(sigma_dia)  # Number of records in the 'diabetes_binary' column
 #T = 1000
@@ -116,7 +116,7 @@ epsilon = 0.9  # Differential privacy parameter
 # B value used for two level mechanism, B is Block size 
 B = int(math.ceil(math.sqrt(T)))
 #print("B: ", B)
-
+"""
 
 
 
@@ -133,8 +133,7 @@ print("len: ", len(sigma_dia))
 """
 
 
-
-
+"""
 #sum the consumption row to get the real sum value
 print("real: ", sigma_el.sum())
 
@@ -217,6 +216,78 @@ with open("Data/B_t_filtered.txt", "w") as f:
     for item in B_t_fil:
         # Write each item on a new line
         f.write("%s\n" % item)
+"""
 
 
+
+
+
+
+
+
+
+
+
+def load_dataset(): # Function that loads the dataset
+    print("Loading the diabetes dataset...")
+    data = pd.read_csv("muni_data.csv")
+    print("Dataset loaded successfully!")
+    return data
+
+def apply_binary_mechanism(group):
+    epsilon = 0.9
+    T = len(group)
+    if T == 1:
+        noisy_sum = group['ConsumptionkWh'] + laplace_mechanism(epsilon)
+        return pd.Series(noisy_sum, index=group.index)
+    stream = group['ConsumptionkWh'].tolist()
+    noisy_sum = binary_mechanism(T, epsilon, stream)
+    return pd.Series(noisy_sum, index=group.index)
+
+
+# Differential privacy on Dataset with Municipality, time and housing/heating category
+df_mun = load_dataset()
+
+sum_consumption_101 = df_mun[df_mun['MunicipalityNo'] == 101]['ConsumptionkWh'].sum()
+print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
+
+#remove quantile
+upper_quantile_threshold = df_mun['ConsumptionkWh'].quantile(0.99)
+df_mun = df_mun[df_mun['ConsumptionkWh'] <= upper_quantile_threshold]
+
+
+#scale
+min_val = np.min(df_mun['ConsumptionkWh'])
+max_val = np.max(df_mun['ConsumptionkWh'])
+df_mun['ConsumptionkWh_scaled'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
+
+# Group by 'time' and 'MunicipalityNo', then apply 'apply_binary_mechanism' to each group
+#result_df = df_mun.groupby(['HourDK']['MunicipalityNo']).apply(apply_binary_mechanism).reset_index(name='noisy_consumption')
+
+result_df = pd.DataFrame()
+unique_times = sorted(df_mun['HourDK'].unique())
+result_df['HourDK'] = unique_times
+
+for mun_no in df_mun['MunicipalityNo'].unique():
+    # Filter the DataFrame for the current municipality
+    mun_df = df_mun[df_mun['MunicipalityNo'] == mun_no]
+    
+    # Apply the binary mechanism for each municipality's data stream
+    # Assume the binary mechanism function is adapted to handle the stream per municipality
+    # Here, T is the total number of unique times, which we assume equals the length of the stream for simplicity
+    T = len(unique_times)
+    epsilon = 0.1  # Example epsilon value
+    stream = mun_df['ConsumptionkWh'].tolist()
+    
+    # Call the binary mechanism function and store its list output
+    binary_results = binary_mechanism(T, epsilon, stream)
+    
+    # Add the results as a new column in the result DataFrame, named by the MunicipalityNo
+    result_df[str(mun_no)] = binary_results
+
+for col in result_df.columns[1:]:  # Skip the first column (time)
+    # Scale back each column to its original range
+    result_df[col] = result_df[col] * (max_val - min_val) + min_val
+
+print(result_df)
 
