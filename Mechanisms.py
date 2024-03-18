@@ -197,7 +197,6 @@ B_t_fil = binary_mechanism(T_fil, epsilon, sigma_el_filtered_scaled)
 #print(B_t_fil)
 
 
-
 #Get the last value, meaning the final sum
 last_value1 = B_t[-1]
 print("las1: ", last_value1)
