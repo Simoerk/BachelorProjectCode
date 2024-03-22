@@ -3,7 +3,7 @@ import pandas as pd
 import math
 
 scales = 0
-
+"""
 # Load the dataset
 print("Loading the diabetes dataset...")
 df_dia = pd.read_csv("./Data/diabetes_binary_health_indicators_BRFSS2015.csv")
@@ -28,6 +28,7 @@ print("Selecting the 'ConsumptionkWh' column...")
 sigma_el = df_el['ConsumptionkWh'].to_numpy()
 print("Column selected successfully!")
 
+"""
 
 
 
@@ -100,7 +101,7 @@ def binary_mechanism(T, epsilon, stream):
             alpha_hat[j] = 0.0
         
         # Add Laplacian noise to alpha_hat_i
-        alpha_hat[i] = alpha[i] + laplace_mechanism(1/epsilon_prime)
+        alpha_hat[i] = alpha[i] #+ laplace_mechanism(1/epsilon_prime)
         
         # Calculate the noisy p-sum for output
         B[t-1] = sum(alpha_hat[j] for j, bit in enumerate(bin_t) if bit == 1)
@@ -220,7 +221,15 @@ with open("Data/B_t_filtered.txt", "w") as f:
 
 
 
-
+def apply_binary_mechanism(group):
+    epsilon = 0.9
+    T = len(group)
+    if T == 1:
+        noisy_sum = group['ConsumptionkWh'] + laplace_mechanism(epsilon)
+        return pd.Series(noisy_sum, index=group.index)
+    stream = group['ConsumptionkWh'].tolist()
+    noisy_sum = binary_mechanism(T, epsilon, stream)
+    return pd.Series(noisy_sum, index=group.index)
 
 
 
@@ -234,60 +243,76 @@ def load_dataset(): # Function that loads the dataset
     print("Dataset loaded successfully!")
     return data
 
-def apply_binary_mechanism(group):
-    epsilon = 0.9
-    T = len(group)
-    if T == 1:
-        noisy_sum = group['ConsumptionkWh'] + laplace_mechanism(epsilon)
-        return pd.Series(noisy_sum, index=group.index)
-    stream = group['ConsumptionkWh'].tolist()
-    noisy_sum = binary_mechanism(T, epsilon, stream)
-    return pd.Series(noisy_sum, index=group.index)
+
 
 
 # Differential privacy on Dataset with Municipality, time and housing/heating category
 df_mun = load_dataset()
 
+df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
+
+
+#count number of munies
+municipality_counts = df_mun['MunicipalityNo'].value_counts()
+
+
+
+
+#remove upper quantile
+#upper_quantile_threshold = df_mun['ConsumptionkWh'].quantile(0.99)
+#df_mun = df_mun[df_mun['ConsumptionkWh'] <= upper_quantile_threshold]
+
+
+
+
+#Test to find the actual aggregated data for 101
 sum_consumption_101 = df_mun[df_mun['MunicipalityNo'] == 101]['ConsumptionkWh'].sum()
 print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
 
-#remove quantile
-upper_quantile_threshold = df_mun['ConsumptionkWh'].quantile(0.99)
-df_mun = df_mun[df_mun['ConsumptionkWh'] <= upper_quantile_threshold]
 
 
 #scale
 min_val = np.min(df_mun['ConsumptionkWh'])
 max_val = np.max(df_mun['ConsumptionkWh'])
-df_mun['ConsumptionkWh_scaled'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
+df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
-# Group by 'time' and 'MunicipalityNo', then apply 'apply_binary_mechanism' to each group
-#result_df = df_mun.groupby(['HourDK']['MunicipalityNo']).apply(apply_binary_mechanism).reset_index(name='noisy_consumption')
+
 
 result_df = pd.DataFrame()
 unique_times = sorted(df_mun['HourDK'].unique())
 result_df['HourDK'] = unique_times
+
 
 for mun_no in df_mun['MunicipalityNo'].unique():
     # Filter the DataFrame for the current municipality
     mun_df = df_mun[df_mun['MunicipalityNo'] == mun_no]
     
     # Apply the binary mechanism for each municipality's data stream
-    # Assume the binary mechanism function is adapted to handle the stream per municipality
-    # Here, T is the total number of unique times, which we assume equals the length of the stream for simplicity
-    T = len(unique_times)
+
     epsilon = 0.1  # Example epsilon value
     stream = mun_df['ConsumptionkWh'].tolist()
-    
+    T = len(stream)
+
     # Call the binary mechanism function and store its list output
     binary_results = binary_mechanism(T, epsilon, stream)
+
+    # Calculate the difference in length between the two lists
+    length_difference = len(unique_times) - len(binary_results)
+
+    # Extend binary_results with NaN for the difference in length
+    binary_results = binary_results + [np.nan] * length_difference
     
     # Add the results as a new column in the result DataFrame, named by the MunicipalityNo
     result_df[str(mun_no)] = binary_results
 
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
+    if col == "101":
+        print("before scale for 101: ", result_df[col])
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
+    if col == "101":
+        print("after scale for 101: ", result_df[col])
 
-print(result_df)
 
+
+result_df.to_csv("./result_df", index=False)
