@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import math
 from Mechanisms.BinaryMechanism import binary_mechanism
+from utils.laplace import laplace_mechanism
+from utils.clipData import clip
 
 
 def load_dataset(): # Function that loads the dataset
@@ -20,18 +22,17 @@ def load_dataset(): # Function that loads the dataset
 # Differential privacy on Dataset with Municipality, time and housing/heating category
 df_mun = load_dataset()
 
+
+#remove upper quantile
+df_mun['ConsumptionkWh'] = clip(df_mun, 'ConsumptionkWh')
+
+
+# Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
 
 #count number of munies
 municipality_counts = df_mun['MunicipalityNo'].value_counts()
-
-
-
-
-#remove upper quantile
-#upper_quantile_threshold = df_mun['ConsumptionkWh'].quantile(0.99)
-#df_mun = df_mun[df_mun['ConsumptionkWh'] <= upper_quantile_threshold]
 
 
 
