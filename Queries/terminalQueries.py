@@ -26,7 +26,7 @@ def main():
     # df = pd.read_csv(dataframe_path)
     
     # Sample DataFrame creation (you should replace this with your own DataFrame loading code)
-    df = pd.read_csv("results/result_df.csv")
+    df = pd.read_csv("../results/result_df.csv")
 
     print("DataFrame loaded successfully.")
 
