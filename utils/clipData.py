@@ -3,10 +3,6 @@ import pandas as pd
 import math
 from utils.laplace import laplace_mechanism
 
-Dataset = np.array([1, 4, 5, 21, 43, 231, 3123, 4124, 4211, 5211, 6546, 7675])
-
-
-
 # def countDataset(D, start, end):
 #     count = 0
 #     for i in range(np.size(D)):
@@ -20,7 +16,9 @@ def countDataset(D, start, end):
     right_idx = np.searchsorted(D, end, side='right')
     count = right_idx - left_idx
     # Unsure of we are adding the correct noise
-    noise = laplace_mechanism(count)
+    privacy_budget = 0.5
+    scale = np.log(np.max(D)) / (2 * privacy_budget)
+    noise = np.random.normal(0, scale)
     return count + noise
 
 def quantileSelection (D):
@@ -28,7 +26,7 @@ def quantileSelection (D):
     right = np.max(D)
     m = 0.999 * np.size(D)
     while left < right:
-        mid = (left + right) / 2
+        mid = np.floor((left + right) / 2)
         c = countDataset(D, np.min(D), mid)
         if c < m:
             left = mid + 1
