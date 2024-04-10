@@ -23,4 +23,4 @@ print("Selecting the 'ConsumptionkWh' column...")
 sigma_el = df_records['ConsumptionkWh'].to_numpy()
 print("Column selected successfully!")
 
-df_records.to_csv('./../data/mun_data.csv', index=False)
+df_records.to_csv('../data/muni_data.csv', index=False)

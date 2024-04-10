@@ -10,8 +10,8 @@ from utils.laplace import laplace_mechanism
 #             count += 1
 #     return count
     
-
-def countDataset(D, start, end):
+# Adds noise to the count of the dataset from start to mid
+def noisyCount(D, start, end):
     left_idx = np.searchsorted(D, start, side='left')
     right_idx = np.searchsorted(D, end, side='right')
     count = right_idx - left_idx
@@ -21,26 +21,32 @@ def countDataset(D, start, end):
     noise = np.random.normal(0, scale)
     return count + noise
 
+# Threshold is decided privately
 def quantileSelection (D):
     left = np.min(D)
     right = np.max(D)
     m = 0.999 * np.size(D)
     while left < right:
         mid = np.floor((left + right) / 2)
-        c = countDataset(D, np.min(D), mid)
+        c = noisyCount(D, np.min(D), mid)
         if c < m:
             left = mid + 1
         else:
             right = mid
-    return np.floor((left+right)/2)
+    thresh = np.floor((left+right)/2)
+    with open("./data/threshold.txt", "w") as file:
+        file.write(str(thresh))
+    return thresh
 
-def clipData(dataset, clip):
+# Uses threshold to clip a dataset
+def clipData(dataset, thresh):
     clipped_dataset = dataset.copy()  # Make a copy of the dataset
     for i in range(np.size(dataset)):
-        if dataset[i] > clip:
-            clipped_dataset[i] = clip
+        if dataset[i] > thresh:
+            clipped_dataset[i] = thresh
     return clipped_dataset
 
+# Calls quantileSelection and clipData to select threshold and clip the data
 def clip(df, column):
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
