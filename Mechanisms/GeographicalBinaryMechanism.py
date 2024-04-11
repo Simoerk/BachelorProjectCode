@@ -4,6 +4,13 @@ import math
 from utils.laplace import laplace_mechanism
 from utils.muniRegion import *
 
+def extractConsumption(hourDK): 
+    
+    return
+    
+def geographical_Mechanism_DK(epsilon, stream):
+    alpha
+    return
 
 def geographical_Binary_Mechanism(T, epsilon, stream):
     stream = stream.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
@@ -44,14 +51,14 @@ def geographical_Binary_Mechanism(T, epsilon, stream):
             G_alpha_hat[t][0].append(stream(t,muni_number)+laplace_mechanism(1/epsilon_prime))
             region = give_region().get(muni_number, None)
             G_alpha[t][1].append(region, (stream(t,muni_number)))
-        
-        region_sums = {}
 
         for region, consumption in G_alpha[t][1]:
-            if region in region_sums:
-                region_sums[region] += consumption
+            if region in G_alpha[t][1]:
+                G_alpha[t][1][region] += consumption
             else:
-                region_sums[region] = consumption
+                G_alpha[t][1][region] = consumption
+
+        
         
         # Update alpha_i
         alpha[i] = sum(alpha[j] for j in range(i)) + stream[t-1]
