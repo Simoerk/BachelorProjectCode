@@ -1,15 +1,19 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 class TreeNode:
-    def __init__(self, name):
+    def __init__(self, name, value=None):
         self.name = name
+        self.value = value
         self.children = []
 
     def add_child(self, child):
         self.children.append(child)
 
+
 def construct_tree(data):
-    root = TreeNode("Country")  # Root node representing the highest level (e.g., country)
+    root = TreeNode("Danmark")  # Root node representing the highest level (e.g., country)
     
     # Construct the tree based on the provided data
     for municipality, region_or_area in data.items():
@@ -160,4 +164,49 @@ dy = 1
 visualize_tree(tree_root, x_root, y_root, dx, dy)
 plt.axis('equal')
 plt.axis('off')
-plt.show()
+#plt.show()
+
+
+
+
+
+def construct_tree_advanced(df, municipality_to_region):
+    root = TreeNode("Denmark")
+
+    for index, row in df.iterrows():
+        time_node = TreeNode(row['HourDK'])  # Create a node for the time
+        root.add_child(time_node)
+
+        for mun_code, consumption in row.iteritems():
+            if mun_code == 'HourDK':
+                continue  # Skip the time column
+
+            region_name = municipality_to_region.get(mun_code)
+            if not region_name:
+                print(mun_code)
+                continue  # Skip if no region mapping found
+
+            # Check if the region node already exists
+            region_node = next((child for child in time_node.children if child.name == region_name), None)
+            if not region_node:
+                region_node = TreeNode(region_name)
+                time_node.add_child(region_node)
+
+            # Add the municipality node with its consumption value
+            mun_node = TreeNode(mun_code, consumption)
+            region_node.add_child(mun_node)
+
+    return root
+
+
+result_df = pd.read_csv("./results/result_df.csv")
+
+
+tree_root = construct_tree_advanced(result_df, data)
+
+def print_tree(node, indent=""):
+    print(indent + node.name + (f": {node.value}" if node.value is not None else ""))
+    for child in node.children:
+        print_tree(child, indent + "    ")
+
+print_tree(tree_root)

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
-from Mechanisms.ModBinaryMechanism import Binary_tree_mechanism
+from Mechanisms.modmodBinaryMechanism import binary_mechanism_unbounded
 from utils.laplace import laplace_mechanism
 from utils.clipData import clip
 from utils.clipData import quantileSelection
@@ -57,33 +57,16 @@ unique_times = sorted(df_mun['HourDK'].unique())
 result_df['HourDK'] = unique_times
 
 
-for mun_no in df_mun['MunicipalityNo'].unique():
 
-    # Filter the DataFrame for the current municipality
-    mun_df = df_mun[df_mun['MunicipalityNo'] == mun_no]
-    
-    # Apply the binary mechanism for each municipality's data stream
 
-    epsilon = 0.1  # Example epsilon value
-    stream = mun_df['ConsumptionkWh'].tolist()
 
-    # Call the binary mechanism function and store its list output
-    alpha_hat = []
-    t_last = 1
 
-    B, alpha_hat, t_last = Binary_tree_mechanism(epsilon, stream, alpha_hat, t_last)
-    
 
-    # Calculate the difference in length between the two lists
-    length_difference = len(unique_times) - len(B)
+result_df = binary_mechanism_unbounded(0.1, df_mun, result_df, 1)
 
-    # Extend binary_results with NaN for the potential difference in length
-    binary_result = B + [np.nan] * length_difference
-    
-    # Add the results as a new column in the result DataFrame, named by the MunicipalityNo
-    result_df[str(mun_no)] = binary_result
 
-    
+#print(result_df)
+
 
 
 for col in result_df.columns[1:]:  # Skip the first column (time)
@@ -93,5 +76,5 @@ for col in result_df.columns[1:]:  # Skip the first column (time)
 
 
 
-result_df.to_csv("results/result_unbound_df.csv", index=False)
+result_df.to_csv("results/result_unbound_Geo_df.csv", index=False)
 print("done")

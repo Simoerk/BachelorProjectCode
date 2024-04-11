@@ -10,13 +10,16 @@ def ai(i, theta):
     return (i + 1)**(1 + theta)
 
 # Define the modified binary mechanism as an unbounded function
-def binary_mechanism_unbounded(epsilon, stream, alpha_hat, t_last, theta=1):
+def Binary_tree_mechanism(epsilon, stream, alpha_hat, t_last, theta=1):
     # Initialize alphas dynamically
     alpha = []
     B = []
+    alpha_hat = []
 
     
     for t in range(t_last, t_last+len(stream)):
+        print("t = ", t)
+
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1
         
