@@ -12,8 +12,8 @@ result = response.json()
 records = result.get('records', [])
                                            
 #print('records:')
-for record in records:
-    print(' ', record)
+#for record in records:
+#    print(' ', record)
 
 
 df_records = pd.DataFrame(records)
