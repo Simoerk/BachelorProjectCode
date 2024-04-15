@@ -59,9 +59,10 @@ unique_times = sorted(df_mun['HourDK'].unique())
 
 result_df = pd.DataFrame()
 result_df = binary_mechanism_municipalities(T, epsilon, df_mun)
+print(result_df)
 
 
-result_df['HourDK'] = unique_times
+#result_df['HourDK'] = unique_times
 
 #print(result_df)
 

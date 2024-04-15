@@ -104,17 +104,17 @@ def give_region():
         "706": "Midtjylland",
         "791": "Midtjylland",
         "751": "Midtjylland",
-        "810": "NordJylland",
-        "813": "NordJylland",
-        "860": "NordJylland",
-        "849": "NordJylland",
-        "825": "NordJylland",
-        "846": "NordJylland",
-        "773": "NordJylland",
-        "840": "NordJylland",
-        "787": "NordJylland",
-        "820": "NordJylland",
-        "851": "NordJylland",
+        "810": "Nordjylland",
+        "813": "Nordjylland",
+        "860": "Nordjylland",
+        "849": "Nordjylland",
+        "825": "Nordjylland",
+        "846": "Nordjylland",
+        "773": "Nordjylland",
+        "840": "Nordjylland",
+        "787": "Nordjylland",
+        "820": "Nordjylland",
+        "851": "Nordjylland",
     }
     return data
 
@@ -131,7 +131,7 @@ def give_regionDictionary():
         "Sjaelland": [],
         "Syddanmark": [],
         "Midtjylland": [],
-        "NordJylland": [],
+        "Nordjylland": [],
     }
 
     # Populate the regions dictionary
