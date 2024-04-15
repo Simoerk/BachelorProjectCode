@@ -1,8 +1,23 @@
 from collections import Counter
 
+def give_muni():
+    muni = [
+        "101", "201", "151", "400", "153", "155", "240", "210", "147", "250",
+        "190", "157", "159", "161", "270", "260", "217", "163", "219", "167",
+        "169", "223", "183", "165", "173", "230", "175", "185", "187", "320",
+        "253", "376", "316", "326", "259", "350", "360", "370", "306", "329",
+        "265", "330", "340", "269", "336", "390", "530", "561", "607", "510",
+        "621", "540", "550", "573", "575", "630", "580", "420", "563", "430",
+        "440", "482", "410", "480", "450", "461", "479", "492", "710", "766",
+        "657", "661", "615", "756", "665", "707", "727", "730", "760", "741",
+        "740", "746", "779", "671", "706", "791", "751", "810", "813", "860",
+        "849", "825", "846", "773", "840", "787", "820", "851",
+    ]
+    return muni
+
 def give_region():
     data = {
-        "165": "Hovedstaden",
+        "101": "Hovedstaden",
         "201": "Hovedstaden",
         "151": "Hovedstaden",
         "400": "Hovedstaden",
@@ -25,7 +40,7 @@ def give_region():
         "169": "Hovedstaden",
         "223": "Hovedstaden",
         "183": "Hovedstaden",
-        "101": "Hovedstaden",
+        "165": "Hovedstaden",
         "173": "Hovedstaden",
         "230": "Hovedstaden",
         "175": "Hovedstaden",
@@ -109,6 +124,20 @@ def count_regions():
     counts_only = list(region_counts.values())  # Extract only the counts
     return counts_only
 
+def give_regionDictionary():
+    # Initialize the list of municipalities for each region
+    regionDictionary = {
+        "Hovedstaden": [],
+        "Sjaelland": [],
+        "Syddanmark": [],
+        "Midtjylland": [],
+        "NordJylland": [],
+    }
+
+    # Populate the regions dictionary
+    for mun, region in give_region().items():
+        regionDictionary[region].append(mun)
+    return regionDictionary
 
 print(count_regions())
 

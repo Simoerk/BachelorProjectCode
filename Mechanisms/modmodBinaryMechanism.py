@@ -3,6 +3,7 @@ import pandas as pd
 import math
 from utils.laplace import laplace_mechanism
 from utils.muniRegion import *
+import sys
 
 data = pd.read_csv("data/Municipality.csv")
 muni = data['number'].to_numpy()
@@ -17,16 +18,18 @@ def ai(i, theta):
 
 
 
-def append_columns_individual(df, row_index, values_list, DK_alpha_hat):
-    # Navnene på de forskellige regioner
-    regions = ["Hovedstaden", "Sjælland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"]
+def insert_kommunal_values(df, row_index, kommunal_vars, DK_alpha_hat):
+    # Column names corresponding to the regions, excluding 'DK' since it's handled separately
+    regions = ["Hovedstaden", "Sjælland", "Syddanmark", "Midtjylland", "Nordjylland"]
     
-    # Tilføj hver værdi individuelt til den tilsvarende kolonne
-    for idx, value in enumerate(values_list):
-        df.loc[row_index, regions[idx]] = value
+    # Insert each kommunal variable into the corresponding column
+    for idx, value in enumerate(kommunal_vars):
+        df.at[row_index, regions[idx]] = value
     
-    # Tilføj DK_alpha_hat til kolonnen "DK"
-    df.loc[row_index, "DK"] = DK_alpha_hat
+    # Insert DK_alpha_hat into the column "DK"
+    df.at[row_index, "DK"] = DK_alpha_hat
+
+
 
 
 
@@ -35,14 +38,32 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta=1):
 
     print("begin binary mechanism unbounded")
 
+    # List of new columns to add
+    regions = ["Hovedstaden", "Sjælland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"]
+    regional_data_df = pd.DataFrame()
+    for region in regions:
+        regional_data_df[region] = None 
+
     df = df.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+
 
     num_rows, num_cols = df.shape
 
-    alpha2D = []
-    alpha_hat2D = []
-   
+    n = len(give_muni())  # Number of municipalities
+    alpha2D = [[] for _ in range(n)]
+    alpha_hat2D = [[] for _ in range(n)]
+
     i_list = [0] + count_regions()
+
+
+    i_list_sum = []
+    current_sum = 0
+    for num in i_list:
+        current_sum += num
+        i_list_sum.append(current_sum)
+
+    problem_list =[]
+
 
 
  
@@ -50,8 +71,11 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta=1):
 
     for t in range(t_last, t_last+num_rows):
 
-        kommunal_vars_alpha = []
+        print("time: ", t)
+
+        
         DK_alpha_hat = 0
+        kommunal_vars_alpha = np.zeros(5)
 
         #print("t = ", t)
         # Determine the number of bits needed for binary representation of t
@@ -63,6 +87,10 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta=1):
         i = next(i for i, bit in enumerate(bin_t) if bit != 0)
         k = 0
         b = 1
+        
+
+
+       
 
 
         for muni_number in give_region():
@@ -70,22 +98,48 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta=1):
             muni_number = int(muni_number)
 
             if muni_number in df.columns:
-                
 
-                alpha2D.append([])
-                alpha_hat2D.append([])
+
+                if muni_number not in result_df.columns:
+                    result_df[muni_number] = None
+            
+                #print("alpha2D: ", alpha2D)
+                #print("alpha2D_hat: ", alpha_hat2D)
                 
                 # Can be optimized with a counterthing
                 for alpha in alpha2D:
                     if len(alpha) < num_bits:
                         alpha.extend([0])
+                        #print("len(alpha): ", len(alpha))
+                        #print("num_bits: ", num_bits)
+                        #print("exstended alpa")
                 for alpha_hat in alpha_hat2D:
                     if len(alpha_hat) < num_bits:
                         alpha_hat.extend([0])
+                        #print("len(alpha): ", len(alpha))
+                        #print("num_bits: ", num_bits)
+                        #print("exstended alpahat")
+
+                
 
 
                 # Update alpha_i
-                alpha2D[k][i] = (sum(alpha2D[k][j] for j in range(i)) + df[muni_number][t-1])
+                alpha2D[k][i] = (sum(alpha2D[k][j] for j in range(i+1)) + df[muni_number][t-1])
+
+                if math.isnan(alpha2D[k][i]) and k==-19:
+
+                    print("muni: ", muni_number)
+                    print("k: ", k)
+
+                    print("df[muni_number][t-1]: ", df[muni_number][t-1])
+                    print("alpha2D[k][i]", alpha2D[k][i])
+                    print("len alpha2D[k]: ", len(alpha2D[k]))
+                    print("alpha2D[k]: ", alpha2D[k], "\n")
+                    #print("alpaha2d: ", alpha2D)
+
+                    if muni_number not in problem_list:
+                        problem_list.append(muni_number)
+
 
                 # Reset previous values to 0
                 for j in range(i):
@@ -95,6 +149,8 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta=1):
                 # Add Laplacian noise to alpha_hat_i
             
                 alpha_hat2D[k][i] = alpha2D[k][i] + laplace_mechanism(ai(i, theta)/epsilon)
+                #print("alpha_hat2D[k][i]: ", alpha_hat2D[k][i], "\n")
+                
                 
                 # append
                 
@@ -103,41 +159,73 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta=1):
                 #print("sum: ", (sum(alpha_hat[k][i] for j, bit in enumerate(bin_t) if bit == 1)))
 
                 
-                region_alpha = 0
-                if k == i_list[b]:
-                    #print("k:", k)
+
+                # RETHINK!
+                if k == i_list_sum[b]:
+                    #print("k: ", k)
                     #print("i_list: ", i_list[b])
-                    ith_elements = [sublist[i] for sublist in alpha2D[i_list[b-1]:i_list[b]]]
+                    region_alpha = 0
+                    #print("i: ", i)
+                    ith_elements = [sublist[i] for sublist in alpha2D[i_list_sum[b-1]:i_list_sum[b]]]
+
+                    #print("alpha2D[i_list[b-1]:i_list[b]-1] :", alpha2D[i_list_sum[b-1]:i_list_sum[b]])
+                    #print("alpha2D[i_list[b-1]: ", alpha2D[i_list_sum[b-1]])
+                    #print("alpha2D[i_list[b]]: ", alpha2D[i_list_sum[b]])
+                    #print("ith_elements in k=: ", ith_elements)
                     region_alpha = sum(ith_elements)
+                    #print("region_alpha: ", region_alpha)
                     #print("region alpha: ",region_alpha)
                     #print("i: ", i)
                     region_alpha_hat = region_alpha + laplace_mechanism(ai(i, theta)/epsilon)
                     b+=1
                     kommunal_vars_alpha.append(region_alpha_hat)
-                
-
                 k+=1
             else:
-                print(muni_number)
+                print("ERROR :", muni_number)
+                sys.exit()
+                
                
         
 
-        ith_elements = [sublist[i] for sublist in alpha2D if len(sublist) > i]
+
+
+
+        ith_elements = [sublist[i] for sublist in alpha2D]
+        #print("ith_elements outside: ", ith_elements)
         DK_alpha_hat = sum(ith_elements)
         DK_alpha_hat += laplace_mechanism(ai(i, theta)/epsilon)
+
+        #print("Komvars: ",kommunal_vars_alpha)
+        #print("dk_alpha: ", DK_alpha_hat)
 
 
         #print("len: ", len(kommunal_vars_alpha))
 
 
-        append_columns_individual(result_df, i, kommunal_vars_alpha, DK_alpha_hat)
-
+        insert_kommunal_values(regional_data_df, t, kommunal_vars_alpha, DK_alpha_hat)
+        #print(regional_data_df.iloc[t])
 
     
         
 
 
-    print("result df: ", result_df)
 
-    return result_df
+    result_df_con = pd.concat([result_df, regional_data_df], axis=1)
+
+    print("\n")
+    print("regional data df")
+    print(regional_data_df)
+    print(regional_data_df.shape)
+
+    print("result_df_con")
+    print(result_df_con.shape)
+
+
+    print("result_df")
+    print(result_df.shape)
+    #print("problist: ", problem_list)
+
+    print("\n")
+
+    return result_df_con
 

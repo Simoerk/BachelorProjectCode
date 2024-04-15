@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import math
 from Mechanisms.GeographicalBinaryMechanism import geographical_Binary_Mechanism
+from Mechanisms.geoBinaryMechanism import binary_mechanism_municipalities
 from utils.laplace import laplace_mechanism
 from utils.clipData import clip
 from utils.clipData import quantileSelection
@@ -51,28 +52,22 @@ max_val = thresh
 df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
 epsilon = 0.1  # Example epsilon value
-T = df_mun['HourDK'].unique()
+time_list = df_mun['HourDK'].unique()
+T = len(time_list)
+print("T: ", T)
 unique_times = sorted(df_mun['HourDK'].unique())
 
 result_df = pd.DataFrame()
-result_df = geographical_Binary_Mechanism(T, epsilon, df_mun)
+result_df = binary_mechanism_municipalities(T, epsilon, df_mun)
 
 
 result_df['HourDK'] = unique_times
 
-
-
-
 #print(result_df)
-
-
 
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
-
-
-
-result_df.to_csv("results/result_unbound_Geo_df.csv", index=False)
+result_df.to_csv("results/result_GeoBin_df.csv", index=False)
 print("done")

@@ -9,7 +9,7 @@ from utils.clipData import quantileSelection
 
 def load_dataset(): # Function that loads the dataset
     print("Loading the big dataset...")
-    data = pd.read_csv("data/muni_data.csv")
+    data = pd.read_csv("data/muni_data.csv") #, nrows=20000)
     print("Dataset loaded successfully!")
     return data
 
@@ -71,10 +71,11 @@ result_df = binary_mechanism_unbounded(0.1, df_mun, result_df, 1)
 
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
+    #print(result_df[col])
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
 
 
-
+print(result_df)
 result_df.to_csv("results/result_unbound_Geo_df.csv", index=False)
 print("done")
