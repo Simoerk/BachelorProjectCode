@@ -1,22 +1,8 @@
-from collections import Counter
+import pandas as pd
+import matplotlib.pyplot as plt
 
-def give_muni():
-    muni = [
-        "101", "201", "151", "400", "153", "155", "240", "210", "147", "250",
-        "190", "157", "159", "161", "270", "260", "217", "163", "219", "167",
-        "169", "223", "183", "165", "173", "230", "175", "185", "187", "320",
-        "253", "376", "316", "326", "259", "350", "360", "370", "306", "329",
-        "265", "330", "340", "269", "336", "390", "530", "561", "607", "510",
-        "621", "540", "550", "573", "575", "630", "580", "420", "563", "430",
-        "440", "482", "410", "480", "450", "461", "479", "492", "710", "766",
-        "657", "661", "615", "756", "665", "707", "727", "730", "760", "741",
-        "740", "746", "779", "671", "706", "791", "751", "810", "813", "860",
-        "849", "825", "846", "773", "840", "787", "820", "851",
-    ]
-    return muni
-
-def give_region():
-    data = {
+# Define the regions dictionary
+regions = {
         "101": "Hovedstaden",
         "201": "Hovedstaden",
         "151": "Hovedstaden",
@@ -116,38 +102,22 @@ def give_region():
         "820": "Nordjylland",
         "851": "Nordjylland",
     }
-    return data
 
-def count_regions():
-    data = give_region()  # Retrieve the data from your function
-    region_counts = Counter(data.values())  # Count occurrences of each region
-    counts_only = list(region_counts.values())  # Extract only the counts
-    return counts_only
+# Read the CSV file into a DataFrame
+df = pd.read_csv('data/processed_data.csv')
 
-def count_municipalities_in_region(region):
-    # Get the region dictionary from the give_region function
-    regions = give_region()
-    
-    # Count how many times the given region appears in the dictionary
-    region_count = sum(1 for muni in regions.values() if muni == region)
-    
-    return region_count
+# Map municipality numbers to regions
+df['Region'] = df['HourDK'].apply(lambda x: regions.get(x.split(',')[1], 'Unknown'))
 
+# Group by region and sum the values
+grouped = df.groupby('Region').sum()
 
-def give_regionDictionary():
-    # Initialize the list of municipalities for each region
-    regionDictionary = {
-        "Hovedstaden": [],
-        "Sjaelland": [],
-        "Syddanmark": [],
-        "Midtjylland": [],
-        "Nordjylland": [],
-    }
-
-    # Populate the regions dictionary
-    for mun, region in give_region().items():
-        regionDictionary[region].append(mun)
-    return regionDictionary
-
-print(count_regions())
-
+# Plot the data
+grouped.plot(kind='bar', figsize=(10, 6))
+plt.title('Hourly Data by Region')
+plt.xlabel('Region')
+plt.ylabel('Sum')
+plt.xticks(rotation=45)
+plt.grid(axis='y')
+plt.tight_layout()
+plt.show()

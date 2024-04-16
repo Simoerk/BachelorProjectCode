@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
-from utils.laplace import laplace_mechanism
+from utils.laplace import *
 from utils.muniRegion import *
 import sys
 
@@ -35,6 +35,8 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
     df.insert(0, 'HourDK', unique_times[1:])
 
     df.to_csv("results/processed_data.csv", index=False)
+
+    
 
     df = df.drop('HourDK', axis=1)
 
@@ -109,6 +111,8 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                     if muni_number not in problem_list:
                         problem_list.append(muni_number)
 
+                regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
+
 
                 # Reset previous values to 0
                 for j in range(i):
@@ -121,11 +125,11 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                 #print("alpha_hat2D[k][i]: ", alpha_hat2D[k][i], "\n")
                 
                 
-                # append
-                if muni_number == 101:
-                    sumtin = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
-                    print("\n sumtin: ", (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)))
-                    print("df[muni_number][t-1]: ", df[muni_number][t-1])
+                # testing stuff
+                #if muni_number == 101:
+                #    sumtin = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
+                #    print("\n sumtin: ", (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)))
+                #    print("df[muni_number][t-1]: ", df[muni_number][t-1])
                 
 
 
@@ -135,7 +139,7 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                 #print("sum: ", (sum(alpha_hat[k][i] for j, bit in enumerate(bin_t) if bit == 1)))
 
              
-                regional_values[give_region().get(str(muni_number))] += alpha2D[k][i]
+                
 
                 k+=1
 
@@ -149,9 +153,13 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
         DK = 0.0
         for region in regional_values:
-            regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism(ai(i, theta)/epsilon)
+            regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, count_municipalities_in_region(region))
             DK += regional_values[region] 
-        regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism(ai(i, theta)/epsilon)
+            print("\ndk: ", DK)
+            print("regional_data_df.at[t-1, region]:", t-1, region, regional_data_df.at[t-1, region])
+
+        regional_data_df.at[t-1, "DK"] = DK #+ laplace_mechanism_sensitivity(ai(i, theta)/epsilon, len(give_region()))
+
 
 
 
@@ -159,10 +167,10 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
     
 
-    last_hourDK = df.index[t-1]
-    print("Last HourDK:", last_hourDK)
+    #last_hourDK = df.index[t-1]
+    #print("Last HourDK:", last_hourDK)
 
 
 
-    return result_df_con, sumtin
+    return result_df_con
 
