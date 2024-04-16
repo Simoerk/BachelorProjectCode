@@ -104,20 +104,27 @@ regions = {
     }
 
 # Read the CSV file into a DataFrame
-df = pd.read_csv('data/processed_data.csv')
+df = pd.read_csv('results/processed_data.csv')
+
+# Extract municipality numbers from the HourDK column
+df['Municipality'] = df['HourDK'].str.extract(r'(\d+),')
 
 # Map municipality numbers to regions
-df['Region'] = df['HourDK'].apply(lambda x: regions.get(x.split(',')[1], 'Unknown'))
+df['Region'] = df['Municipality'].map(regions).fillna('Unknown')
 
-# Group by region and sum the values
-grouped = df.groupby('Region').sum()
+# Group by region and municipality, then sum the values
+grouped = df.groupby(['Region', 'Municipality']).sum()
 
-# Plot the data
-grouped.plot(kind='bar', figsize=(10, 6))
-plt.title('Hourly Data by Region')
-plt.xlabel('Region')
+# Pivot the DataFrame to have regions as columns
+pivot_df = grouped.unstack(level=0).fillna(0)
+
+# Plot the data as a stacked bar plot
+pivot_df.plot(kind='bar', stacked=True, figsize=(12, 8))
+plt.title('Hourly Data by Municipality and Region')
+plt.xlabel('Municipality')
 plt.ylabel('Sum')
 plt.xticks(rotation=45)
+plt.legend(title='Region')
 plt.grid(axis='y')
 plt.tight_layout()
 plt.show()
