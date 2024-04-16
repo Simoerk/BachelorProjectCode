@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Define the regions dictionary
 regions = {
@@ -103,28 +104,58 @@ regions = {
         "851": "Nordjylland",
     }
 
-# Read the CSV file into a DataFrame
+def visualize_data(data):
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv(data)
+
+    # Extract relevant columns (municipality numbers)
+    municipality_columns = df.columns[1:]
+
+    # Create a new DataFrame to store the region-wise data
+    region_data = pd.DataFrame(index=df.index)
+
+    # Map each municipality number to its corresponding region
+    for municipality in municipality_columns:
+        region = regions.get(municipality)
+        if region:
+            if region not in region_data:
+                region_data[region] = 0
+            region_data[region] += df[municipality]
+
+    # Extract unique municipalities for each region
+    unique_municipalities = {}
+    for region in regions.values():
+        if region not in unique_municipalities:
+            unique_municipalities[region] = set()
+    for municipality, region in regions.items():
+        unique_municipalities[region].add(municipality)
+
+    # Plot the data
+    for region, data in region_data.items():
+        # Get the corresponding unique municipalities for the region
+        region_municipalities = sorted(list(unique_municipalities[region]))
+        # Aggregate consumption for each municipality across all hours
+        aggregated_consumption = [df[municipality].sum() for municipality in region_municipalities]
+        plt.plot(region_municipalities, aggregated_consumption, marker='o', label=region)
+
+    plt.xlabel('Municipalities')
+    plt.ylabel('Aggregated Consumption')
+    plt.title('Region-wise Aggregated Consumption')
+    plt.xticks(rotation=45)
+    plt.legend(title='Regions')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+# Call the visualize_data function with the path to the CSV file
+visualize_data('results/processed_data.csv')
+
 df = pd.read_csv('results/processed_data.csv')
 
-# Extract municipality numbers from the HourDK column
-df['Municipality'] = df['HourDK'].str.extract(r'(\d+),')
+#make a function to sum the first column in df
 
-# Map municipality numbers to regions
-df['Region'] = df['Municipality'].map(regions).fillna('Unknown')
+def sum_first_column(df):
+    sum_101 = np.sum(df.iloc[:, 1])
+    return sum_101
 
-# Group by region and municipality, then sum the values
-grouped = df.groupby(['Region', 'Municipality']).sum()
-
-# Pivot the DataFrame to have regions as columns
-pivot_df = grouped.unstack(level=0).fillna(0)
-
-# Plot the data as a stacked bar plot
-pivot_df.plot(kind='bar', stacked=True, figsize=(12, 8))
-plt.title('Hourly Data by Municipality and Region')
-plt.xlabel('Municipality')
-plt.ylabel('Sum')
-plt.xticks(rotation=45)
-plt.legend(title='Region')
-plt.grid(axis='y')
-plt.tight_layout()
-plt.show()
+print(sum_first_column(df))
