@@ -13,49 +13,47 @@ def load_dataset(): # Function that loads the dataset
 # Differential privacy on Dataset with Municipality, time and housing/heating category
 municipalities = load_dataset()
 
-def geographical_Mechanism(t, epsilon, stream): 
-    stream = stream.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+def geographicalSummation(t, stream): 
+    print(stream)
     alpha = [[], [], []]
-    alpha_hat = [[], [], []]
+    #alpha_hat = [[], [], []]
     B_alpha = []
-    B = []
-
-    # Privacy parameter for the Laplacian mechanism MUST BE ALTERED AND PROVEN
-    epsilon_prime = epsilon / (math.log(3))
+    #B = []
 
     regionDictionary = give_regionDictionary()
-    print("regionDictionary: ", regionDictionary)
     
     for region in regionDictionary:
         # Input municipalities in alpha and alpha_hat
         for muni in regionDictionary[region]:
-            muni_consumption = stream[muni][t]
+            print(muni)
+            int(muni)
+            muni_consumption = stream.loc[muni]
             alpha[0].append(muni_consumption)
-            alpha_hat[0].append(muni_consumption + laplace_mechanism(1/epsilon_prime))
+            #alpha_hat[0].append(muni_consumption + laplace_mechanism(1/epsilon_prime))
         
         # Input municipalities in B 
         B_alpha.append(alpha[0])
-        B.append(alpha_hat[0])
+        #B.append(alpha_hat[0])
 
         # Input region in alpha lists
         region_sum = sum(alpha[0])
         alpha[1].append(region_sum)
-        alpha_hat[1].append(region_sum + laplace_mechanism(1/epsilon_prime))
+        #alpha_hat[1].append(region_sum + laplace_mechanism(1/epsilon_prime))
 
         # Reset alpha lists
         alpha[0] = []
-        alpha_hat[0] = []
+        #alpha_hat[0] = []
     
     # Input regions in B
     B_alpha.append(alpha[1])
-    B.append(alpha_hat[1])
+    #B.append(alpha_hat[1])
     
     # Input the sum of regions for DK in B
     DK_sum = sum(alpha[1])
     B_alpha.append(DK_sum)
-    B.append(DK_sum + laplace_mechanism(1/epsilon_prime))
+    #B.append(DK_sum + laplace_mechanism(1/epsilon_prime))
 
-    return B, B_alpha
+    return B_alpha
 
 
 
@@ -65,6 +63,8 @@ def geographical_Binary_Mechanism(T, epsilon, stream):
     if T <= 0:
         raise ValueError("T must be a positive integer or float")
     stream = stream.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+    print(stream)
+    print("Starting geographical_Binary_Mechanism")
     # Initialize alphas for time-tree
     length_alpha = int(math.log2(T)) + 1
     alpha = [[] for _ in range(length_alpha)]
@@ -86,19 +86,24 @@ def geographical_Binary_Mechanism(T, epsilon, stream):
 
         
 
-        # Update alpha_i DU KOMMET HERTIL, LINE 92 SKAL GÅ ET ELEMENT I alpha_i_tree IGENNEM AD GANGEN OG LÆGGE DEM SAMMEN
-        time_t = stream.iloc[t]["HourDK"]
-        alpha_hat_i_tree, alpha_i_tree = geographical_Mechanism(time_t, epsilon, stream)
-        alpha[i].append(sum(alpha[j] for j in range(i)) + stream[t-1])
+        # Update alpha_i 
+        time_t = stream.index[t-1]
+        # Extract row at time t-1
+        stream_t = stream.loc["2024-02-21T03:00:00"]
+        geoTree = geographicalSummation(time_t, stream_t)
+        alpha[i] = [sum(entry) + geoTree[j] for j, entry in enumerate(zip(*(alpha[j] for j in range(i))))]
+
 
         # Overwrite previous values with 0
         for j in range(i):
-            alpha[j] = 0.0
-            alpha_hat[j] = 0.0
+            alpha[j] = []
+            alpha_hat[j] = []
         
-        # Add Laplacian noise to alpha_hat_i
-        alpha_hat[i] = alpha[i] + laplace_mechanism(1/epsilon_prime)
+        # Add Laplacian noise on alpha to get alpha_hat
+        alpha_hat[i] = [entry + laplace_mechanism(1/epsilon_prime) for entry in alpha[i]]
+        
         # Calculate the noisy p-sum for output
-        B[t-1] = sum(alpha_hat[j] for j, bit in enumerate(bin_t) if bit == 1)
+        B[t-1] = [sum(alpha_hat[j] for j, bit in enumerate(bin_t) if bit == 1)]
+        print("Finished timestep ", t)
 
     return B
