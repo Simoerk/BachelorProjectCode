@@ -6,6 +6,7 @@ from utils.laplace import laplace_mechanism
 from utils.clipData import clip
 from utils.clipData import quantileSelection
 from utils.muniRegion import give_region
+from utils.visualizeData import visualize_data
 
 
 def load_dataset(): # Function that loads the dataset
@@ -46,6 +47,16 @@ print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
 
 
 
+
+
+#df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+#print(df)
+#visualize_data(df)
+
+
+
+
+
 #scale
 min_val = 0
 max_val = thresh
@@ -64,18 +75,13 @@ result_df['HourDK'] = unique_times[1:]
 result_df = binary_mechanism_unbounded(0.1, df_mun, result_df, 1, 1, unique_times)
 #result_df, mun = binary_mechanism_unbounded(0.1, df_mun, result_df, 1, 1, unique_times)
 
-#print(result_df)
-
-#print("munting: ", mun*(max_val-min_val)+min_val)
 
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
-    #print(result_df[col])
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
 
 
-#print(result_df)
 result_df.to_csv("results/result_unbound_Geo_df.csv", index=False)
 print("done")
 
@@ -100,7 +106,5 @@ def accumulate_regional_values(result_df):
 
     return regional_values
 
-# Assuming result_df is already defined and contains municipality numbers as columns
-# Call the function
 regional_sums = accumulate_regional_values(result_df)
-print(regional_sums)
+

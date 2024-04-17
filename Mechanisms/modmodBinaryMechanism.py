@@ -36,7 +36,7 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
     df.to_csv("results/processed_data.csv", index=False)
 
-    
+
 
     df = df.drop('HourDK', axis=1)
 
@@ -55,15 +55,12 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
 
 
- 
-    #print("df columns:", df.columns)
 
     for t in range(t_last, t_last+num_rows):
 
         print("time: ", t-1)
 
         
-        #print("t = ", t)
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1
         
@@ -122,24 +119,13 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                 # Add Laplacian noise to alpha_hat_i
             
                 alpha_hat2D[k][i] = alpha2D[k][i] + laplace_mechanism(ai(i, theta)/epsilon)
-                #print("alpha_hat2D[k][i]: ", alpha_hat2D[k][i], "\n")
-                
-                
-                # testing stuff
-                #if muni_number == 101:
-                #    sumtin = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
-                #    print("\n sumtin: ", (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)))
-                #    print("df[muni_number][t-1]: ", df[muni_number][t-1])
-                
 
+            
 
 
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
 
-                #print("sum: ", (sum(alpha_hat[k][i] for j, bit in enumerate(bin_t) if bit == 1)))
-
-             
-                
+           
 
                 k+=1
 
@@ -155,10 +141,9 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
         for region in regional_values:
             regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, count_municipalities_in_region(region))
             DK += regional_values[region] 
-            print("\ndk: ", DK)
-            print("regional_data_df.at[t-1, region]:", t-1, region, regional_data_df.at[t-1, region])
 
-        regional_data_df.at[t-1, "DK"] = DK #+ laplace_mechanism_sensitivity(ai(i, theta)/epsilon, len(give_region()))
+
+        regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, len(give_region()))
 
 
 
@@ -167,8 +152,6 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
     
 
-    #last_hourDK = df.index[t-1]
-    #print("Last HourDK:", last_hourDK)
 
 
 

@@ -106,7 +106,9 @@ regions = {
 
 def visualize_data(data):
     # Read the CSV file into a DataFrame
-    df = pd.read_csv(data)
+
+    #df = pd.read_csv(data)
+    df = data
 
     # Extract relevant columns (municipality numbers)
     municipality_columns = df.columns[1:]
@@ -147,15 +149,17 @@ def visualize_data(data):
     plt.tight_layout()
     plt.show()
 
-# Call the visualize_data function with the path to the CSV file
-visualize_data('results/processed_data.csv')
 
-df = pd.read_csv('results/processed_data.csv')
+
+# Call the visualize_data function with the path to the CSV file
+#visualize_data('results/processed_data.csv')
+
+#df = pd.read_csv('results/processed_data.csv')
 
 #make a function to sum the first column in df
 
-def sum_first_column(df):
-    sum_101 = np.sum(df.iloc[:, 1])
-    return sum_101
+#def sum_first_column(df):
+    #sum_101 = np.sum(df.iloc[:, 1])
+    #return sum_101
 
-print(sum_first_column(df))
+#print(sum_first_column(df))
