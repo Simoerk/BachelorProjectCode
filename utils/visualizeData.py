@@ -1,22 +1,9 @@
-from collections import Counter
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
-def give_muni():
-    muni = [
-        "101", "201", "151", "400", "153", "155", "240", "210", "147", "250",
-        "190", "157", "159", "161", "270", "260", "217", "163", "219", "167",
-        "169", "223", "183", "165", "173", "230", "175", "185", "187", "320",
-        "253", "376", "316", "326", "259", "350", "360", "370", "306", "329",
-        "265", "330", "340", "269", "336", "390", "530", "561", "607", "510",
-        "621", "540", "550", "573", "575", "630", "580", "420", "563", "430",
-        "440", "482", "410", "480", "450", "461", "479", "492", "710", "766",
-        "657", "661", "615", "756", "665", "707", "727", "730", "760", "741",
-        "740", "746", "779", "671", "706", "791", "751", "810", "813", "860",
-        "849", "825", "846", "773", "840", "787", "820", "851",
-    ]
-    return muni
-
-def give_region():
-    data = {
+# Define the regions dictionary
+regions = {
         "101": "Hovedstaden",
         "201": "Hovedstaden",
         "151": "Hovedstaden",
@@ -116,38 +103,59 @@ def give_region():
         "820": "Nordjylland",
         "851": "Nordjylland",
     }
-    return data
 
-def count_regions():
-    data = give_region()  # Retrieve the data from your function
-    region_counts = Counter(data.values())  # Count occurrences of each region
-    counts_only = list(region_counts.values())  # Extract only the counts
-    return counts_only
+def visualize_data(data):
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv(data)
 
-def count_municipalities_in_region(region):
-    # Get the region dictionary from the give_region function
-    regions = give_region()
-    
-    # Count how many times the given region appears in the dictionary
-    region_count = sum(1 for muni in regions.values() if muni == region)
-    
-    return region_count
+    # Extract relevant columns (municipality numbers)
+    municipality_columns = df.columns[1:]
 
+    # Create a new DataFrame to store the region-wise data
+    region_data = pd.DataFrame(index=df.index)
 
-def give_regionDictionary():
-    # Initialize the list of municipalities for each region
-    regionDictionary = {
-        "Hovedstaden": [],
-        "Sjaelland": [],
-        "Syddanmark": [],
-        "Midtjylland": [],
-        "Nordjylland": [],
-    }
+    # Map each municipality number to its corresponding region
+    for municipality in municipality_columns:
+        region = regions.get(municipality)
+        if region:
+            if region not in region_data:
+                region_data[region] = 0
+            region_data[region] += df[municipality]
 
-    # Populate the regions dictionary
-    for mun, region in give_region().items():
-        regionDictionary[region].append(mun)
-    return regionDictionary
+    # Extract unique municipalities for each region
+    unique_municipalities = {}
+    for region in regions.values():
+        if region not in unique_municipalities:
+            unique_municipalities[region] = set()
+    for municipality, region in regions.items():
+        unique_municipalities[region].add(municipality)
 
-print(count_regions())
+    # Plot the data
+    for region, data in region_data.items():
+        # Get the corresponding unique municipalities for the region
+        region_municipalities = sorted(list(unique_municipalities[region]))
+        # Aggregate consumption for each municipality across all hours
+        aggregated_consumption = [df[municipality].sum() for municipality in region_municipalities]
+        plt.plot(region_municipalities, aggregated_consumption, marker='o', label=region)
 
+    plt.xlabel('Municipalities')
+    plt.ylabel('Aggregated Consumption')
+    plt.title('Region-wise Aggregated Consumption')
+    plt.xticks(rotation=45)
+    plt.legend(title='Regions')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+# Call the visualize_data function with the path to the CSV file
+visualize_data('results/processed_data.csv')
+
+df = pd.read_csv('results/processed_data.csv')
+
+#make a function to sum the first column in df
+
+def sum_first_column(df):
+    sum_101 = np.sum(df.iloc[:, 1])
+    return sum_101
+
+print(sum_first_column(df))
