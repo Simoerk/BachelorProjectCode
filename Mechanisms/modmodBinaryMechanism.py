@@ -30,17 +30,12 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
     df = df.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
 
+    #This is to make a csv file
     df = df.iloc[1:]
-
     df.insert(0, 'HourDK', unique_times[1:])
-
     df.to_csv("results/processed_data.csv", index=False)
-
-
-
     df = df.drop('HourDK', axis=1)
 
-    #result_df = result_df.iloc[1:]
 
 
     num_rows, num_cols = df.shape
@@ -141,7 +136,6 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
         for region in regional_values:
             regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, count_municipalities_in_region(region))
             DK += regional_values[region] 
-
 
         regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, len(give_region()))
 

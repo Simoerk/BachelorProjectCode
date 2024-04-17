@@ -6,7 +6,7 @@ from utils.laplace import laplace_mechanism
 from utils.clipData import clip
 from utils.clipData import quantileSelection
 from utils.muniRegion import give_region
-from utils.visualizeData import visualize_data
+#from utils.visualizeData import visualize_data
 
 
 def load_dataset(): # Function that loads the dataset
@@ -52,7 +52,6 @@ print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
 #df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
 #print(df)
 #visualize_data(df)
-
 
 
 

@@ -107,8 +107,9 @@ regions = {
 def visualize_data(data):
     # Read the CSV file into a DataFrame
 
-    #df = pd.read_csv(data)
-    df = data
+    
+    df = pd.read_csv(data)
+    #df = data
 
     # Extract relevant columns (municipality numbers)
     municipality_columns = df.columns[1:]

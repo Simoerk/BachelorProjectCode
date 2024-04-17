@@ -22,7 +22,7 @@ def noisyCount(D, start, end):
     return count + noise
 
 # Threshold is decided privately
-def quantileSelection (D):
+def quantileSelection(D):
     left = np.min(D)
     right = np.max(D)
     m = 0.999 * np.size(D)
