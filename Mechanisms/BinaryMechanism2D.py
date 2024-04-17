@@ -92,10 +92,10 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                 
         DK = 0.0
         for region in regional_values:
-            regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, count_municipalities_in_region(region))
+            regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism(ai(i, theta)/epsilon)
             DK += regional_values[region] 
 
-        regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, len(give_region()))
+        regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism(ai(i, theta)/epsilon)
 
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)
     return result_df_con
