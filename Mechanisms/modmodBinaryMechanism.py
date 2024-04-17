@@ -8,35 +8,17 @@ import sys
 data = pd.read_csv("data/Municipality.csv")
 muni = data['number'].to_numpy()
 
-
-
-
 # Define the ai function based on Corollary 4.4
 def ai(i, theta):
     # Implementing ai as per Corollary 4.4
     return (i + 1)**(1 + theta)
-
-
-
 
 # Define the modified binary mechanism as an unbounded function
 def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_times):
 
     print("begin binary mechanism unbounded")
 
-
     regional_data_df = pd.DataFrame(columns=["Hovedstaden", "Sjaelland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"])
-
-
-    df = df.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
-
-    #This is to make a csv file
-    df = df.iloc[1:]
-    df.insert(0, 'HourDK', unique_times[1:])
-    df.to_csv("results/processed_data.csv", index=False)
-    df = df.drop('HourDK', axis=1)
-
-
 
     num_rows, num_cols = df.shape
 
@@ -44,18 +26,12 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
     alpha2D = [[] for _ in range(n)]
     alpha_hat2D = [[] for _ in range(n)]
 
-
-
     problem_list =[]
-
-
-
 
     for t in range(t_last, t_last+num_rows):
 
         print("time: ", t-1)
 
-        
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1
         
@@ -72,9 +48,6 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
         "Midtjylland": 0.0,
         "Nordjylland": 0.0
         }
-
-       
-
 
         for muni_number in give_region():
             # Check if the municipality number exists as a column in the DataFrame
@@ -94,8 +67,6 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                     if len(alpha_hat) < num_bits:
                         alpha_hat.extend([0])
                 
-
-
                 # Update alpha_i
                 alpha2D[k][i] = (sum(alpha2D[k][j] for j in range(i)) + df[muni_number][t-1])
 
@@ -105,33 +76,20 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
                 regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
 
-
                 # Reset previous values to 0
                 for j in range(i):
                     alpha2D[k][j] = 0
                     alpha_hat2D[k][j] = 0
 
                 # Add Laplacian noise to alpha_hat_i
-            
                 alpha_hat2D[k][i] = alpha2D[k][i] + laplace_mechanism(ai(i, theta)/epsilon)
-
-            
-
-
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
-
-           
-
                 k+=1
 
             else:
                 print("ERROR :", muni_number)
                 sys.exit()
                 
-               
-        
-
-
         DK = 0.0
         for region in regional_values:
             regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, count_municipalities_in_region(region))
@@ -139,15 +97,6 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
         regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism_sensitivity(ai(i, theta)/epsilon, len(give_region()))
 
-
-
-
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)
-
-    
-
-
-
-
     return result_df_con
 
