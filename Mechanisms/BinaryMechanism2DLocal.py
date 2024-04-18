@@ -14,7 +14,7 @@ def ai(i, theta):
     return (i + 1)**(1 + theta)
 
 # Define the modified binary mechanism as an unbounded function
-def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_times):
+def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scale_df):
 
     print("begin binary mechanism unbounded")
 
@@ -27,6 +27,55 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
     alpha_hat2D = [[] for _ in range(n)]
 
     problem_list =[]
+
+
+    regional_values = {
+        "Hovedstaden": 0.0,
+        "Sjaelland": 0.0,
+        "Syddanmark": 0.0,
+        "Midtjylland": 0.0,
+        "Nordjylland": 0.0
+        }
+
+    regional_tresh = {
+        "Hovedstaden": 0.0,
+        "Sjaelland": 0.0,
+        "Syddanmark": 0.0,
+        "Midtjylland": 0.0,
+        "Nordjylland": 0.0
+        }
+    
+    #print("scale_df: ", scale_df)
+
+
+    #Find scales for regions
+    max_region_thresh = 0.0
+    regional_scale_df = pd.DataFrame(columns=["Hovedstaden", "Sjaelland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"])
+    pd.concat([scale_df, regional_scale_df], axis=1)
+    scale_df = scale_df.copy()
+
+    # Update regional thresholds based on the maximum values from `scale_df`
+    for muni_number in give_region():
+        muni_number = int(muni_number)
+        region_key = give_region().get(str(muni_number))  # Get the region name from muni_number
+        current_thresh = regional_tresh.get(region_key, 0)  # Use existing or default to 0
+        scale_val = scale_df.loc['max_val', muni_number] if 'max_val' in scale_df.index else 0
+        regional_tresh[region_key] = max(scale_val, current_thresh)
+
+    # Update the scale_df DataFrame with new max values for each region
+    for region, thresh in regional_tresh.items():
+        scale_df.loc['max_val', region] = thresh  # This directly sets the value in the DataFrame
+        max_region_thresh = max(max_region_thresh, thresh)  # Calculate the maximum for 'DK'
+
+    # Set the DK value
+    scale_df.loc['max_val', 'DK'] = max_region_thresh
+
+    # Optionally, to reduce fragmentation, reassign a copy to itself
+    scale_df = scale_df.copy()
+
+    #print("Updated scale_df: ", scale_df)
+
+
 
     for t in range(t_last, t_last+num_rows):
 
@@ -41,13 +90,10 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
         i = next(i for i, bit in enumerate(bin_t) if bit != 0)
         k = 0
         
-        regional_values = {
-        "Hovedstaden": 0.0,
-        "Sjaelland": 0.0,
-        "Syddanmark": 0.0,
-        "Midtjylland": 0.0,
-        "Nordjylland": 0.0
-        }
+        for region in regional_values:
+            regional_values[region] = 0.0
+        
+
 
         for muni_number in give_region():
             # Check if the municipality number exists as a column in the DataFrame
@@ -74,9 +120,9 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                     if muni_number not in problem_list:
                         problem_list.append(muni_number)
 
-                regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
-                
-                
+                regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)) * scale_df.loc['max_val', muni_number]
+                # Update regional treshold
+                #regional_tresh[give_region().get(str(muni_number))] = scale_df.loc['max_val', muni_number] if scale_df.loc['max_val', muni_number] > regional_tresh[give_region().get(str(muni_number))] else regional_tresh[give_region().get(str(muni_number))]
 
                 # Reset previous values to 0
                 for j in range(i):
@@ -94,15 +140,14 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                 
 
         DK = 0.0
-        for region in regional_values:    
+        for region in regional_values:
             DK += regional_values[region]
-            regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism(ai(i, theta)/epsilon)
-    
+            #print("regional_values[region]: ", regional_values[region])
+            #print("regional_tresh[region]: ", regional_tresh[region])
+            regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(ai(i, theta)/epsilon)
             
-
-        regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism(ai(i, theta)/epsilon)
-
+        regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(ai(i, theta)/epsilon))
 
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)
-    return result_df_con
+    return result_df_con, scale_df
 

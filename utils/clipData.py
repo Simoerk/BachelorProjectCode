@@ -51,10 +51,17 @@ def clip(df, column):
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
     thresh = quantileSelection(df_cons_sorted)
-    print(thresh)
+    #print(thresh)
     clippedData = clipData(df_column, thresh)
     return clippedData
 
+
+
+def clip_pr_column(df):
+    for column in df.columns:
+        if column != 'HourDK':
+            df[column] = clip(df, column)
+    return df
 
 
 

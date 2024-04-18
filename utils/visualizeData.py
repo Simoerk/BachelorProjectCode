@@ -108,8 +108,8 @@ def visualize_data(data):
     # Read the CSV file into a DataFrame
 
     
-    df = pd.read_csv(data)
-    #df = data
+    #df = pd.read_csv(data)
+    df = data
 
     # Extract relevant columns (municipality numbers)
     municipality_columns = df.columns[1:]
@@ -152,15 +152,112 @@ def visualize_data(data):
 
 
 
-# Call the visualize_data function with the path to the CSV file
-#visualize_data('results/processed_data.csv')
+def plot_consumption(df1, df2):
+    # Extract relevant columns (municipality numbers)
+    municipality_columns = df1.columns[1:]
 
-#df = pd.read_csv('results/processed_data.csv')
+    # Create a new DataFrame to store the region-wise data
+    region_data = pd.DataFrame(index=df1.index)
 
-#make a function to sum the first column in df
+    # Map each municipality number to its corresponding region
+    for municipality in municipality_columns:
+        region = regions.get(municipality)
+        if region:
+            if region not in region_data:
+                region_data[region] = 0
+            region_data[region] += df1[municipality]
 
-#def sum_first_column(df):
-    #sum_101 = np.sum(df.iloc[:, 1])
-    #return sum_101
+    # Extract unique municipalities for each region
+    unique_municipalities = {}
+    for region in regions.values():
+        if region not in unique_municipalities:
+            unique_municipalities[region] = set()
+    for municipality, region in regions.items():
+        unique_municipalities[region].add(municipality)
 
-#print(sum_first_column(df))
+    # Plot the data from df1
+    for region, data in region_data.items():
+        # Get the corresponding unique municipalities for the region
+        region_municipalities = sorted(list(unique_municipalities[region]))
+        # Aggregate consumption for each municipality across all hours
+        aggregated_consumption = [df1[municipality].sum() for municipality in region_municipalities]
+        plt.plot(region_municipalities, aggregated_consumption, marker='x', label=region)
+
+    # Order df2 columns after regions like df1
+    df2_ordered = df2.reindex(columns=df1.columns)
+
+    # Plot the data from df2 (last row as line plot)
+    last_row_df2 = df2_ordered.iloc[-1, 1:]  # Extract last row (excluding HourDK column)
+    plt.plot(last_row_df2.index, last_row_df2.values, linestyle='', marker='+', label='Total Aggregated Consumption (New Data)')
+
+    plt.xlabel('Municipalities')
+    plt.ylabel('Aggregated Consumption')
+    plt.title('Region-wise Aggregated Consumption')
+    plt.xticks(rotation=45)
+    plt.legend(title='Regions')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+
+actual_df = pd.read_csv('results/processed_data.csv')
+result_df = pd.read_csv('results/result_Num2DGeoLocal_df.csv')
+
+#plot_region_wise_aggregated_consumption(actual_df, result_df.iloc[:, :-6])
+
+#visualize_data(actual_df)
+
+def plot_consumption_barplot(df1, df2):
+    # Extract relevant columns (municipality numbers)
+    municipality_columns = df1.columns[1:]
+
+    # Create a new DataFrame to store the region-wise data
+    region_data = pd.DataFrame(index=df1.index)
+
+    # Map each municipality number to its corresponding region
+    for municipality in municipality_columns:
+        region = regions.get(municipality)
+        if region:
+            if region not in region_data:
+                region_data[region] = 0
+            region_data[region] += df1[municipality]
+
+    # Extract unique municipalities for each region
+    unique_municipalities = {}
+    for region in regions.values():
+        if region not in unique_municipalities:
+            unique_municipalities[region] = set()
+    for municipality, region in regions.items():
+        unique_municipalities[region].add(municipality)
+
+    # Prepare data for bar plot
+    x = range(len(municipality_columns))
+    bar_width = 0.35
+
+    # Plot the data from df1
+    for region, data in region_data.items():
+        # Get the corresponding unique municipalities for the region
+        region_municipalities = sorted(list(unique_municipalities[region]))
+        # Aggregate consumption for each municipality across all hours
+        aggregated_consumption_df1 = [df1[municipality].sum() for municipality in region_municipalities]
+        plt.bar([i - bar_width/2 for i in range(len(region_municipalities))], aggregated_consumption_df1, width=bar_width, label=f'{region} (DF1)')
+
+    # Order df2 columns after regions like df1
+    df2_ordered = df2.reindex(columns=df1.columns)
+
+    # Plot the data from df2
+    last_row_df2 = df2_ordered.iloc[-1, 1:]  # Extract last row (excluding HourDK column)
+    plt.bar([i + bar_width/2 for i in range(len(last_row_df2))], last_row_df2.values, width=bar_width, label='Total Aggregated Consumption (New Data)')
+
+    plt.xlabel('Municipalities')
+    plt.ylabel('Aggregated Consumption')
+    plt.title('Region-wise Aggregated Consumption')
+    plt.xticks(range(len(municipality_columns)), sorted(municipality_columns, key=lambda x: regions.get(x, x)), rotation=45)
+    plt.legend(title='Regions')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+# Assuming 'regions' dictionary is defined elsewhere in your code
+# Call the function with the original dataframe (df1) and the additional dataframe (df2)
+plot_consumption_barplot(actual_df, result_df)

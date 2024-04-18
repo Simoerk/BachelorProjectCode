@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 response = requests.get(
-    url='https://api.energidataservice.dk/dataset/PrivIndustryConsumptionHour?limit=1000000')
+    url='https://api.energidataservice.dk/dataset/PrivIndustryConsumptionHour?limit=2000000')
 
 result = response.json()
 

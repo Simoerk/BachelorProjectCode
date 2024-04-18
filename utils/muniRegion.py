@@ -149,5 +149,5 @@ def give_regionDictionary():
         regionDictionary[region].append(mun)
     return regionDictionary
 
-print(count_regions())
+
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
-from Mechanisms.modmodBinaryMechanism import binary_mechanism_unbounded
+from Mechanisms.BinaryMechanism2D import binary_mechanism_unbounded
 from utils.laplace import laplace_mechanism
 from utils.clipData import clip
 from utils.clipData import quantileSelection
@@ -38,7 +38,7 @@ print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
 
 #scale
 min_val = 0
-max_val = thresh
+max_val = max(df_mun['ConsumptionkWh'])
 df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
 result_df = pd.DataFrame()
@@ -46,6 +46,7 @@ unique_times = sorted(df_mun['HourDK'].unique())
 result_df['HourDK'] = unique_times[1:]
 
 df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+
 
 #This is to make a csv file
 df = df.iloc[1:]
@@ -62,6 +63,10 @@ for col in result_df.columns[1:]:  # Skip the first column (time)
 
 result_df.to_csv("results/result_unbound_Geo_df.csv", index=False)
 print("done")
+
+
+
+
 
 # Beneath this line is for some tests
 def accumulate_regional_values(result_df):
