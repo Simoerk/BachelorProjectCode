@@ -66,8 +66,8 @@ def plot_comparison(true_df, noisy_df, columns, title_prefix=''):
 
 def main():
     # Load datasets
-    df_mun1 = load_dataset("results/result_Num2DGeoLocal_df.csv")
-    df_mun2 = load_dataset("results/test_df.csv")
+    df_mun1 = load_dataset("results/Num2DUnbGeoLoc_noisy_result.csv")
+    df_mun2 = load_dataset("results/real_consumption_sums.csv")
 
     # Convert 'HourDK' to datetime format for better plotting
     df_mun1['HourDK'] = pd.to_datetime(df_mun1['HourDK'])
