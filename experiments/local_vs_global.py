@@ -49,4 +49,4 @@ def calculate_std_deviation(actual, local_noisy, global_noisy):
 
 std_dev_local, std_dev_global = calculate_std_deviation(actual_df, local_noisy_df, global_noisy_df)
 
-#show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, '825')
+show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, '825')

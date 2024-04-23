@@ -158,3 +158,14 @@ def order_dataframe_by_region(df, region_dict):
     # Reorder DataFrame columns based on the region order
     df_ordered = df[region_order]
     return df_ordered
+
+
+def initialize_region_dictionaries():
+    # Use the give_regionDictionary function to get the region dictionary
+    region_dict = give_regionDictionary()
+
+    # Create dictionaries with regions as keys and initial values set to 0.0
+    regional_values = {region: 0.0 for region in region_dict.keys()}
+    regional_thresh = {region: 0.0 for region in region_dict.keys()}
+
+    return regional_values, regional_thresh

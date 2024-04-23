@@ -31,13 +31,6 @@ municipality_counts = df_mun['MunicipalityNo'].value_counts()
 
 
 
-
-#Test to find the actual aggregated data for 101
-sum_consumption_101 = df_mun[df_mun['MunicipalityNo'] == 101]['ConsumptionkWh'].sum()
-print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
-
-
-
 #scale
 min_val = 0
 max_val = thresh
@@ -78,17 +71,18 @@ for mun_no in df_mun['MunicipalityNo'].unique():
     result_df[str(mun_no)] = binary_result
 end_time = time.time()
 
+# Print the duration
 duration = end_time - start_time
 print(f"The function took {duration} seconds to run.")
     
 
-
+# Scale back up
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
 
 
-
+# save the dataframe to a csv file
 result_df.to_csv("results/Num2DUnb_noisy_result.csv", index=False)
 print("done")

@@ -18,7 +18,12 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
     print("begin binary mechanism unbounded")
 
-    regional_data_df = pd.DataFrame(columns=["Hovedstaden", "Sjaelland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"])
+    # Get the region dictionary
+    region_dict = give_regionDictionary()
+    # Create a list of regions and add 'DK' for the total of all regions
+    regions = list(region_dict.keys()) + ['DK']
+    # Create an empty DataFrame with these regions as columns
+    regional_data_df = pd.DataFrame(columns=regions)
 
     num_rows, num_cols = df.shape
 
@@ -41,13 +46,7 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
         i = next(i for i, bit in enumerate(bin_t) if bit != 0)
         k = 0
         
-        regional_values = {
-        "Hovedstaden": 0.0,
-        "Sjaelland": 0.0,
-        "Syddanmark": 0.0,
-        "Midtjylland": 0.0,
-        "Nordjylland": 0.0
-        }
+        regional_values, regional_tresh = initialize_region_dictionaries()
 
         for muni_number in give_region():
             # Check if the municipality number exists as a column in the DataFrame

@@ -8,18 +8,14 @@ from utils.clipData import quantileSelection
 from utils.muniRegion import give_region
 from utils.scale import downScaleDf
 from utils.scale import upScaleDf
+from utils.load_dataset import load_dataset
 #from utils.visualizeData import visualize_data
 
-def load_dataset(str): # Function that loads the dataset
-    print("Loading the big dataset...")
-    data = pd.read_csv(str, nrows=1000000)
-    print("Dataset loaded successfully!")
-    return data
 
 
 
 # Differential privacy on Dataset with Municipality, time and housing/heating category
-df_mun = load_dataset("data/muni_data.csv")
+df_mun = load_dataset("data/muni_data.csv", 1000000)
 
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')

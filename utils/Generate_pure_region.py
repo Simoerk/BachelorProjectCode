@@ -1,12 +1,9 @@
 import pandas as pd
 from utils.muniRegion import give_region
 from utils.muniRegion import give_regionDictionary
+from utils.load_dataset import load_dataset
 
-def load_dataset(file_path):
-    print("Loading the dataset...")
-    data = pd.read_csv(file_path)
-    print("Dataset loaded successfully!")
-    return data
+
 
 def map_municipalities_to_regions(df, region_mapping):
     df_melted = df.melt(id_vars='HourDK', var_name='MunicipalityNo', value_name='ConsumptionkWh')
@@ -18,7 +15,7 @@ def sum_by_region(df_melted):
     return df_region_sum
 
 def main():
-    df = load_dataset("results/test_df.csv")
+    df = load_dataset("results/real_consumption_sums.csv", 1000000)
     region_mapping = give_region()
     
     df_regions = pd.DataFrame()

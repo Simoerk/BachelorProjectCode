@@ -3,7 +3,7 @@ import pandas as pd
 import math
 from utils.laplace import laplace_mechanism
 
-
+# Unused
 def logarithmic_mechanism(epsilon, stream):
     # Initialize beta
     beta = 0

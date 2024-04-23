@@ -14,12 +14,19 @@ def ai(i, theta):
     # Implementing ai as per Corollary 4.4
     return (i + 1)**(1 + theta)
 
+
+
 # Define the modified binary mechanism as an unbounded function
 def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scale_df):
 
     print("begin binary mechanism unbounded")
 
-    regional_data_df = pd.DataFrame(columns=["Hovedstaden", "Sjaelland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"])
+    # Get the region dictionary
+    region_dict = give_regionDictionary()
+    # Create a list of regions and add 'DK' for the total of all regions
+    regions = list(region_dict.keys()) + ['DK']
+    # Create an empty DataFrame with these regions as columns
+    regional_data_df = pd.DataFrame(columns=regions)
 
     num_rows, num_cols = df.shape
 
@@ -30,28 +37,14 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
     problem_list =[]
 
 
-    regional_values = {
-        "Hovedstaden": 0.0,
-        "Sjaelland": 0.0,
-        "Syddanmark": 0.0,
-        "Midtjylland": 0.0,
-        "Nordjylland": 0.0
-        }
-
-    regional_tresh = {
-        "Hovedstaden": 0.0,
-        "Sjaelland": 0.0,
-        "Syddanmark": 0.0,
-        "Midtjylland": 0.0,
-        "Nordjylland": 0.0
-        }
-    
-    #print("scale_df: ", scale_df)
+    # Call the function to create the dictionaries
+    regional_values, regional_tresh = initialize_region_dictionaries()
 
 
     #Find scales for regions
     max_region_thresh = 0.0
-    regional_scale_df = pd.DataFrame(columns=["Hovedstaden", "Sjaelland", "Syddanmark", "Midtjylland", "Nordjylland", "DK"])
+    # Create an empty DataFrame with these regions as columns
+    regional_scale_df = pd.DataFrame(columns=regions)
     pd.concat([scale_df, regional_scale_df], axis=1)
     scale_df = scale_df.copy()
 
@@ -95,7 +88,6 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
             regional_values[region] = 0.0
         
 
-
         for muni_number in give_region():
             # Check if the municipality number exists as a column in the DataFrame
             muni_number = int(muni_number)
@@ -122,9 +114,7 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
                         problem_list.append(muni_number)
 
                 regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)) * scale_df.loc['max_val', muni_number]
-                # Update regional treshold
-                
-
+            
                 # Reset previous values to 0
                 for j in range(i):
                     alpha2D[k][j] = 0

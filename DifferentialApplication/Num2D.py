@@ -17,30 +17,16 @@ from utils.muniRegion import *
 df_mun = load_dataset("data/muni_data.csv", 1000000)
 
 
-
-
-
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
-
-
-#Test to find the actual aggregated data for 101
-sum_consumption_101 = df_mun[df_mun['MunicipalityNo'] == 101]['ConsumptionkWh'].sum()
-print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
-
-
 
 
 #remove upper quantile
 df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
 
 
-
 #count number of munies
 municipality_counts = df_mun['MunicipalityNo'].value_counts()
-
-
-
 
 
 #scale
@@ -49,11 +35,12 @@ max_val = np.max(df_mun['ConsumptionkWh'])
 df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
 
-
+#find unique times and create result dataframe
 result_df = pd.DataFrame()
 unique_times = sorted(df_mun['HourDK'].unique())
 result_df['HourDK'] = unique_times
 
+#Used for timing the mechanism loop
 start_time = time.time()
 
 for mun_no in df_mun['MunicipalityNo'].unique():
@@ -84,6 +71,7 @@ end_time = time.time()
 duration = end_time - start_time
 print(f"The function took {duration} seconds to run.")
 
+#scale back
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
