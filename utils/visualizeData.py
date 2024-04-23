@@ -209,25 +209,25 @@ def plot_consumption_barplot(df1, df2):
     df2 = df2.iloc[:, :len(df1.columns)]
 
     # Extract relevant columns (municipality numbers)
-    municipalities_df1 = df1.columns[1:]  # Exclude first column (HourDK)
+    municipalities_df2 = df2.columns[1:]  # Exclude first column (HourDK)
 
     # Reorder columns of df2 to match df1
-    df2 = df2.reindex(columns=municipalities_df1)
+    df1 = df1.reindex(columns=municipalities_df2)
 
     # Prepare data for plotting
     consumption_df1 = []
     consumption_df2 = []
     regions_df1 = []
 
-    for municipality in municipalities_df1:
+    for municipality in municipalities_df2:
         consumption_df1.append(df1[municipality].iloc[-1])  # Last row value for each municipality in df1
         regions_df1.append(regions.get(municipality, "Unknown"))
 
-    for municipality in municipalities_df1:
+    for municipality in municipalities_df2:
         consumption_df2.append(df2[municipality].iloc[-1])  # Last row value for each municipality in df2
 
     # Plot the data
-    x = np.arange(len(municipalities_df1))
+    x = np.arange(len(municipalities_df2))
     bar_width = 0.35
 
     fig, ax = plt.subplots()
@@ -247,7 +247,7 @@ def plot_consumption_barplot(df1, df2):
     ax.set_ylabel('Consumption')
     ax.set_title('Consumption Comparison for Each Municipality')
     ax.set_xticks(x)
-    ax.set_xticklabels(municipalities_df1, rotation=45)
+    ax.set_xticklabels(municipalities_df2, rotation=45)
     ax.legend()
 
     plt.tight_layout()
@@ -272,9 +272,9 @@ def calculate_consumption_difference(df1, df2):
 
 
 
-#plot_consumption_barplot(actual_df, result_df)
+plot_consumption_barplot(actual_df, result_df)
 
-print(calculate_consumption_difference(actual_df, result_df))
+#print(calculate_consumption_difference(actual_df, result_df))
 
 #plot_consumption(actual_df, result_df.iloc[:, :-6])
 

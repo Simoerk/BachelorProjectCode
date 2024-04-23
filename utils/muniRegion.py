@@ -151,3 +151,10 @@ def give_regionDictionary():
 
 
 
+def order_dataframe_by_region(df, region_dict):
+    """Reorder DataFrame columns based on the order of regions in the region_dict."""
+    # Extract region order preserving uniqueness and order from the dictionary
+    region_order = list(dict.fromkeys(region_dict.values()))  # Unique and preserve order
+    # Reorder DataFrame columns based on the region order
+    df_ordered = df[region_order]
+    return df_ordered

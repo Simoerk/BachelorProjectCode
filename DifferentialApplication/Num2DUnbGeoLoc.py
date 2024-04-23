@@ -8,16 +8,13 @@ from utils.clipData import quantileSelection
 from utils.muniRegion import give_region
 from utils.scale import downScaleDf
 from utils.scale import upScaleDf
+from utils.load_dataset import load_dataset
+import time
 #from utils.visualizeData import visualize_data
 
-def load_dataset(): # Function that loads the dataset
-    print("Loading the big dataset...")
-    data = pd.read_csv("data/muni_data.csv", nrows=1000000)
-    print("Dataset loaded successfully!")
-    return data
 
 # Differential privacy on Dataset with Municipality, time and housing/heating category
-df_mun = load_dataset()
+df_mun = load_dataset("data/muni_data.csv", 1000000)
 
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
@@ -72,14 +69,14 @@ aggregated_df.to_csv("results/processed_sums_data.csv", index=False)
 #Downscaling
 df, thresh_df = downScaleDf(df)
 
-
-
+#Calling the mecchanism timed
+start_time = time.time()
 result_df, thresh_df = binary_mechanism_unbounded_local(0.1, df, result_df, 1, 1, thresh_df)
-#result_df, mun = binary_mechanism_unbounded(0.1, df_mun, result_df, 1, 1, unique_times)
+end_time = time.time()
 
-# for col in result_df.columns[1:]:  # Skip the first column (time)
-#     # Scale back each column to its original range
-#     result_df[col] = result_df[col] * (max_val - min_val) + min_val
+#print the time it took to run
+duration = end_time - start_time
+print(f"The function took {duration} seconds to run.")
 
 #Upscaling
 result_df = upScaleDf(result_df, thresh_df)
@@ -90,24 +87,4 @@ print("done")
 
 
 
-# Beneath this line is for some tests
-def accumulate_regional_values(result_df):
-    regional_values = {
-        "Hovedstaden": 0.0,
-        "Sjaelland": 0.0,
-        "Syddanmark": 0.0,
-        "Midtjylland": 0.0,
-        "Nordjylland": 0.0
-    }
-
-    region_dict = give_region()
-
-    # Iterate over each municipality number and its corresponding region
-    for muni_number, region in region_dict.items():
-        # Ensure the municipality number is a column in result_df
-        regional_values[region] += result_df[int(muni_number)].iloc[-1]
-
-    return regional_values
-
-regional_sums = accumulate_regional_values(result_df)
 

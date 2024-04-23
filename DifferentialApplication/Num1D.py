@@ -2,10 +2,12 @@ import numpy as np
 import pandas as pd
 import math
 from Mechanisms.BinaryMechanism import binary_mechanism
+from utils.load_dataset import load_dataset
+import time
 
 # Load the dataset
 print("Loading the el dataset...")
-df_el = pd.read_csv("./Data/PrivIndustryConsumptionSumHour.csv")
+df_el = load_dataset("./Data/PrivIndustryConsumptionSumHour.csv", 1000000)
 print("Dataset loaded successfully!")
 
 

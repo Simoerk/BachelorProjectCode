@@ -20,7 +20,7 @@ def mod_binary_mechanism(epsilon, stream, alpha_hat, t_last, theta=1):
 
     
     for t in range(t_last, t_last+len(stream)):
-        print("t = ", t)
+        #print("t = ", t)
 
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1

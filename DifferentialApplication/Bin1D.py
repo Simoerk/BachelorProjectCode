@@ -2,11 +2,13 @@ import numpy as np
 import pandas as pd
 import math
 from Mechanisms.TwoLevelMechanism import two_level_mechanism
-
+from utils.load_dataset import load_dataset
+import time
+from utils.muniRegion import *
 
 # Load the dataset
 print("Loading the diabetes dataset...")
-df_dia = pd.read_csv("./Data/diabetes_binary_health_indicators_BRFSS2015.csv")
+df_dia = load_dataset("./Data/diabetes_binary_health_indicators_BRFSS2015.csv", 1000000)
 print("Dataset loaded successfully!")
 
 # Select the 'Diabetes_binary' column as a numpy array
@@ -42,3 +44,5 @@ print("Mechanism applied successfully!")
 pd.DataFrame(estimates).to_csv("results/Bin1D_noisy_result.csv", index=False)
 cumulative_sums = np.cumsum(sigma_dia)
 pd.DataFrame(cumulative_sums, columns=['Actual Sum']).to_csv("results/Bin1D_result.csv", index=False)
+
+

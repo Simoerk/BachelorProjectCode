@@ -80,7 +80,7 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
 
     for t in range(t_last, t_last+num_rows):
 
-        print("time: ", t-1)
+        #print("time: ", t-1)
 
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1
@@ -123,7 +123,7 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
 
                 regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)) * scale_df.loc['max_val', muni_number]
                 # Update regional treshold
-                #regional_tresh[give_region().get(str(muni_number))] = scale_df.loc['max_val', muni_number] if scale_df.loc['max_val', muni_number] > regional_tresh[give_region().get(str(muni_number))] else regional_tresh[give_region().get(str(muni_number))]
+                
 
                 # Reset previous values to 0
                 for j in range(i):
@@ -143,8 +143,7 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
         DK = 0.0
         for region in regional_values:
             DK += regional_values[region]
-            #print("regional_values[region]: ", regional_values[region])
-            #print("regional_tresh[region]: ", regional_tresh[region])
+            
             regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(ai(i, theta)/epsilon)
             
         regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(ai(i, theta)/epsilon))

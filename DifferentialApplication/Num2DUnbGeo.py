@@ -7,34 +7,22 @@ from utils.clipData import clip
 from utils.clipData import quantileSelection
 from utils.muniRegion import give_region
 #from utils.visualizeData import visualize_data
-
-def load_dataset(): # Function that loads the dataset
-    print("Loading the big dataset...")
-    data = pd.read_csv("data/muni_data.csv", nrows=1000000)
-    print("Dataset loaded successfully!")
-    return data
-
+from utils.load_dataset import load_dataset
+import time
 
 # Differential privacy on Dataset with Municipality, time and housing/heating category
-df_mun = load_dataset()
+df_mun = load_dataset("data/muni_data.csv", 1000000)
 
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
-
-#remove upper quantile
-df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
-
-
-#count number of munies
-municipality_counts = df_mun['MunicipalityNo'].value_counts()
 
 #Test to find the actual aggregated data for 101
 sum_consumption_101 = df_mun[df_mun['MunicipalityNo'] == 101]['ConsumptionkWh'].sum()
 print(f"Sum of ConsumptionkWh for MunicipalityNo 101: {sum_consumption_101}")
 
-#df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
-#print(df)
-#visualize_data(df)
+#remove upper quantile
+df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
+
 
 #scale
 min_val = 0
@@ -54,8 +42,15 @@ df.insert(0, 'HourDK', unique_times[1:])
 df.to_csv("results/processed_data.csv", index=False)
 df = df.drop('HourDK', axis=1)
 
+#Calling the mechanism timed
+start_time = time.time()
 result_df = binary_mechanism_unbounded(0.1, df, result_df, 1, 1, unique_times)
-#result_df, mun = binary_mechanism_unbounded(0.1, df_mun, result_df, 1, 1, unique_times)
+end_time = time.time()
+
+#Print the time
+duration = end_time - start_time
+print(f"The function took {duration} seconds to run.")
+
 
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range

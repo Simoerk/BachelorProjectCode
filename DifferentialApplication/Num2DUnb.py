@@ -5,21 +5,15 @@ from Mechanisms.ModBinaryMechanism import mod_binary_mechanism
 from utils.laplace import laplace_mechanism
 from utils.clipData import clip
 from utils.clipData import quantileSelection
-
-
-def load_dataset(): # Function that loads the dataset
-    print("Loading the big dataset...")
-    data = pd.read_csv("data/muni_data.csv")
-    print("Dataset loaded successfully!")
-    return data
-
-
+from utils.muniRegion import give_region
+from utils.load_dataset import load_dataset
+import time
 
 
 
 
 # Differential privacy on Dataset with Municipality, time and housing/heating category
-df_mun = load_dataset()
+df_mun = load_dataset("data/muni_data.csv", 1000000)
 
 
 
@@ -56,6 +50,7 @@ unique_times = sorted(df_mun['HourDK'].unique())
 result_df['HourDK'] = unique_times
 
 
+start_time = time.time()
 for mun_no in df_mun['MunicipalityNo'].unique():
 
     # Filter the DataFrame for the current municipality
@@ -81,7 +76,10 @@ for mun_no in df_mun['MunicipalityNo'].unique():
     
     # Add the results as a new column in the result DataFrame, named by the MunicipalityNo
     result_df[str(mun_no)] = binary_result
+end_time = time.time()
 
+duration = end_time - start_time
+print(f"The function took {duration} seconds to run.")
     
 
 

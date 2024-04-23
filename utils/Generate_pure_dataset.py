@@ -42,6 +42,6 @@ df = df.iloc[1:]
 df.insert(0, 'HourDK', unique_times[1:])
 
 
-df.to_csv("results/real_consumption_sums.csv.csv", index=False)
+df.to_csv("results/real_consumption_sums.csv", index=False)
 print("done")
 

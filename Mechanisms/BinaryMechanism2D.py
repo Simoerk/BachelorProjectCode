@@ -30,7 +30,7 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
 
     for t in range(t_last, t_last+num_rows):
 
-        print("time: ", t-1)
+        #print("time: ", t-1)
 
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1

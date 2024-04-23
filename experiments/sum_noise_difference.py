@@ -1,11 +1,6 @@
 import pandas as pd
+from utils.load_dataset import load_dataset
 
-def load_dataset(file_path):
-    """Load dataset from a CSV file."""
-    print(f"Loading dataset from {file_path}...")
-    data = pd.read_csv(file_path, nrows=1000000)  # Limiting to 1 million rows for large datasets
-    print("Dataset loaded successfully!")
-    return data
 
 
 # Example of adjusting the function to compare relative differences
@@ -36,8 +31,8 @@ def compare_datasets(df1, df2):
 
 def main():
     # Load datasets
-    df_mun1 = load_dataset("results/result_Num2DGeoLocal_df.csv")
-    df_mun2 = load_dataset("results/test_df.csv")
+    df_mun1 = load_dataset("results/Num2DUnbGeoLoc_noisy_result.csv", 1000000)
+    df_mun2 = load_dataset("results/regional_consumption_sums.csv", 1000000)
 
     # Compare the datasets
     compare_datasets(df_mun1, df_mun2)
