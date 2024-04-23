@@ -23,9 +23,9 @@ df_mun = load_dataset()
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
 #remove upper quantile
-df_mun['ConsumptionkWh'] = clip(df_mun, 'ConsumptionkWh')
-with open("./data/threshold.txt", 'r') as file:
-    thresh = float(file.read())
+#df_mun['ConsumptionkWh'] = clip(df_mun, 'ConsumptionkWh')
+#with open("./data/threshold.txt", 'r') as file:
+    #thresh = float(file.read())
 
 df_mun = clip_pr_column(df_mun)
 
