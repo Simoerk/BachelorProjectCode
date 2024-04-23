@@ -85,7 +85,7 @@ result_df, thresh_df = binary_mechanism_unbounded_local(0.1, df, result_df, 1, 1
 result_df = upScaleDf(result_df, thresh_df)
 
 
-result_df.to_csv("results/result_Num2DGeoLocal_df.csv", index=False)
+result_df.to_csv("results/Num2DUnbGeoLoc_noisy_result.csv", index=False)
 print("done")
 
 

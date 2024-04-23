@@ -23,7 +23,7 @@ print("real: ", sigma_el.sum())
 
 
 # Algorithm 2: Binary mechanism
-epsilon = 10  # Privacy parameter
+epsilon = 0.1  # Privacy parameter
 
 #Revese sigma because new entreis are added at the end
 sigma_el_flipped = np.flip(sigma_el)
@@ -47,19 +47,19 @@ sigma_el_filtered = sigma_el_flipped[(sigma_el_flipped < upper_quantile)]
 
 #scale sigma_el_flipped 
 # Calculate min and max of the array
-min_val = np.min(sigma_el_flipped)
-max_val = np.max(sigma_el_flipped)
+min_val_flip = 0
+max_val_flip = np.max(sigma_el_flipped)
 # Scale the array
-sigma_el_flipped_scaled = (sigma_el_flipped - min_val) / (max_val - min_val)
+sigma_el_flipped_scaled = (sigma_el_flipped - min_val_flip) / (max_val_flip - min_val_flip)
 
 
 #scale sigma_el_filtered
 # Calculate min and max of the array
-min_val = np.min(sigma_el_filtered)
-max_val = np.max(sigma_el_filtered)
+min_val_fil = 0
+max_val_fil = np.max(sigma_el_filtered)
 # Scale the array
-sigma_el_filtered_scaled = (sigma_el_filtered - min_val) / (max_val - min_val)
-print("max: ", max_val)
+sigma_el_filtered_scaled = (sigma_el_filtered - min_val_fil) / (max_val_fil - min_val_fil)
+#print("max: ", max_val_fil)
 
 
 
@@ -67,12 +67,21 @@ print("max: ", max_val)
 T = len(sigma_el)
 print("T: ", T)
 B_t = binary_mechanism(T, epsilon, sigma_el_flipped_scaled)
+
+#scale up again
+B_t = np.array(B_t)
+B_t = B_t * (max_val_flip - min_val_flip) + min_val_flip
+
 #print(B_t)
 
 # Bin mech on data without high values
 T_fil = len(sigma_el_filtered)
 print("T_fil: ", T_fil)
 B_t_fil = binary_mechanism(T_fil, epsilon, sigma_el_filtered_scaled)
+
+B_t_fil = np.array(B_t_fil)
+B_t_fil = B_t_fil * (max_val_fil - min_val_fil) + min_val_fil
+
 #print(B_t_fil)
 
 
@@ -87,14 +96,20 @@ print("las2: ", last_value2)
 
 # Be able to query certain intervals
 
-with open("data/B_t.txt", "w") as f:
-    for item in B_t:
-        # Write each item on a new line
-        f.write("%s\n" % item)
+# with open("results/B_t.txt", "w") as f:
+#     for item in B_t:
+#         # Write each item on a new line
+#         f.write("%s\n" % item)
 
-with open("data/B_t_filtered.txt", "w") as f:
-    for item in B_t_fil:
-        # Write each item on a new line
-        f.write("%s\n" % item)
+# with open("results/B_t_filtered.txt", "w") as f:
+#     for item in B_t_fil:
+#         # Write each item on a new line
+#         f.write("%s\n" % item)
+
+
+pd.DataFrame(B_t, columns=['NoisyCumSum']).to_csv("results/num1D_noisy_result.csv", index=False)
+pd.DataFrame(B_t_fil, columns=['FilteredNoisyCumSum']).to_csv("results/num1D_fil_noisy_result.csv", index=False)
+pd.DataFrame(np.cumsum(sigma_el_flipped), columns=['CumSum']).to_csv("results/num1D_result.csv", index=False)
+pd.DataFrame(np.cumsum(sigma_el_filtered), columns=['CumSum']).to_csv("results/num1D_fil_result.csv", index=False)
 
 print("done")

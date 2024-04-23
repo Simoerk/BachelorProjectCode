@@ -19,7 +19,7 @@ print("Column selected successfully!")
 #T for Diabetes
 T = len(sigma_dia)  # Number of records in the 'diabetes_binary' column
 #T = 1000
-epsilon = 0.9  # Differential privacy parameter
+epsilon = 0.1  # Differential privacy parameter
 
 # B value used for two level mechanism, B is Block size 
 B = int(math.ceil(math.sqrt(T)))
@@ -39,3 +39,6 @@ print("Mechanism applied successfully!")
 #print("len: ", len(sigma_dia))
 
 
+pd.DataFrame(estimates).to_csv("results/Bin1D_noisy_result.csv", index=False)
+cumulative_sums = np.cumsum(sigma_dia)
+pd.DataFrame(cumulative_sums, columns=['Actual Sum']).to_csv("results/Bin1D_result.csv", index=False)

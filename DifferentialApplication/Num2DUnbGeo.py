@@ -61,7 +61,7 @@ for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
-result_df.to_csv("results/result_unbound_Geo_df.csv", index=False)
+result_df.to_csv("results/Num2DUnbGeo_noisy_result.csv", index=False)
 print("done")
 
 

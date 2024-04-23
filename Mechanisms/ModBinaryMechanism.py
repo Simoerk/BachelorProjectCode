@@ -10,7 +10,7 @@ def ai(i, theta):
     return (i + 1)**(1 + theta)
 
 # Define the modified binary mechanism as an unbounded function
-def Binary_tree_mechanism(epsilon, stream, alpha_hat, t_last, theta=1):
+def mod_binary_mechanism(epsilon, stream, alpha_hat, t_last, theta=1):
     # Initialize alphas dynamically
     alpha = []
     B = []
