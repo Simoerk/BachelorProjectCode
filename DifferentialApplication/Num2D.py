@@ -23,13 +23,14 @@ def load_dataset(): # Function that loads the dataset
 df_mun = load_dataset()
 
 
-#remove upper quantile
-df_mun['ConsumptionkWh'] = clip(df_mun, 'ConsumptionkWh')
+
 
 
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
+#remove upper quantile
+df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
 
 #count number of munies
 municipality_counts = df_mun['MunicipalityNo'].value_counts()

@@ -4,9 +4,10 @@ import math
 from utils.laplace import *
 from utils.muniRegion import *
 import sys
+import warnings
 
-data = pd.read_csv("data/Municipality.csv")
-muni = data['number'].to_numpy()
+
+warnings.filterwarnings('ignore', category=FutureWarning, message=".*Series.__getitem__ treating keys as positions is deprecated.*")
 
 # Define the ai function based on Corollary 4.4
 def ai(i, theta):

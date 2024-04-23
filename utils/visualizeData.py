@@ -4,7 +4,7 @@ import numpy as np
 
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/test_df.csv')
-result_df = pd.read_csv('results/result_Num2DGeoLocal_df.csv')
+result_df = pd.read_csv('results/Num2DUnbGeoLoc_noisy_result.csv')
 
 # Define the regions dictionary
 regions = {
@@ -255,13 +255,18 @@ def plot_consumption_barplot(df1, df2):
 
 
 def calculate_consumption_difference(df1, df2):
+    # Ensure that the dataframes have the same columns and index
+    df2 = df2[df1.columns]
+
     # Remove extra columns from df2
     df2 = df2.iloc[:, :len(df1.columns)]
 
+    # Reorder df2 columns to match df1
+    df2 = df2[df1.columns]
 
     # Calculate the difference for each municipality in each hour
     difference_df = df1.copy()
-    difference_df.iloc[:, 1:] = abs(df1.iloc[:, 1:] - df2.iloc[:, 1:])
+    difference_df.iloc[:, 1:] = df1.iloc[:, 1:] - df2.iloc[:, 1:]
 
     return difference_df
 

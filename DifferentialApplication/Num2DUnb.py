@@ -28,9 +28,8 @@ df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().re
 
 
 #remove upper quantile
-df_mun['ConsumptionkWh'] = clip(df_mun, 'ConsumptionkWh')
-with open("./data/threshold.txt", 'r') as file:
-    thresh = float(file.read())
+df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
+
 
 
 #count number of munies

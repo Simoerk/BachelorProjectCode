@@ -34,8 +34,6 @@ def quantileSelection(D):
         else:
             right = mid
     thresh = np.floor((left+right)/2)
-    with open("./data/threshold.txt", "w") as file:
-        file.write(str(thresh))
     return thresh
 
 # Uses threshold to clip a dataset
@@ -53,14 +51,14 @@ def clip(df, column):
     thresh = quantileSelection(df_cons_sorted)
     #print(thresh)
     clippedData = clipData(df_column, thresh)
-    return clippedData
+    return clippedData, thresh
 
 
 
 def clip_pr_column(df):
     for column in df.columns:
         if column != 'HourDK':
-            df[column] = clip(df, column)
+            df[column], thresh = clip(df, column)
     return df
 
 
