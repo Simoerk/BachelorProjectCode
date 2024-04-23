@@ -44,7 +44,7 @@ def main():
         # Sum the consumption for each municipality within the current region
         df_regions[region] = df[municipalities].sum(axis=1)
         
-    df_regions = df_regions.iloc[1:]
+    df_regions = df_regions.iloc[:, 1:]
     df_combined = pd.concat([df, df_regions], axis=1)
 
 
