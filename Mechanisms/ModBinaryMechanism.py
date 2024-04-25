@@ -1,16 +1,8 @@
 import numpy as np
 import pandas as pd
 import math
-from utils.laplace import laplace_mechanism
+from utils.laplace import *
 import warnings
-
-
-
-# Define the ai function based on Corollary 4.4
-def ai(i, theta):
-    # Implementing ai as per Corollary 4.4
-    return (i + 1)**(1 + theta)
-
 
 
 # Define the modified binary mechanism as an unbounded function

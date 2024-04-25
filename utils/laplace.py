@@ -19,3 +19,8 @@ def laplace_mechanism_sensitivity(epsilon, sensitivity):
     # Generate Laplace noise
     noise = np.random.laplace(0, scale)
     return noise
+
+# Define the ai function based on Corollary 4.4
+def ai(i, theta):
+    # Implementing ai as per Corollary 4.4
+    return (i + 1)**(1 + theta)

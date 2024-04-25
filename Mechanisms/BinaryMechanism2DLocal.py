@@ -11,13 +11,6 @@ warnings.filterwarnings('ignore', category=FutureWarning, message=".*Series.__ge
 
 
 
-# Define the ai function based on Corollary 4.4
-def ai(i, theta):
-    # Implementing ai as per Corollary 4.4
-    return (i + 1)**(1 + theta)
-
-
-
 # Define the modified binary mechanism as an unbounded function
 def binary_mechanism_unbounded_local(epsilon, df, result_df, theta, scale_df):
 
