@@ -19,7 +19,7 @@ df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
 
 #scale
 min_val = 0
-max_val = max(df_mun['ConsumptionkWh'])
+max_val = thresh
 df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
 #Create result dataframe
@@ -37,7 +37,7 @@ df = df.iloc[1:]
 
 #Calling the mechanism timed
 start_time = time.time()
-result_df = binary_mechanism_unbounded(0.1, df, result_df, 1, 1, unique_times)
+result_df = binary_mechanism_unbounded(1, df, result_df, 0.2)
 end_time = time.time()
 
 #Print the time
@@ -50,7 +50,7 @@ for col in result_df.columns[1:]:  # Skip the first column (time)
     result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
 #save to dataframe
-result_df.to_csv("results/Num2DUnbGeo_noisy_result.csv", index=False)
+result_df.to_csv("results/NumMunUnbGeo_noisy_result.csv", index=False)
 print("done")
 
 

@@ -11,14 +11,16 @@ def ai(i, theta):
     # Implementing ai as per Corollary 4.4
     return (i + 1)**(1 + theta)
 
+
+
 # Define the modified binary mechanism as an unbounded function
-def mod_binary_mechanism(epsilon, stream, alpha_hat, t_last, theta=1):
+def mod_binary_mechanism(epsilon, stream, alpha_hat, theta):
     # Initialize alphas dynamically
     alpha = []
     B = []
     alpha_hat = []
 
-    
+    t_last = 1
     for t in range(t_last, t_last+len(stream)):
         #print("t = ", t)
 

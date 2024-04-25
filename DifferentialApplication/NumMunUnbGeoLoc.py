@@ -35,7 +35,7 @@ df, thresh_df = downScaleDf(df)
 
 #Calling the mecchanism timed
 start_time = time.time()
-result_df, thresh_df = binary_mechanism_unbounded_local(0.1, df, result_df, 1, 1, thresh_df)
+result_df, thresh_df = binary_mechanism_unbounded_local(1, df, result_df, 0.2, thresh_df)
 end_time = time.time()
 
 #print the time it took to run
@@ -46,7 +46,7 @@ print(f"The function took {duration} seconds to run.")
 result_df = upScaleDf(result_df, thresh_df)
 
 #save to csv file
-result_df.to_csv("results/Num2DUnbGeoLoc_noisy_result.csv", index=False)
+result_df.to_csv("results/NumMunUnbGeoLoc_noisy_result.csv", index=False)
 print("done")
 
 

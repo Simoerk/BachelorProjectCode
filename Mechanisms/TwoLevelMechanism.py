@@ -15,7 +15,7 @@ def two_level_mechanism(T, epsilon, sigma, B):
         q, r = divmod(t, B)
         if r == 0:  # Check if t is at the end of a bucket
             #print("t: " , t)
-            lap = laplace_mechanism(epsilon)
+            lap = laplace_mechanism(1/epsilon)
             beta[q-1] = sum(sigma[t-B+1:t]) + lap
         
         # Calculate D(t)

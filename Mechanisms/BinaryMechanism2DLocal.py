@@ -9,6 +9,8 @@ import warnings
 
 warnings.filterwarnings('ignore', category=FutureWarning, message=".*Series.__getitem__ treating keys as positions is deprecated.*")
 
+
+
 # Define the ai function based on Corollary 4.4
 def ai(i, theta):
     # Implementing ai as per Corollary 4.4
@@ -17,7 +19,7 @@ def ai(i, theta):
 
 
 # Define the modified binary mechanism as an unbounded function
-def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scale_df):
+def binary_mechanism_unbounded_local(epsilon, df, result_df, theta, scale_df):
 
     print("begin binary mechanism unbounded")
 
@@ -69,7 +71,7 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
 
     #print("Updated scale_df: ", scale_df)
 
-
+    t_last = 1
 
     for t in range(t_last, t_last+num_rows):
 
@@ -121,7 +123,9 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
                     alpha_hat2D[k][j] = 0
 
                 # Add Laplacian noise to alpha_hat_i
-                alpha_hat2D[k][i] = alpha2D[k][i] + laplace_mechanism(ai(i, theta)/epsilon)
+                lap = laplace_mechanism(ai(i, theta)/epsilon)
+                #lap = laplace_mechanism(epsilon)
+                alpha_hat2D[k][i] = alpha2D[k][i] + lap
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
                 k+=1
 
@@ -133,10 +137,11 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, t_last, theta, scal
         DK = 0.0
         for region in regional_values:
             DK += regional_values[region]
-            
+            #regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(epsilon)
             regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(ai(i, theta)/epsilon)
             
         regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(ai(i, theta)/epsilon))
+        #regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(epsilon))
 
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)
     return result_df_con, scale_df

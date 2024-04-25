@@ -17,7 +17,7 @@ sigma_el = df_el['ConsumptionkWh'].to_numpy()
 
 
 # Algorithm 2: Binary mechanism
-epsilon = 0.1  # Privacy parameter
+epsilon = 0.5  # Privacy parameter
 
 #Revese sigma because new entreis are added at the end
 sigma_el_flipped = np.flip(sigma_el)
@@ -76,9 +76,9 @@ last_value1 = B_t[-1]
 last_value2 = B_t_fil[-1]
 
 
-pd.DataFrame(B_t, columns=['NoisyCumSum']).to_csv("results/num1D_noisy_result.csv", index=False)
-pd.DataFrame(B_t_fil, columns=['FilteredNoisyCumSum']).to_csv("results/num1D_fil_noisy_result.csv", index=False)
-pd.DataFrame(np.cumsum(sigma_el_flipped), columns=['CumSum']).to_csv("results/num1D_result.csv", index=False)
-pd.DataFrame(np.cumsum(sigma_el_filtered), columns=['CumSum']).to_csv("results/num1D_fil_result.csv", index=False)
+pd.DataFrame(B_t, columns=['NoisyCumSum']).to_csv("results/num_noisy_result.csv", index=False)
+pd.DataFrame(B_t_fil, columns=['FilteredNoisyCumSum']).to_csv("results/num_fil_noisy_result.csv", index=False)
+pd.DataFrame(np.cumsum(sigma_el_flipped), columns=['CumSum']).to_csv("results/num_result.csv", index=False)
+pd.DataFrame(np.cumsum(sigma_el_filtered), columns=['CumSum']).to_csv("results/num_fil_result.csv", index=False)
 
 print("done")

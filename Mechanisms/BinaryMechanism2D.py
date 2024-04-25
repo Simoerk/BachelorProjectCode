@@ -14,7 +14,7 @@ def ai(i, theta):
     return (i + 1)**(1 + theta)
 
 # Define the modified binary mechanism as an unbounded function
-def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_times):
+def binary_mechanism_unbounded(epsilon, df, result_df, theta):
 
     print("begin binary mechanism unbounded")
 
@@ -32,6 +32,8 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
     alpha_hat2D = [[] for _ in range(n)]
 
     problem_list =[]
+
+    t_last =  1
 
     for t in range(t_last, t_last+num_rows):
 
@@ -83,7 +85,9 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
                     alpha_hat2D[k][j] = 0
 
                 # Add Laplacian noise to alpha_hat_i
-                alpha_hat2D[k][i] = alpha2D[k][i] + laplace_mechanism(ai(i, theta)/epsilon)
+                lap = laplace_mechanism(ai(i, theta)/epsilon)
+                #lap = laplace_mechanism(epsilon)
+                alpha_hat2D[k][i] = alpha2D[k][i] + lap
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
                 k+=1
 
@@ -95,11 +99,15 @@ def binary_mechanism_unbounded(epsilon, df, result_df, t_last, theta, unique_tim
         DK = 0.0
         for region in regional_values:    
             DK += regional_values[region]
-            regional_data_df.at[t-1, region] = regional_values[region] + laplace_mechanism(ai(i, theta)/epsilon)
+
+            lap = laplace_mechanism(ai(i, theta)/epsilon)
+            #lap = laplace_mechanism(epsilon)
+            regional_data_df.at[t-1, region] = regional_values[region] + lap
     
             
-
-        regional_data_df.at[t-1, "DK"] = DK + laplace_mechanism(ai(i, theta)/epsilon)
+        lap = laplace_mechanism(ai(i, theta)/epsilon)
+        #lap = laplace_mechanism(epsilon)
+        regional_data_df.at[t-1, "DK"] = DK + lap
 
 
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)

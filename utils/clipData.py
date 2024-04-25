@@ -60,20 +60,3 @@ def clip_pr_column(df):
         if column != 'HourDK':
             df[column], thresh = clip(df, column)
     return df
-
-
-
-
-# def clipData(dataset, clip):
-#     for i in range(np.size(dataset)):
-#         if dataset[i] > clip:
-#             dataset[i] = clip
-#     return dataset
-
-
-# def clip(df, column):
-#     df_column = df[column]
-#     df_cons_sorted = np.sort(df_column)
-#     thresh = quantileSelection(df_cons_sorted)
-#     clippedData = clipData(df_column, thresh)
-#     return clippedData

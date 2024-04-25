@@ -9,8 +9,8 @@ import numpy as np
 # They will generate the needed csv files
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/regional_consumption_sums.csv')
-local_noisy_df = pd.read_csv('results/Num2DUnbGeoLoc_noisy_result.csv')
-global_noisy_df = pd.read_csv('results/Num2DUnbGeo_noisy_result.csv')
+local_noisy_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
+global_noisy_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
 
 #Show comparison between actual and local noisy data for a specific municipality
 def show_comparison_for_specific_muni(actual, local_noisy, global_noisy, muni):
@@ -52,3 +52,9 @@ std_dev_local, std_dev_global = calculate_std_deviation(actual_df, local_noisy_d
 show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, '825')
 
 show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, '101')
+
+show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, 'DK')
+
+show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, 'Hovedstaden')
+
+show_comparison_for_specific_muni(actual_df, local_noisy_df, global_noisy_df, 'Nordjylland')
