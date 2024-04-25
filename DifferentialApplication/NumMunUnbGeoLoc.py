@@ -35,7 +35,7 @@ df, thresh_df = downScaleDf(df)
 
 #Calling the mecchanism timed
 start_time = time.time()
-result_df, thresh_df = binary_mechanism_unbounded_local(1, df, result_df, 0.2, thresh_df)
+result_df, thresh_df = binary_mechanism_unbounded_local(1, df, result_df, 0.5, thresh_df)
 end_time = time.time()
 
 #print the time it took to run

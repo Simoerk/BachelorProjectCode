@@ -37,7 +37,7 @@ df = df.iloc[1:]
 
 #Calling the mechanism timed
 start_time = time.time()
-result_df = binary_mechanism_unbounded(1, df, result_df, 0.2)
+result_df = binary_mechanism_unbounded(1, df, result_df, 0.5)
 end_time = time.time()
 
 #Print the time

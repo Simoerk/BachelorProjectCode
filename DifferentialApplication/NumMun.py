@@ -25,20 +25,20 @@ df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().re
 df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
 
 
-#count number of munies
-municipality_counts = df_mun['MunicipalityNo'].value_counts()
-
-
 #scale
 min_val = 0
-max_val = np.max(df_mun['ConsumptionkWh'])
+max_val = thresh
 df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
 
 #find unique times and create result dataframe
 result_df = pd.DataFrame()
-unique_times = sorted(df_mun['HourDK'].unique())
+unique_times = sorted(df_mun['HourDK'].unique())[1:]
 result_df['HourDK'] = unique_times
+
+mun_len = 0
+i = 0
+
 
 #Used for timing the mechanism loop
 start_time = time.time()
@@ -49,21 +49,31 @@ for mun_no in df_mun['MunicipalityNo'].unique():
     
     # Apply the binary mechanism for each municipality's data stream
 
-    epsilon = 0.5  # Example epsilon value
+    if i == 0:
+        mun_len = len(mun_df)
+
+    if len(mun_df) == mun_len:
+        #remove first row to account for uneven time intervals
+        mun_df = mun_df.iloc[1:]
+
+    epsilon = 1  # Example epsilon value
     stream = mun_df['ConsumptionkWh'].tolist()
     T = len(stream)
+ 
 
     # Call the binary mechanism function and store its list output
     binary_results = binary_mechanism(T, epsilon, stream)
 
     # Calculate the difference in length between the two lists
-    length_difference = len(unique_times) - len(binary_results)
+    #length_difference = len(unique_times) - len(binary_results)
 
     # Extend binary_results with NaN for the difference in length
-    binary_results = binary_results + [np.nan] * length_difference
+    #binary_results = binary_results + [np.nan] * length_difference
     
     # Add the results as a new column in the result DataFrame, named by the MunicipalityNo
     result_df[str(mun_no)] = binary_results
+
+    i+=1
 
 end_time = time.time()
 
