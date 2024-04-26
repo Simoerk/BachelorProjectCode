@@ -38,7 +38,7 @@ def mod_binary_mechanism(epsilon, stream, alpha_hat, theta):
             alpha_hat[j] = 0
 
         # Add Laplacian noise to alpha_hat_i
-        alpha_hat[i] = alpha[i] + laplace_mechanism(ai(i, theta)/epsilon)
+        alpha_hat[i] = alpha[i] + laplace_mechanism(ai(i, theta),epsilon)
         
         # Sum for output and append to B
         B.append(sum(alpha_hat[j] for j, bit in enumerate(bin_t) if bit == 1))

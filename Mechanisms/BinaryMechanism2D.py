@@ -81,7 +81,7 @@ def binary_mechanism_unbounded(epsilon, df, result_df, theta):
                     alpha_hat2D[k][j] = 0
 
                 # Add Laplacian noise to alpha_hat_i
-                lap = laplace_mechanism(ai(i, theta)/epsilon)
+                lap = laplace_mechanism(ai(i, theta),epsilon)
                 #lap = laplace_mechanism(epsilon)
                 alpha_hat2D[k][i] = alpha2D[k][i] + lap
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
@@ -96,12 +96,12 @@ def binary_mechanism_unbounded(epsilon, df, result_df, theta):
         for region in regional_values:    
             DK += regional_values[region]
 
-            lap = laplace_mechanism(ai(i, theta)/epsilon)
+            lap = laplace_mechanism(ai(i, theta),epsilon)
             #lap = laplace_mechanism(epsilon)
             regional_data_df.at[t-1, region] = regional_values[region] + lap
     
             
-        lap = laplace_mechanism(ai(i, theta)/epsilon)
+        lap = laplace_mechanism(ai(i, theta),epsilon)
         #lap = laplace_mechanism(epsilon)
         regional_data_df.at[t-1, "DK"] = DK + lap
 

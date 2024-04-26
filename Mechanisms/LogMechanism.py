@@ -14,7 +14,7 @@ def logarithmic_mechanism(epsilon, stream):
     for t, value in enumerate(stream, start=1):
         beta += value
         if math.log2(t).is_integer():  # Check if t is a power of 2
-            beta += laplace_mechanism(1/epsilon)
+            beta += laplace_mechanism(1,epsilon)
             output[t] = beta
     
     return output

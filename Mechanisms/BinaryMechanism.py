@@ -34,7 +34,7 @@ def binary_mechanism(T, epsilon, stream):
             alpha_hat[j] = 0.0
         
         # Add Laplacian noise to alpha_hat_i, where 1 is the sensitivity
-        alpha_hat[i] = alpha[i] + laplace_mechanism(1/epsilon_prime)
+        alpha_hat[i] = alpha[i] + laplace_mechanism(1,epsilon_prime)
         
         # Calculate the noisy p-sum for output
         B[t-1] = sum(alpha_hat[j] for j, bit in enumerate(bin_t) if bit == 1)

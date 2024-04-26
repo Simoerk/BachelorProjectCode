@@ -116,7 +116,7 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, theta, scale_df):
                     alpha_hat2D[k][j] = 0
 
                 # Add Laplacian noise to alpha_hat_i
-                lap = laplace_mechanism(ai(i, theta)/epsilon)
+                lap = laplace_mechanism(ai(i, theta),epsilon)
                 #lap = laplace_mechanism(epsilon)
                 alpha_hat2D[k][i] = alpha2D[k][i] + lap
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
@@ -131,9 +131,9 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, theta, scale_df):
         for region in regional_values:
             DK += regional_values[region]
             #regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(epsilon)
-            regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(ai(i, theta)/epsilon)
+            regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(ai(i, theta),epsilon)
             
-        regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(ai(i, theta)/epsilon))
+        regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(ai(i, theta),epsilon))
         #regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(epsilon))
 
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)
