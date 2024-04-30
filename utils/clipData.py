@@ -16,10 +16,11 @@ def noisyCount(D, start, end):
     right_idx = np.searchsorted(D, end, side='right')
     count = right_idx - left_idx
     # Unsure of we are adding the correct noise
-    #privacy_budget = 0.5
+    privacy_budget = 0.5
     #scale = np.log(np.max(D)) / (2 * privacy_budget)
-    #noise = np.random.normal(0, scale)
-    noise = laplace_mechanism(1, 1)
+    scale = np.log(len(D)) / (2 * privacy_budget)
+    noise = np.random.normal(0, scale)
+    #noise = laplace_mechanism(1, 1)
     return count + noise
 
 # Threshold is decided privately
