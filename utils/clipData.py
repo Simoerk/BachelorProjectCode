@@ -12,9 +12,7 @@ from utils.laplace import laplace_mechanism
     
 # Adds noise to the count of the dataset from start to mid
 def noisyCount(D, start, end):
-    left_idx = np.searchsorted(D, start, side='left')
-    right_idx = np.searchsorted(D, end, side='right')
-    count = right_idx - left_idx
+    count = end - start
     # Unsure of we are adding the correct noise
     #privacy_budget = 0.5
     #scale = np.log(np.max(D)) / (2 * privacy_budget)
@@ -28,17 +26,17 @@ def noisyCount(D, start, end):
 
 # Threshold is decided privately
 def quantileSelection(D, m):
-    left = np.min(D)
-    right = np.max(D)
+    left = 0
+    right = len(D)-1
     while left < right:
         mid = np.floor((left + right) / 2)
-        c = noisyCount(D, np.min(D), mid)
+        c = noisyCount(D, 0, mid)
         print(c)
         if c < m:
             left = mid + 1
         else:
             right = mid
-    thresh = np.floor((left+right)/2)
+    thresh = D[int(np.floor((left+right)/2))]
     return thresh
 
 # Uses threshold to clip a dataset
@@ -51,7 +49,7 @@ def clipData(dataset, thresh):
 
 # Calls quantileSelection and clipData to select threshold and clip the data
 def clip(df, column):
-    #print("Column: ", column)
+    print("Column: ", column)
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
     thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted))
