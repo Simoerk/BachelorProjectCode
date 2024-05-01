@@ -51,7 +51,7 @@ def clipData(dataset, thresh):
 
 # Calls quantileSelection and clipData to select threshold and clip the data
 def clip(df, column):
-    print("Column: ", column)
+    #print("Column: ", column)
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
     thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted))

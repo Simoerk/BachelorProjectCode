@@ -16,8 +16,6 @@ df_mun = load_dataset("data/muni_data.csv", 1000000)
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
-# clip the data
-df_mun = clip_pr_column(df_mun)
 
 
 # create the result df
@@ -30,6 +28,9 @@ df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='Consumptionk
 
 # remove first row to account for uneven time intervals
 df = df.iloc[1:]
+
+# clip the data
+df_mun = clip_pr_column(df)
 
 #Downscaling
 df, thresh_df = downScaleDf(df)
