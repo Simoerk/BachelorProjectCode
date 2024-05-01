@@ -10,7 +10,7 @@ def binary_mechanism(T, epsilon, stream):
     alpha_hat = [0] * (int(math.log2(T)) + 1)
     
     # Privacy parameter for the Laplacian mechanism
-    epsilon_prime = epsilon / (math.log(T))
+    epsilon_prime = epsilon / (math.log2(T))
     
     # Output estimate at each time step
     B = [0] * T
