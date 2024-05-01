@@ -21,10 +21,9 @@ def noisyCount(D, start, end):
     #scale = np.log(len(D)) / (2 * privacy_budget)
     #noise = np.random.normal(0, scale)
     #noise = laplace_mechanism(1, 1)
-    privacy_budget = 0.5
-    scale = np.log(len(D)) / (2 * privacy_budget)
+    epsilon = 1
+    scale = np.log(len(D)) / (epsilon)
     noise = np.random.laplace(0, scale)
-    #plot the noise
     return count + noise
 
 # Threshold is decided privately
