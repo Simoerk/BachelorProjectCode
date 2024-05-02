@@ -2,8 +2,16 @@ import numpy as np
 import pandas as pd
 import math
 
+# Function to apply the Laplace mechanism along with the value for differential privacy 
+def laplace_mechanism(value, sensitivity, epsilon):
+    # The sensitivity of a sum query is 1
+    scale = sensitivity / epsilon
+    # Generate Laplace noise
+    noise = np.random.laplace(0, scale)
+    return value + noise
+
 # Function to apply the Laplace mechanism for differential privacy with sensititivy 1
-def laplace_mechanism(sensitivity, epsilon):
+def laplace_mechanism_2(sensitivity, epsilon):
     # The sensitivity of a sum query is 1
     #sensitivity = 1
     scale = sensitivity / epsilon
