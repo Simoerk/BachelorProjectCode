@@ -5,6 +5,7 @@ from Mechanisms.BinaryMechanism2D import binary_mechanism_unbounded
 from utils.clipData import clip
 from utils.muniRegion import give_region
 from utils.load_dataset import load_dataset
+from utils.scale import downScale, upScale
 import time
 
 # Differential privacy on Dataset with Municipality, time and housing/heating category
@@ -17,10 +18,11 @@ df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().re
 df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
 
 
-#scale
-min_val = 0
-max_val = thresh
-df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
+#downscale
+df_mun['ConsumptionkWh'], thresh = downScale(df_mun, 'ConsumptionkWh')
+#min_val = 0
+#max_val = thresh
+#df_mun['ConsumptionkWh'] = (df_mun['ConsumptionkWh'] - min_val) / (max_val - min_val)
 
 #Create result dataframe
 result_df = pd.DataFrame()
@@ -44,10 +46,11 @@ end_time = time.time()
 duration = end_time - start_time
 print(f"The function took {duration} seconds to run.")
 
-#scale back up
+#upscale
 for col in result_df.columns[1:]:  # Skip the first column (time)
     # Scale back each column to its original range
-    result_df[col] = result_df[col] * (max_val - min_val) + min_val
+    result_df[col] = upScale(result_df, col, thresh)
+    #result_df[col] = result_df[col] * (max_val - min_val) + min_val
 
 #save to dataframe
 result_df.to_csv("results/NumMunUnbGeo_noisy_result.csv", index=False)
