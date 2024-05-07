@@ -6,7 +6,7 @@ import warnings
 
 
 # Define the modified binary mechanism as an unbounded function
-def mod_binary_mechanism(epsilon, stream, alpha_hat, theta):
+def mod_binary_mechanism(epsilon, stream, theta):
     # Initialize alphas dynamically
     alpha = []
     B = []

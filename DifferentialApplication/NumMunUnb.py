@@ -60,10 +60,7 @@ for mun_no in df_mun['MunicipalityNo'].unique():
     epsilon = 1  # Example epsilon value
     stream = mun_df['ConsumptionkWh'].tolist()
 
-    # Call the binary mechanism function and store its list output
-    alpha_hat = []
-
-    B, alpha_hat, t_last = mod_binary_mechanism(epsilon, stream, alpha_hat, 0.5)
+    B, alpha_hat, t_last = mod_binary_mechanism(epsilon, stream, 0.5)
     
 
     # Calculate the difference in length between the two lists
