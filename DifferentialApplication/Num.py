@@ -17,7 +17,7 @@ sigma_el = df_el['ConsumptionkWh'].to_numpy()
 
 
 # Algorithm 2: Binary mechanism
-epsilon = 0.5  # Privacy parameter
+epsilon = 1  # Privacy parameter
 
 #Revese sigma because new entreis are added at the end
 sigma_el_flipped = np.flip(sigma_el)

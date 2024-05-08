@@ -99,7 +99,7 @@ def binary_mechanism_unbounded(epsilon, df, result_df, theta):
             #lap = laplace_mechanism(ai(i, theta),epsilon)
             #lap = laplace_mechanism(epsilon)
             regional_data_df.at[t-1, region] = laplace_mechanism(regional_values[region],ai(i, theta),epsilon)
-    
+            
             
         #lap = laplace_mechanism(ai(i, theta),epsilon)
         #lap = laplace_mechanism(epsilon)
