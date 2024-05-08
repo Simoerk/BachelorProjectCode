@@ -18,7 +18,7 @@ sigma_dia = df_dia['Diabetes_binary'].to_numpy()
 
 #T for Diabetes
 T = len(sigma_dia)  # Number of records in the 'diabetes_binary' column
-epsilon = 0.1  # Differential privacy parameter
+epsilon = 1  # Differential privacy parameter
 
 # B value used for two level mechanism, B is Block size 
 B = int(math.ceil(math.sqrt(T)))
