@@ -41,6 +41,6 @@ print("Mechanism applied successfully!")
 #Save results
 pd.DataFrame(estimates).to_csv("results/Bin1D_noisy_result.csv", index=False)
 cumulative_sums = np.cumsum(sigma_dia)
-pd.DataFrame(cumulative_sums, columns=['Actual Sum']).to_csv("results/Bin1D_result.csv", index=False)
+pd.DataFrame(cumulative_sums, columns=['Actual Sum']).to_csv("results/Bin_result.csv", index=False)
 
 
