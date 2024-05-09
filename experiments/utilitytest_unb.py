@@ -29,7 +29,7 @@ delta = 0.001
 # List of dataframes for processing
 dfs = [NumMun_df, NumMunUnb_df, NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
 #outliers = {name: [] for name in ['NumMun', 'NumMunUnb', 'NumMunUnbGeo', 'NumMunUnbGeoLoc', "real_df"]}
-outliers = {name: [] for name in ['NumMun_df', 'NumMunUnb_df', 'NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
+outliers = {name: [] for name in ['NumMunUnb_df', 'NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
 
 
 

@@ -43,7 +43,18 @@ outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df
 
 
 #Scale down. using global_max because we know the max is larger than the absolute of the smallest
-global_max = max(df.max().max() for df in dfs)
+max_diffs = []
+real_df_num = dfs[2].apply(pd.to_numeric)
+for column in real_df_num.columns:
+    # Calculate the absolute differences between consecutive rows
+    differences = real_df_num[column].diff().abs()
+    # Find the maximum difference in this column
+    max_diff = differences.max()
+    # Append the maximum difference to the list
+    max_diffs.append(max_diff)
+
+# Find the global maximum difference across all columns and DataFrames
+global_max = max(max_diffs)
 
 
 
