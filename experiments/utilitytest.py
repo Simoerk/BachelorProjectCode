@@ -17,6 +17,13 @@ Num_df = pd.read_csv('results/Num_noisy_result.csv')
 NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 
+# Pairing noisy and real dataframes
+dataframe_pairs = [
+    ('Bin', Bin_df, real_bin_df),
+    ('Num', Num_df, real_num_df),
+    ('NumMun', NumMun_df, real_nummun_df)
+]
+
 
 
 # Parameters
@@ -24,65 +31,49 @@ epsilon = 1
 delta = 0.001
 
 
-# List of dataframes for processing
-dfs = [real_bin_df, real_num_df, real_nummun_df, Bin_df, Num_df, NumMun_df]
-outliers = {name: [] for name in ['Bin', 'Num' 'NumMun',]}
+for name, noisy_df, real_df in dataframe_pairs:
+    if name in ['Num', 'NumMun']:
+        # Remove 'HourDK' from NumMun
+        if 'HourDK' in noisy_df.columns:
+            noisy_df.drop(columns=['HourDK'], inplace=True)
+            real_df.drop(columns=['HourDK'], inplace=True)
+
+        # Convert columns to numeric, find global maximum, and scale
+        noisy_df = noisy_df.apply(pd.to_numeric, errors='coerce')
+        real_df = real_df.apply(pd.to_numeric, errors='coerce')
+        max_val_noisy = noisy_df.max().max()
+        max_val_real = real_df.max().max()
+        global_max = max(max_val_noisy, max_val_real)
+
+        noisy_df /= global_max
+        real_df /= global_max
 
 
 
-#delete first column of all dfs
-dfs = [df.drop(columns=['HourDK']) for df in dfs]
 
-# Reorder columns of df2 to match df1
-#dfs = [df.reindex(columns=real_df.columns) for df in dfs]
+outliers = {name: [] for name, _, __ in dataframe_pairs}
 
-
-#Scale down. using global_max because we know the max is larger than the absolute of the smallest
-max_diffs = []
-real_df_num = dfs[4].apply(pd.to_numeric)
-for column in real_df_num.columns:
-    # Calculate the absolute differences between consecutive rows
-    differences = real_df_num[column].diff().abs()
-    # Find the maximum difference in this column
-    max_diff = differences.max()
-    # Append the maximum difference to the list
-    max_diffs.append(max_diff)
-
-# Find the global maximum difference across all columns and DataFrames
-global_max = max(max_diffs)
-
-
-
-for df in dfs:
-    for column in df.columns:
-        df[column] = (df[column] - 0) / (global_max - 0)
-
-
-
-# Loop over each dataframe
-for df_name, df in zip(outliers.keys(), dfs):
-    for t, row in df.iterrows():  # t is the index of row
-        # Skip the first row since log(1) = 0, which would cause the threshold to be 0
-        if t == 0:
-            bound = ((1 / (theta * epsilon)) * ((np.log2(t + 2))**(1.5+theta)) * np.log2(1 / delta))
-        else:
-            bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
-        for muni in df.columns:  # muni is each column
-            real_value = dfs[4].at[t, muni]
-            noisy_value = row[muni]
-            if not np.abs((real_value) - (noisy_value)) <= bound:
-                outliers[df_name].append((muni, t))
-                print("muni: ", muni)
-                print("t: ", t)
-                print("real_value: ", real_value)
-                print("noisy_value: ", noisy_value)
-                print("bound: ", bound)
-                print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))
+for name, noisy_df, real_df in dataframe_pairs:
+    for t, (noisy_row, real_row) in enumerate(zip(noisy_df.iterrows(), real_df.iterrows())):
+        index, noisy_data = noisy_row
+        _, real_data = real_row
+        for muni in noisy_data.index:  # Assuming muni is the column name
+            real_value = real_data[muni]
+            noisy_value = noisy_data[muni]
+            if t == 0:
+                continue  # Skip first row to avoid log(0)
+            bound = ((1 / (epsilon)) * ((np.log2(t + 1))**(1.5+0.5)) * np.log2(1 / delta))
+            if not np.abs(real_value - noisy_value) <= bound:
+                outliers[name].append((muni, t))
 
 # Print the count of outliers for each DataFrame
-for df_name, municipality_data in outliers.items():
-    print(f"{df_name} - Total Outliers: {len(municipality_data)}")
+for name, data in outliers.items():
+    print(f"{name} - Total Outliers: {len(data)}")
 
+
+# Print the count of outliers for each DataFrame
+for name, data in outliers.items():
+    print(f"{name} - Total Outliers: {len(data)}")
 
 
 
