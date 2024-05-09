@@ -130,6 +130,9 @@ def binary_mechanism_unbounded_local(epsilon, df, result_df, theta, scale_df):
         DK = 0.0
         for region in regional_values:
             DK += regional_values[region]
+            print("regional value:", regional_values[region])
+            print("dk: ", DK)
+            print("regional_values[region]/regional_tresh[region]: ", regional_values[region]/regional_tresh[region])
             #regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(epsilon)
             regional_data_df.at[t-1, region] = laplace_mechanism((regional_values[region]/regional_tresh[region]),ai(i, theta),epsilon)
             

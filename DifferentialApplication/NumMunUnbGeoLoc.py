@@ -47,8 +47,12 @@ print(f"The function took {duration} seconds to run.")
 #Upscaling
 result_df = upScaleDf(result_df, thresh_df)
 
+print("result_df: ", result_df)
+print("thresh_df: ", thresh_df)
+
 #save to csv file
 result_df.to_csv("results/NumMunUnbGeoLoc_noisy_result.csv", index=False)
+thresh_df.to_csv("results/NumMunUnbGeoLoc_noisy_thresh.csv", index=False)
 print("done")
 
 
