@@ -30,7 +30,7 @@ delta = 0.001
 
 # List of dataframes for processing
 dfs = [NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
-#outliers = {name: [] for name in ['NumMun', 'NumMunUnb', 'NumMunUnbGeo', 'NumMunUnbGeoLoc', "real_df"]}
+#outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc_df']}
 outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
 
 
@@ -83,7 +83,7 @@ for df_name, df in zip(outliers.keys(), dfs):
                 print("real_value: ", real_value)
                 print("noisy_value: ", noisy_value)
                 print("bound: ", bound)
-                print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))
+                print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))    
 
 # Print the count of outliers for each DataFrame
 for df_name, municipality_data in outliers.items():
