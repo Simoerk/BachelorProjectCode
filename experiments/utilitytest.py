@@ -9,11 +9,11 @@ def convert_df_to_numeric(df):
 
 
 # Load datasets
-real_bin_df = pd.read_csv('results/Bin1D_result.csv')
-real_num_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
-real_nummun_df = pd.read_csv('results/real_consumption_sums.csv')
-Bin_df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
-Num_df = pd.read_csv('results/NumMun_noisy_result.csv')
+real_bin_df = pd.read_csv('results/Bin_result.csv')
+real_num_df = pd.read_csv('results/Num_result.csv')
+real_nummun_df = pd.read_csv('results/NumMun_result.csv')
+Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
+Num_df = pd.read_csv('results/Num_noisy_result.csv')
 NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 
@@ -21,13 +21,11 @@ NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 # Parameters
 epsilon = 1
-theta = 0.5
 delta = 0.001
 
 
 # List of dataframes for processing
-dfs = [NumMun_df, NumMunUnb_df, NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
-#outliers = {name: [] for name in ['NumMun', 'NumMunUnb', 'NumMunUnbGeo', 'NumMunUnbGeoLoc', "real_df"]}
+dfs = [real_bin_df, real_num_df, real_nummun_df, Bin_df, Num_df, NumMun_df]
 outliers = {name: [] for name in ['Bin', 'Num' 'NumMun',]}
 
 
