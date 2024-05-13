@@ -76,8 +76,8 @@ last_value1 = B_t[-1]
 last_value2 = B_t_fil[-1]
 
 
-pd.DataFrame(B_t, columns=['NoisyCumSum']).to_csv("results/num_noisy_result.csv", index=False)
-pd.DataFrame(B_t_fil, columns=['FilteredNoisyCumSum']).to_csv("results/num_fil_noisy_result.csv", index=False)
+pd.DataFrame(B_t, columns=['CumSum']).to_csv("results/num_noisy_result.csv", index=False)
+pd.DataFrame(B_t_fil, columns=['CumSum']).to_csv("results/num_fil_noisy_result.csv", index=False)
 pd.DataFrame(np.cumsum(sigma_el_flipped), columns=['CumSum']).to_csv("results/num_result.csv", index=False)
 pd.DataFrame(np.cumsum(sigma_el_filtered), columns=['CumSum']).to_csv("results/num_fil_result.csv", index=False)
 

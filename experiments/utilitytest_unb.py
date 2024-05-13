@@ -2,10 +2,6 @@ import pandas as pd
 import numpy as np
 from utils.scale import downScaleDf, upScaleDf, upScale, downScale
 
-def convert_df_to_numeric(df):
-    for column in df.columns:
-        df[column] = pd.to_numeric(df[column], errors='coerce')
-    return df
 
 
 # Load datasets
@@ -51,7 +47,7 @@ for column in real_df_num.columns:
     # Append the maximum difference to the list
     max_diffs.append(max_diff)
 
-# Find the global maximum difference across all columns and DataFrames
+# Find the global maximum difference
 global_max = max(max_diffs)
 
 

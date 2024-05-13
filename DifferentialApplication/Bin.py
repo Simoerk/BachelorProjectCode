@@ -24,7 +24,6 @@ epsilon = 1  # Differential privacy parameter
 B = int(math.ceil(math.sqrt(T)))
 
 
-
 # Algortohm 1: Two level counting mechanism
 print("Applying the two-level mechanism...")
 start_time = time.time()
@@ -39,8 +38,8 @@ print("Mechanism applied successfully!")
 
 
 #Save results
-pd.DataFrame(estimates).to_csv("results/Bin_noisy_result.csv", index=False)
+pd.DataFrame({'Sum': estimates}).to_csv("results/Bin_noisy_result.csv", index=False)
 cumulative_sums = np.cumsum(sigma_dia)
-pd.DataFrame(cumulative_sums, columns=['Actual Sum']).to_csv("results/Bin_result.csv", index=False)
+pd.DataFrame(cumulative_sums, columns=['Sum']).to_csv("results/Bin_result.csv", index=False)
 
 

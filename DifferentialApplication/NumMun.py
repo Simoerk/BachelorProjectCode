@@ -61,6 +61,7 @@ for mun_no in df_mun['MunicipalityNo'].unique():
     epsilon = 1  # Example epsilon value
     stream = mun_df['ConsumptionkWh'].tolist()
     T = len(stream)
+
  
 
     # Call the binary mechanism function and store its list output
