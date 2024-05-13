@@ -145,7 +145,7 @@ def visualize_data(data):
         aggregated_consumption = [df[municipality].sum() for municipality in region_municipalities]
         plt.plot(region_municipalities, aggregated_consumption, marker='o', label=region)
 
-    plt.xlabel('Municipalities')
+    plt.xlabel('Municipalities, Regions and DK')
     plt.ylabel('Aggregated Consumption')
     plt.title('Region-wise Aggregated Consumption')
     plt.xticks(rotation=45)
@@ -243,7 +243,7 @@ def plot_consumption_barplot(df1, df2):
     ax.bar(x + bar_width/2, consumption_df2, bar_width, color='black', label='with noise')
 
     # Customize the plot
-    ax.set_xlabel('Municipalities')
+    ax.set_xlabel('Municipalities, Regions and DK')
     ax.set_ylabel('Consumption')
     ax.set_title('Consumption Comparison for Each Municipality')
     ax.set_xticks(x)
