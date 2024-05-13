@@ -71,40 +71,51 @@ exp = round(np.exp(1), 11)
 
 # Loop over each dataframe
 for name, noisy_df, real_df in dataframe_pairs:
-    for s, row in real_df.iterrows():  # t is the index, row is the row data
-        if s == 0:
-            t = 1
-        else:
-            t = s
+    for muni in real_df.columns: 
+        for s, row in real_df.iterrows():  # t is the index, row is the row data
+                    if s == 0:
+                        t = 1
+                    else:
+                        t = s
 
-        for muni in real_df.columns:  # muni is each column, makes sense for NumMun, but works for all dataframes
-            # Access values safely using .iloc to avoid index out of bounds
-                noisy_t = noisy_df.iloc[t][muni]
-                
-                real_t = real_df.iloc[t][muni]
-                real_t_minus_1 = real_df.iloc[t-1][muni]
-                
-                # Calculate probabilities assuming your noise model is correctly specified
-                p_1 = 0.5 * np.exp(-(np.float64(noisy_t) - np.float64(real_t)))
-                p_2 = 0.5 * np.exp(-(np.float64(noisy_t) - np.float64(real_t_minus_1)))
-                
-                # Compute the ratio of probabilities and compare it to exp(1)
-                if p_2 == 0:  # Avoid division by zero
-                    ratio = np.inf  # Set ratio to infinity if p_2 is zero
-                else:
-                    ratio = p_1 / p_2
-                    ratio = round(ratio, 11)
+                # muni is each column, makes sense for NumMun, but works for all dataframes
+                # Access values safely using .iloc to avoid index out of bounds
+                    noisy_t = noisy_df[muni][t]
+                    
+                    real_t = real_df[muni][t]
+                    real_t_minus_1 = real_df[muni][t-1]
+                    
+                    # Calculate probabilities assuming your noise model is correctly specified
+                    p_1 = 0.5 * np.exp(-(np.abs(np.float64(noisy_t) - np.float64(real_t))))
+                    p_2 = 0.5 * np.exp(-(np.abs(np.float64(noisy_t) - np.float64(real_t_minus_1))))
+                    
+                    # Compute the ratio of probabilities and compare it to exp(1)
+                    if p_2 == 0:  # Avoid division by zero
+                        ratio = np.inf  # Set ratio to infinity if p_2 is zero
+                    else:
+                        ratio = p_1 / p_2
+                        ratio = round(ratio, 11)
 
-                if ratio > exp:  
-                    print(f"Ratio condition met for {muni} at time {t} in {name} with ratio: ", ratio, ">", exp)
-                    print("np.float64(noisy_t): ", np.float64(noisy_t))
-                    print("np.float64(real_t)", np.float64(real_t))
-                    print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
-                    outliers[name].append((t, muni, ratio))
-                #else:
-                    #print("all good: ", t)
-                    print("ratio: ", ratio, "<=", exp)
-    print("df: ", name)
+                    if ratio > exp:  
+                        print(f"Ratio condition met for {muni} at time {t} in {name} with ratio: ", ratio, ">", exp)
+                        print("np.float64(noisy_t): ", np.float64(noisy_t))
+                        print("np.float64(real_t)", np.float64(real_t))
+                        print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
+                        outliers[name].append((t, muni, ratio))
+                    else:
+                        if name == "none":
+                            print("\n", "muni: ", name)
+                            print("muni: ", muni)
+                            print("t: ", t)
+                            print("ratio: ", ratio, "<=", exp)
+                            print("p1: ", p_1, " p_2: ", p_2)
+                            print("np.float64(noisy_t) - np.float64(real_t): ", np.abs(np.float64(noisy_t) - np.float64(real_t)))
+                            print("np.float64(noisy_t) - np.float64(real_t-1): ", np.abs(np.float64(noisy_t) - np.float64(real_t_minus_1)))
+                            print("np.float64(real_t) - np.float64(real_t-1): ", np.abs(np.float64(real_t) - np.float64(real_t_minus_1)))
+                            print("np.float64(noisy_t): ", np.float64(noisy_t))
+                            print("np.float64(real_t): ", np.float64(real_t))
+                            print("np.float64(real_t-1): ", np.float64(real_t_minus_1))
+        print("df: ", name)
 
 
 # Print the count of outliers for each DataFrame
