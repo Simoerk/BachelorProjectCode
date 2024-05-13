@@ -53,7 +53,7 @@ for df_name, df in zip(outliers.keys(), dfs):
                     
                     # Compute the ratio of probabilities and compare it to exp(1)
                     if p_2 == 0:  # Avoid division by zero
-                        ratio = np.inf  # Set ratio to infinity if p_2 is zero
+                        ratio = np.inf  # ratio to infinity if p_2 is zero because large
                     else:
                         ratio = p_1 / p_2
 
