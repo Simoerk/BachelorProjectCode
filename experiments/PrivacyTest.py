@@ -16,15 +16,13 @@ real_num_fil_df  = pd.read_csv('results/num_fil_result.csv')
 
 real_num_df = pd.read_csv('results/num_result.csv')
 
-real_nummun_df = pd.read_csv('results/real_consumption_sums.csv')
-
 Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
 
 Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
 
 Num_df = pd.read_csv('results/Num_noisy_result.csv')
 
-NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
+
 
 
 # Pairing noisy and real dataframes
@@ -32,14 +30,12 @@ dataframe_pairs = [
     ('Bin', Bin_df, real_bin_df),
     ('Num', Num_df, real_num_df),
     ('Num_fil', Num_fil_df, real_num_fil_df),
-    ('NumMun', NumMun_df, real_nummun_df)
 ]
 
 
 
 # Parameters
 epsilon = 1
-delta = 0.001
 B = 504
 
 for name, noisy_df, real_df in dataframe_pairs:
@@ -70,6 +66,8 @@ for name, noisy_df, real_df in dataframe_pairs:
 
 outliers = {name: [] for name, _, __ in dataframe_pairs}
 
+#exp = np.exp(1)
+exp = round(np.exp(1), 11)
 
 # Loop over each dataframe
 for name, noisy_df, real_df in dataframe_pairs:
@@ -80,28 +78,33 @@ for name, noisy_df, real_df in dataframe_pairs:
             t = s
 
         for muni in real_df.columns:  # muni is each column, makes sense for NumMun, but works for all dataframes
-            real_value = row[muni]
-            noisy_value = noisy_df.at[t, muni]
+            # Access values safely using .iloc to avoid index out of bounds
+                noisy_t = noisy_df.iloc[t][muni]
+                
+                real_t = real_df.iloc[t][muni]
+                real_t_minus_1 = real_df.iloc[t-1][muni]
+                
+                # Calculate probabilities assuming your noise model is correctly specified
+                p_1 = 0.5 * np.exp(-(np.float64(noisy_t) - np.float64(real_t)))
+                p_2 = 0.5 * np.exp(-(np.float64(noisy_t) - np.float64(real_t_minus_1)))
+                
+                # Compute the ratio of probabilities and compare it to exp(1)
+                if p_2 == 0:  # Avoid division by zero
+                    ratio = np.inf  # Set ratio to infinity if p_2 is zero
+                else:
+                    ratio = p_1 / p_2
+                    ratio = round(ratio, 11)
 
-            # Check the specific dataframe and set the bound
-            if name == 'Bin': #B = sqrt(T), so approx T^0.25 = 12 errors with 0.001 prob
-                bound = (1 / epsilon) * np.sqrt(((t+1) / B) + B) * np.log(1 / delta)
-            elif name == 'NumMun':
-                T = 1099 # T = 1099 approx 1 errors
-                bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
-            else:
-                T = 27048 #T=27048 approx 27 errrors
-                bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
-
-            # Outlier detection
-            if not np.abs(real_value - noisy_value) <= bound:
-                outliers[name].append((muni, t))
-                print(f"\nmuni: {muni}, t: {t}, real_value: {real_value}, noisy_value: {noisy_value}, bound: {bound}")
-                print(f"real-noisy difference: {np.abs(np.float64(real_value) - np.float64(noisy_value))}")
-            else:
-                print("bound: ", bound, " value: ", np.abs(real_value - noisy_value) )
-
-
+                if ratio > exp:  
+                    print(f"Ratio condition met for {muni} at time {t} in {name} with ratio: ", ratio, ">", exp)
+                    print("np.float64(noisy_t): ", np.float64(noisy_t))
+                    print("np.float64(real_t)", np.float64(real_t))
+                    print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
+                    outliers[name].append((t, muni, ratio))
+                #else:
+                    #print("all good: ", t)
+                    print("ratio: ", ratio, "<=", exp)
+    print("df: ", name)
 
 
 # Print the count of outliers for each DataFrame
