@@ -221,7 +221,7 @@ def plot_consumption_barplot(df1, df2):
 
     for municipality in municipalities_df2:
         consumption_df1.append(df1[municipality].iloc[-1])  # Last row value for each municipality in df1
-        regions_df1.append(regions.get(municipality, "Unknown"))
+        regions_df1.append(regions.get(municipality, "Regions and DK"))
 
     for municipality in municipalities_df2:
         consumption_df2.append(df2[municipality].iloc[-1])  # Last row value for each municipality in df2

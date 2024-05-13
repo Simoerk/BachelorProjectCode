@@ -48,9 +48,9 @@ std_dev = std_deviation(actual_df, result_df)
 # Plot the average discrepancy
 plt.figure(figsize=(10, 6))
 plt.plot(avg_dis.index, avg_dis.values, marker='o', linestyle='-')
-plt.title('Average discrepancy of Actual and Result DataFrames')
-plt.xlabel('Municipality Number')
-plt.ylabel('Average discrepancy')
+plt.title('Average deviation between Actual and NumMunUnbGeoLoc')
+plt.xlabel('Municipalities, Regions and DK')
+plt.ylabel('Average deviation')
 plt.grid(True)
 plt.show()
 
