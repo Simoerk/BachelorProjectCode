@@ -4,7 +4,7 @@ import numpy as np
 
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/regional_consumption_sums.csv')
-result_df = pd.read_csv('results/Num2DUnbGeoLoc_noisy_result.csv')
+result_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
 
 # Exclude first column (HourDK) in actual_df
 actual_df = actual_df.drop(actual_df.columns[0], axis=1)
@@ -55,10 +55,10 @@ plt.grid(True)
 plt.show()
 
 # Plot the standard deviation of the differences
-plt.figure(figsize=(10, 6))
-plt.plot(std_dev.index, std_dev.values, marker='o', linestyle='-')
-plt.title('Standard deviation of the differences between Actual and Result DataFrames')
-plt.xlabel('Municipality Number')
-plt.ylabel('Standard deviation')
-plt.grid(True)
-plt.show()
+# plt.figure(figsize=(10, 6))
+# plt.plot(std_dev.index, std_dev.values, marker='o', linestyle='-')
+# plt.title('Standard deviation of the differences between Actual and Result DataFrames')
+# plt.xlabel('Municipality Number')
+# plt.ylabel('Standard deviation')
+# plt.grid(True)
+# plt.show()

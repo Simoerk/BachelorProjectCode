@@ -4,7 +4,7 @@ import numpy as np
 
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/regional_consumption_sums.csv')
-result_df = pd.read_csv('results/Num2DUnbGeoLoc_noisy_result.csv')
+result_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
 
 # Define the regions dictionary
 regions = {
