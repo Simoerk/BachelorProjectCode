@@ -76,15 +76,7 @@ for df_name, df in zip(outliers.keys(), dfs):
                 print("noisy_value: ", noisy_value)
                 print("bound: ", bound)
                 print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))
-            else:
-                if t==1097 and df_name == "NumMunUnb_df":
-                    print("\n name: ", df_name)
-                    print("muni: ", muni)
-                    print("t: ", t)
-                    print("real_value: ", real_value)
-                    print("noisy_value: ", noisy_value)
-                    print("bound: ", bound)
-                    print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))
+
 
 # Print the count of outliers for each DataFrame
 for df_name, municipality_data in outliers.items():
