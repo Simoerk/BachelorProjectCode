@@ -9,7 +9,6 @@ real_df = pd.read_csv('results/real_consumption_sums.csv')
 NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
 NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
 NumMunUnb_df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
-NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
 NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
@@ -23,7 +22,7 @@ delta = 0.001
 
 
 # List of dataframes for processing
-dfs = [NumMun_df, NumMunUnb_df, NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
+dfs = [NumMunUnb_df, NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
 #outliers = {name: [] for name in ['NumMun', 'NumMunUnb', 'NumMunUnbGeo', 'NumMunUnbGeoLoc', "real_df"]}
 outliers = {name: [] for name in ['NumMunUnb_df', 'NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
 
@@ -38,7 +37,7 @@ dfs = [df.drop(columns=['HourDK']) for df in dfs]
 
 #Scale down. using global_max because we know the max is larger than the absolute of the smallest
 max_diffs = []
-real_df_num = dfs[4].apply(pd.to_numeric)
+real_df_num = dfs[3].apply(pd.to_numeric)
 for column in real_df_num.columns:
     # Calculate the absolute differences between consecutive rows
     differences = real_df_num[column].diff().abs()
@@ -67,7 +66,7 @@ for df_name, df in zip(outliers.keys(), dfs):
         else:
             bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
         for muni in df.columns:  # muni is each column
-            real_value = dfs[4].at[t, muni]
+            real_value = dfs[3].at[t, muni]
             noisy_value = row[muni]
             if not np.abs((real_value) - (noisy_value)) <= bound:
                 outliers[df_name].append((muni, t))
