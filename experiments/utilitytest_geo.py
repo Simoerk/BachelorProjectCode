@@ -8,6 +8,9 @@ def convert_df_to_numeric(df):
     return df
 
 
+
+
+
 # Load datasets
 real_df = pd.read_csv('results/regional_consumption_sums.csv')
 NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
@@ -33,13 +36,6 @@ dfs = [NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
 #outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc_df']}
 outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
 
-
-
-#delete first column of all dfs
-#dfs = [df.drop(columns=['HourDK']) for df in dfs]
-
-# Reorder columns of df2 to match df1
-#dfs = [df.reindex(columns=real_df.columns) for df in dfs]
 
 
 #Scale down. using global_max because we know the max is larger than the absolute of the smallest

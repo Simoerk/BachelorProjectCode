@@ -3,9 +3,6 @@ import numpy as np
 from utils.scale import downScaleDf, upScaleDf, upScale, downScale
 import math
 from utils.clipData import clip_pr_column
-from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
-from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
-from DifferentialApplication.NumMunUnb import NumMunUnb
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.Num import Num
 from DifferentialApplication.Bin import Bin
@@ -18,19 +15,14 @@ def convert_df_to_numeric(df):
 
 # Load datasets
 real_bin_df = pd.read_csv('results/Bin_result.csv')
-
 real_num_fil_df  = pd.read_csv('results/num_fil_result.csv')
-
 real_num_df = pd.read_csv('results/num_result.csv')
-
 real_nummun_df = pd.read_csv('results/real_consumption_sums.csv')
+real_nummun_df = clip_pr_column(real_nummun_df)
 
 Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
-
 Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
-
 Num_df = pd.read_csv('results/Num_noisy_result.csv')
-
 NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 
@@ -42,20 +34,38 @@ dataframe_pairs = [
     ('NumMun', NumMun_df, real_nummun_df)
 ]
 
-real_nummun_df = clip_pr_column(real_nummun_df)
+
 
 # Parameters
 epsilon = 1
 delta = 0.001
 B = 504
+num_runs = 10
 
-
-num_runs = 3
 average_outliers = {name: 0 for name, _, __ in dataframe_pairs}
 
 for _ in range(num_runs):
 
+    print("\nRunning Bin...")
+    Bin()
+    print("\nRunning Mun...")
+    Num()
+    print("\nRunning MunNum...")
+    NumMun()
 
+    #update the dataframes
+    Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
+    Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
+    Num_df = pd.read_csv('results/Num_noisy_result.csv')
+    NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
+
+    #Re initialize the dataframe paris
+    dataframe_pairs = [
+    ('Bin', Bin_df, real_bin_df),
+    ('Num', Num_df, real_num_df),
+    ('Num_fil', Num_fil_df, real_num_fil_df),
+    ('NumMun', NumMun_df, real_nummun_df)
+]
 
 
     for name, noisy_df, real_df in dataframe_pairs:
@@ -90,19 +100,8 @@ for _ in range(num_runs):
 
     # Loop over each dataframe
     for name, noisy_df, real_df in dataframe_pairs:
-
-        if name == 'Bin':
-            print("running Bin...")
-            Bin()
-        elif name == 'Num' or 'Num_fil':
-            print("running Num...")
-            Num()
-        elif name == 'NumMun':
-            print("running NumMun...")
-            NumMun()
         
         for muni in real_df.columns:
-
 
             for s, row in real_df.iterrows():  # t is the index, row is the row data
                 if s == 0:
@@ -140,6 +139,7 @@ for _ in range(num_runs):
     # Print the count of outliers for each DataFrame
     #for name, data in outliers.items():
         #print(f"{name} - Total Outliers: {len(data)}")
+    print("Done running iteration:", _)
 
 
 # Calculate the average number of outliers
