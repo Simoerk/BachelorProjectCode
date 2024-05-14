@@ -20,7 +20,7 @@ def noisyCount(D, start, end):
     #noise = np.random.normal(0, scale)
     #noise = laplace_mechanism(1, 1)
     epsilon = 1
-    scale = np.log(len(D)) / (epsilon)
+    scale = math.log2(len(D)) / (epsilon)
     noise = np.random.laplace(0, scale)
     return count + noise
 
