@@ -87,7 +87,7 @@ for name, noisy_df, real_df in dataframe_pairs:
             if name == 'Bin': #B = sqrt(T), so approx T^0.25 = 12 errors with 0.001 prob
                 bound = (1 / epsilon) * np.sqrt(((t+1) / B) + B) * np.log(1 / delta)
             elif name == 'NumMun':
-                T = 1099 # T = 1099 approx 1 errors
+                T = 1098 # T = 1099 approx 1 errors
                 bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
             else:
                 T = 27048 #T=27048 approx 27 errrors
@@ -96,10 +96,9 @@ for name, noisy_df, real_df in dataframe_pairs:
             # Outlier detection
             if not np.abs(real_value - noisy_value) <= bound:
                 outliers[name].append((muni, t))
-                print(f"\nmuni: {muni}, t: {t}, real_value: {real_value}, noisy_value: {noisy_value}, bound: {bound}")
-                print(f"real-noisy difference: {np.abs(np.float64(real_value) - np.float64(noisy_value))}")
-            else:
-                print("bound: ", bound, " value: ", np.abs(real_value - noisy_value) )
+                #print(f"\nmuni: {muni}, t: {t}, real_value: {real_value}, noisy_value: {noisy_value}, bound: {bound}")
+                #print(f"real-noisy difference: {np.abs(np.float64(real_value) - np.float64(noisy_value))}")
+        
 
 
 

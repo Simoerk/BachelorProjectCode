@@ -38,6 +38,7 @@ dataframe_pairs = [
 epsilon = 1
 B = 504
 
+print("Scaling...")
 for name, noisy_df, real_df in dataframe_pairs:
     if 'HourDK' in real_df.columns:
         noisy_df.drop(columns=['HourDK'], inplace=True)
@@ -60,7 +61,7 @@ for name, noisy_df, real_df in dataframe_pairs:
     index = next(i for i, pair in enumerate(dataframe_pairs) if pair[0] == name)
     dataframe_pairs[index] = (name, noisy_df, real_df)
 
-        
+print("Done scaling...")
         
 
 
@@ -69,6 +70,7 @@ outliers = {name: [] for name, _, __ in dataframe_pairs}
 #exp = np.exp(1)
 exp = round(np.exp(1), 11)
 
+print("running check...")
 # Loop over each dataframe
 for name, noisy_df, real_df in dataframe_pairs:
     for muni in real_df.columns: 
@@ -96,14 +98,16 @@ for name, noisy_df, real_df in dataframe_pairs:
                         ratio = p_1 / p_2
                         ratio = round(ratio, 11)
 
-                    if ratio > exp:  
+                    if ratio > exp and not name == "Bin":  
                         print(f"Ratio condition met for {muni} at time {t} in {name} with ratio: ", ratio, ">", exp)
                         print("np.float64(noisy_t): ", np.float64(noisy_t))
                         print("np.float64(real_t)", np.float64(real_t))
                         print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
                         outliers[name].append((t, muni, ratio))
+                    elif ratio > 2*exp and name == "Bin":
+                        outliers[name].append((t, muni, ratio))
                     else:
-                        if name == "none":
+                        if name == "None":
                             print("\n", "muni: ", name)
                             print("muni: ", muni)
                             print("t: ", t)
@@ -116,7 +120,7 @@ for name, noisy_df, real_df in dataframe_pairs:
                             print("np.float64(real_t): ", np.float64(real_t))
                             print("np.float64(real_t-1): ", np.float64(real_t_minus_1))
         print("df: ", name)
-
+print("Done running check...")
 
 # Print the count of outliers for each DataFrame
 for name, data in outliers.items():

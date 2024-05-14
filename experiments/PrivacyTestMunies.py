@@ -4,15 +4,15 @@ from utils.scale import downScaleDf, upScaleDf, upScale, downScale
 from utils.clipData import clip_pr_column
 
 
-real_df = pd.read_csv('results/real_consumption_sums.csv')
+real_df = pd.read_csv('results/regional_consumption_sums.csv')
 NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
 NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
 NumMunUnb_df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
 NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 
-NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
-NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
+#NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
+#NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
 
 
 real_df = clip_pr_column(real_df)
@@ -64,19 +64,17 @@ for df_name, df in zip(outliers.keys(), dfs):
                         print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
                         outliers[df_name].append((t, muni, ratio))
                     else:
-                        #print("all good: ", t)
                         if p_1 > 1 or p_2 > 1:
-                        #if t==32:    
-                                print("\n", "muni: ", df_name)
-                                print("muni: ", muni)
-                                print("t: ", t)
-                                print("ratio: ", ratio, "<=", exp)
-                                print("p1: ", p_1, " p_2: ", p_2)
-                                print("np.float64(noisy_t) - np.float64(real_t): ", np.abs(np.float64(noisy_t) - np.float64(real_t)))
-                                print("np.float64(noisy_t) - np.float64(real_t-1): ", np.abs(np.float64(noisy_t) - np.float64(real_t_minus_1)))
-                                print("np.float64(real_t) - np.float64(real_t-1): ", np.abs(np.float64(real_t) - np.float64(real_t_minus_1)))
-                                print("np.float64(noisy_t): ", np.float64(noisy_t))
-                                print("np.float64(real_t): ", np.float64(real_t))
+                            print("failure in: ", df_name)
+                            print("muni: ", muni)
+                            print("t: ", t)
+                            print("ratio: ", ratio, "<=", exp)
+                            print("p1: ", p_1, " p_2: ", p_2)
+                            print("np.float64(noisy_t) - np.float64(real_t): ", np.abs(np.float64(noisy_t) - np.float64(real_t)))
+                            print("np.float64(noisy_t) - np.float64(real_t-1): ", np.abs(np.float64(noisy_t) - np.float64(real_t_minus_1)))
+                            print("np.float64(real_t) - np.float64(real_t-1): ", np.abs(np.float64(real_t) - np.float64(real_t_minus_1)))
+                            print("np.float64(noisy_t): ", np.float64(noisy_t))
+                            print("np.float64(real_t): ", np.float64(real_t))
     print("df: ", df_name)
                 
 
