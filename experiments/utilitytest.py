@@ -82,6 +82,7 @@ for name, noisy_df, real_df in dataframe_pairs:
         for muni in real_df.columns:  # muni is each column, makes sense for NumMun, but works for all dataframes
             real_value = row[muni]
             noisy_value = noisy_df.at[t, muni]
+          
 
             # Check the specific dataframe and set the bound
             if name == 'Bin': #B = sqrt(T), so approx T^0.25 = 12 errors with 0.001 prob
