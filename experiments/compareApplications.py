@@ -18,20 +18,16 @@ NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
 NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
 
-
 #Show comparison between actual and local noisy data for a specific municipality
-def show_comparison_for_specific_muni(actual, NumMunUnbGeoLoc, NumMunUnbGeo, NumMunUnb, NumMun, muni):
+def show_comparison_for_specific_muni(df_list, label_list, muni):
     plt.figure()
-    plt.plot(actual[muni], label='Actual')
-    plt.plot(NumMunUnbGeoLoc[muni], label='NumMunUnbGeoLoc')
-    plt.plot(NumMunUnbGeo[muni], label='NumMunUnbGeo')
-    plt.plot(NumMunUnb[muni], label='NumMunUnb')
-    plt.plot(NumMun[muni], label='NumMun')
+    for (df, lab) in zip(df_list, label_list):
+        plt.plot(df[muni], label=lab)
     plt.legend()
-    plt.title(f'Comparison of {muni} between Actual and Noisy Data')
+    plt.title(f'Comparison of {muni} between the dataframes: {label_list}')
     plt.show()
 
 
-show_comparison_for_specific_muni(actual_df, NumMunUnbGeoLoc_df, NumMunUnbGeo_df, NumMunUnb_df, NumMun_df, '825')
+#show_comparison_for_specific_muni([actual_df, NumMunUnbGeoLoc_df, NumMunUnbGeo_df, NumMunUnb_df, NumMun_df], ['Actual', 'NumMunUnbGeoLoc', 'NumMunUnbGeo', 'NumMunUnb', 'NumMun'], '825')
 
-show_comparison_for_specific_muni(actual_df, NumMunUnbGeoLoc_df, NumMunUnbGeo_df, NumMunUnb_df, NumMun_df, '101')
+#show_comparison_for_specific_muni([actual_df, NumMunUnbGeoLoc_df, NumMunUnbGeo_df, NumMunUnb_df, NumMun_df], ['Actual', 'NumMunUnbGeoLoc', 'NumMunUnbGeo', 'NumMunUnb', 'NumMun'], '101')
