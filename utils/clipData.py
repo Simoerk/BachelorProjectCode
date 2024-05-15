@@ -11,7 +11,7 @@ from utils.laplace import laplace_mechanism
 #     return count
     
 # Adds noise to the count of the dataset from start to mid
-def noisyCount(D, start, end):
+def noisyCount(D, start, end, epsilon):
     count = end - start
     # Unsure of we are adding the correct noise
     #privacy_budget = 0.5
@@ -19,18 +19,17 @@ def noisyCount(D, start, end):
     #scale = np.log(len(D)) / (2 * privacy_budget)
     #noise = np.random.normal(0, scale)
     #noise = laplace_mechanism(1, 1)
-    epsilon = 1
     scale = math.log2(len(D)) / (epsilon)
     noise = np.random.laplace(0, scale)
     return count + noise
 
 # Threshold is decided privately
-def quantileSelection(D, m):
+def quantileSelection(D, m, epsilon):
     left = 0
     right = len(D)-1
     while left < right:
         mid = np.floor((left + right) / 2)
-        c = noisyCount(D, 0, mid)
+        c = noisyCount(D, 0, mid, epsilon)
         if c < m:
             left = mid + 1
         else:
@@ -47,20 +46,20 @@ def clipData(dataset, thresh):
     return clipped_dataset
 
 # Calls quantileSelection and clipData to select threshold and clip the data
-def clip(df, column):
+def clip(df, column, epsilon):
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
-    thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted))
+    thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted), epsilon)
     #print(thresh)
     clippedData = clipData(df_column, thresh)
     return clippedData, thresh
 
 
 
-def clip_pr_column(df):
+def clip_pr_column(df, epsilon):
     for column in df.columns:
         if column != 'HourDK':
-            df[column], thresh = clip(df, column)
+            df[column], thresh = clip(df, column, epsilon)
     return df
 
 #data = [21, 123, 213, 276, 282, 323, 374, 424, 488, 523, 576, 628, 698, 734, 784, 1239, 1419, 12302, 102329]

@@ -23,7 +23,7 @@ def NumMunUnb(epsilon):
 
 
     #remove upper quantile
-    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
+    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
 
 
     #downscale

@@ -16,7 +16,7 @@ def NumMunUnbGeo(epsilon):
     df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
     #remove upper quantile
-    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh')
+    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
 
 
     #downscale
