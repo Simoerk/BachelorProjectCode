@@ -18,6 +18,7 @@ epsilon = 1
 theta = 0.5
 delta = 0.001
 num_runs = 10
+intermediate_steps = False
 
 
 # Initialize container for total outliers count
@@ -99,10 +100,10 @@ for _ in range(num_runs):
                     print("bound: ", bound)
                     print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))
 
-
-    # Print the count of outliers for each DataFrame
-    #for df_name, municipality_data in outliers.items():
-        #print(f"{df_name} - Total Outliers: {len(municipality_data)}")
+    if intermediate_steps:
+        # Print the count of outliers for each DataFrame
+        for df_name, municipality_data in outliers.items():
+            print(f"{df_name} - Total Outliers: {len(municipality_data)}")
 
 
 

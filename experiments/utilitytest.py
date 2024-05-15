@@ -41,10 +41,13 @@ epsilon = 1
 delta = 0.001
 B = 504
 num_runs = 10
+intermediate_steps = False
 
 average_outliers = {name: 0 for name, _, __ in dataframe_pairs}
 
 for _ in range(num_runs):
+
+    print("running iteration: ", _)
 
     print("\nRunning Bin...")
     Bin()
@@ -136,10 +139,11 @@ for _ in range(num_runs):
         average_outliers[name] += len(outliers[name])
 
 
-    # Print the count of outliers for each DataFrame
-    #for name, data in outliers.items():
-        #print(f"{name} - Total Outliers: {len(data)}")
-    print("Done running iteration:", _)
+    if intermediate_steps:
+        # Print the count of outliers for each DataFrame
+        for name, data in outliers.items():
+            print(f"{name} - Total Outliers: {len(data)}")
+
 
 
 # Calculate the average number of outliers
