@@ -14,7 +14,6 @@ real_df = pd.read_csv('results/regional_consumption_sums.csv')
 
 
 # Parameters
-epsilon = 1
 theta = 0.5
 delta = 0.001
 num_runs = 10
@@ -24,15 +23,21 @@ intermediate_steps = False
 # Initialize container for total outliers count
 total_outliers = {'NumMunUnb_df': 0, 'NumMunUnbGeo_df': 0, 'NumMunUnbGeoLoc_df': 0, "real_df": 0}
 
-for _ in range(num_runs):
-    print("running iteration: ", _)
+#epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]
+epsilons = [0.5, 1, 1.5]
+
+epsilon_errors = {epsilon: [] for epsilon in epsilons}
+
+
+for epsilon in epsilons:
+    print("running epsilon: ", epsilon)
 
     print("\nrunning NumMunUnbGeoLoc")
-    NumMunUnbGeoLoc()
+    NumMunUnbGeoLoc(epsilon)
     print("\nrunning NumMunUnbGeo")
-    NumMunUnbGeo()
+    NumMunUnbGeo(epsilon)
     print("\nrunning NumMunUnb")
-    NumMunUnb()
+    NumMunUnb(epsilon)
 
 
     NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
@@ -79,6 +84,7 @@ for _ in range(num_runs):
 
 
     outliers = {name: [] for name in ['NumMunUnb_df', 'NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
+    errors = {name: [] for name in ['NumMunUnb_df', 'NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
 
     # Loop over each dataframe
     for df_name, df in zip(outliers.keys(), dfs):
@@ -88,17 +94,14 @@ for _ in range(num_runs):
                 bound = ((1 / (theta * epsilon)) * ((np.log2(t + 2))**(1.5+theta)) * np.log2(1 / delta))
             else:
                 bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
+
             for muni in df.columns:  # muni is each column
                 real_value = dfs[3].at[t, muni]
                 noisy_value = row[muni]
                 if not np.abs((real_value) - (noisy_value)) <= bound:
                     outliers[df_name].append((muni, t))
-                    print("muni: ", muni)
-                    print("t: ", t)
-                    print("real_value: ", real_value)
-                    print("noisy_value: ", noisy_value)
-                    print("bound: ", bound)
-                    print("real-noisy: ", np.abs(np.float64(real_value) - np.float64(noisy_value)))
+                    
+                errors[df_name].append(np.abs(real_value - noisy_value))
 
     if intermediate_steps:
         # Print the count of outliers for each DataFrame
@@ -113,3 +116,8 @@ average_outliers = {key: value / num_runs for key, value in total_outliers.items
 # Print the results
 for df_name, avg in average_outliers.items():
     print(f"{df_name} - Average Total Outliers: {avg:.2f}")
+
+for epsilon, errors in epsilon_errors.items():
+    print(epsilon)
+    for name, err in errors.items():
+        print(len(err))

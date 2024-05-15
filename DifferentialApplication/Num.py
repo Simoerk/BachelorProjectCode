@@ -6,7 +6,7 @@ from utils.load_dataset import load_dataset
 import time
 
 
-def Num():
+def Num(epsilon):
     # Load the dataset
     df_el = load_dataset("./Data/PrivIndustryConsumptionSumHour.csv", 1000000)
 
@@ -18,8 +18,6 @@ def Num():
     sigma_el = df_el['ConsumptionkWh'].to_numpy()
 
 
-    # Algorithm 2: Binary mechanism
-    epsilon = 1  # Privacy parameter
 
     #Revese sigma because new entreis are added at the end
     sigma_el_flipped = np.flip(sigma_el)
@@ -87,4 +85,4 @@ def Num():
 
 
 if __name__ == "__main__":
-    Num()
+    Num(1)

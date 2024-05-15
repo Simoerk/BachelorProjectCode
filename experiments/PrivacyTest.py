@@ -68,7 +68,7 @@ print("Done scaling...")
 outliers = {name: [] for name, _, __ in dataframe_pairs}
 
 #exp = np.exp(1)
-exp = round(np.exp(1), 11)
+exp = round(np.exp(epsilon), 11)
 
 print("running check...")
 # Loop over each dataframe
@@ -99,10 +99,7 @@ for name, noisy_df, real_df in dataframe_pairs:
                         ratio = round(ratio, 11)
 
                     if ratio > exp and not name == "Bin":  
-                        print(f"Ratio condition met for {muni} at time {t} in {name} with ratio: ", ratio, ">", exp)
-                        print("np.float64(noisy_t): ", np.float64(noisy_t))
-                        print("np.float64(real_t)", np.float64(real_t))
-                        print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
+
                         outliers[name].append((t, muni, ratio))
                     elif ratio > 2*exp and name == "Bin":
                         outliers[name].append((t, muni, ratio))
@@ -119,6 +116,7 @@ for name, noisy_df, real_df in dataframe_pairs:
                             print("np.float64(noisy_t): ", np.float64(noisy_t))
                             print("np.float64(real_t): ", np.float64(real_t))
                             print("np.float64(real_t-1): ", np.float64(real_t_minus_1))
+
         print("df: ", name)
 print("Done running check...")
 

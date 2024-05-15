@@ -26,14 +26,17 @@ real_df = pd.read_csv('results/regional_consumption_sums.csv')
 # Initialize container for total outliers count
 total_outliers = {'NumMunUnbGeo_df': 0, 'NumMunUnbGeoLoc_df': 0, "real_df": 0}
 
+epsilon = 1
+
+
 for _ in range(num_runs):
 
     print("running iteration: ", _)
 
     print("\nrunning NumMunUnbGeoLoc")
-    NumMunUnbGeoLoc()
+    NumMunUnbGeoLoc(epsilon)
     print("\nrunning NumMunUnbGeo")
-    NumMunUnbGeo()
+    NumMunUnbGeo(epsilon)
  
 
     # Load datasets

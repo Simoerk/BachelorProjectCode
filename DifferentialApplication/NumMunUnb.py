@@ -12,7 +12,7 @@ import time
 
 
 
-def NumMunUnb():
+def NumMunUnb(epsilon):
     # Differential privacy on Dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
 
@@ -57,7 +57,7 @@ def NumMunUnb():
 
         # Apply the binary mechanism for each municipality's data stream
 
-        epsilon = 1  # Example epsilon value
+        
         stream = mun_df['ConsumptionkWh'].tolist()
 
         B, alpha_hat, t_last = mod_binary_mechanism(epsilon, stream, 0.5)
@@ -94,4 +94,4 @@ def NumMunUnb():
     print("done")
 
 if __name__ == "__main__":
-    NumMunUnb()
+    NumMunUnb(1)

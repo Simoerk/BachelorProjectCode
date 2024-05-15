@@ -13,7 +13,7 @@ from utils.muniRegion import *
 
 
 
-def NumMun():
+def NumMun(epsilon):
     # Differential privacy on Dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
 
@@ -58,7 +58,7 @@ def NumMun():
             #remove first row to account for uneven time intervals
             mun_df = mun_df.iloc[1:]
 
-        epsilon = 1  # Example epsilon value
+        
         stream = mun_df['ConsumptionkWh'].tolist()
         T = len(stream)
     
@@ -96,4 +96,4 @@ def NumMun():
     print("done")
 
 if __name__ == "__main__":
-    NumMun()
+    NumMun(1)

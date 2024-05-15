@@ -31,8 +31,8 @@ for df in dfs:
     for column in df.columns:
         df[column] = (df[column] - 0) / (global_max - 0)
 
-
-exp = np.exp(1)
+epsilon = 1
+exp = np.exp(epsilon)
 for df_name, df in zip(outliers.keys(), dfs):
     for muni in df.columns:
         for s, row in df.iterrows():  

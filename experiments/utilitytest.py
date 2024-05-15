@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from utils.scale import downScaleDf, upScaleDf, upScale, downScale
 import math
 from utils.clipData import clip_pr_column
@@ -37,24 +38,32 @@ dataframe_pairs = [
 
 
 # Parameters
-epsilon = 1
+#epsilon = 1
 delta = 0.001
 B = 504
 num_runs = 10
 intermediate_steps = False
 
+
+
 average_outliers = {name: 0 for name, _, __ in dataframe_pairs}
 
-for _ in range(num_runs):
 
-    print("running iteration: ", _)
+#epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]
+epsilons = [0.5, 1, 1.5]
+
+epsilon_errors = {epsilon: [] for epsilon in epsilons}
+
+for epsilon in epsilons:
+
+    print("\nrunning epsilon: ", epsilon)
 
     print("\nRunning Bin...")
-    Bin()
+    Bin(epsilon)
     print("\nRunning Mun...")
-    Num()
+    Num(epsilon)
     print("\nRunning MunNum...")
-    NumMun()
+    NumMun(epsilon)
 
     #update the dataframes
     Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
@@ -68,7 +77,7 @@ for _ in range(num_runs):
     ('Num', Num_df, real_num_df),
     ('Num_fil', Num_fil_df, real_num_fil_df),
     ('NumMun', NumMun_df, real_nummun_df)
-]
+    ]
 
 
     for name, noisy_df, real_df in dataframe_pairs:
@@ -93,13 +102,11 @@ for _ in range(num_runs):
         index = next(i for i, pair in enumerate(dataframe_pairs) if pair[0] == name)
         dataframe_pairs[index] = (name, noisy_df, real_df)
 
-            
-        
-
 
 
 
     outliers = {name: [] for name, _, __ in dataframe_pairs}
+    errors = {name: [] for name, _, __ in dataframe_pairs}
 
     # Loop over each dataframe
     for name, noisy_df, real_df in dataframe_pairs:
@@ -130,13 +137,25 @@ for _ in range(num_runs):
                 # Outlier detection
                 if not np.abs(real_value - noisy_value) <= bound:
                     outliers[name].append((muni, t))
+                
+                errors[name].append(np.abs(real_value - noisy_value))
+
                     #print(f"\nmuni: {muni}, t: {t}, real_value: {real_value}, noisy_value: {noisy_value}, bound: {bound}")
                     #print(f"real-noisy difference: {np.abs(np.float64(real_value) - np.float64(noisy_value))}")
+
+
+                
             
 
     # Aggregate results from this run
-    for name in average_outliers:
-        average_outliers[name] += len(outliers[name])
+    for name in outliers:
+        #average_outliers[name] += len(outliers[name])
+        print("Outlier count: " , name, ": ", len(outliers[name]))
+
+    
+
+    epsilon_errors[epsilon] = errors
+    #print("errors: ", errors)
 
 
     if intermediate_steps:
@@ -147,10 +166,37 @@ for _ in range(num_runs):
 
 
 # Calculate the average number of outliers
-for name in average_outliers:
-    average_outliers[name] /= num_runs
+#for name in average_outliers:
+    #average_outliers[name] /= num_runs
 
 # Print the results
-for name, avg in average_outliers.items():
-    print(f"{name} - Average Total Outliers: {avg:.2f}")
+#for name, avg in average_outliers.items():
+    #print(f"{name} - Average Total Outliers: {avg:.2f}")
 
+for epsilon, errors in epsilon_errors.items():
+    print(epsilon)
+    for name, err in errors.items():
+        print(f"{name} - Number of Errors: {len(err)}")
+
+        # Sort the error list
+        sorted_err = np.sort(err)
+
+        # Generate a KDE for the sorted errors
+        from scipy.stats import gaussian_kde
+        density = gaussian_kde(sorted_err)
+        
+        # Set up the range for the x-values (centered around zero, you might adjust the range as needed)
+        x = np.linspace(-max(abs(sorted_err)), max(abs(sorted_err)), 1000)
+        
+        # Evaluate the density on the x-values
+        y = density(x)
+
+        # Plotting
+        plt.figure(figsize=(8, 4))
+        plt.plot(x, y, label=f'Epsilon = {epsilon}, {name}')
+        plt.title(f'Error Density Plot for {name} with Epsilon = {epsilon}')
+        plt.xlabel('Error')
+        plt.ylabel('Density')
+        plt.legend()
+        plt.grid(True)
+        plt.show()

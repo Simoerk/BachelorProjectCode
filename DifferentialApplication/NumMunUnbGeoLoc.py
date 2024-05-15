@@ -9,7 +9,7 @@ from utils.load_dataset import load_dataset
 import time
 
 
-def NumMunUnbGeoLoc():
+def NumMunUnbGeoLoc(epsilon):
     # Differential privacy on Dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
 
@@ -37,7 +37,7 @@ def NumMunUnbGeoLoc():
 
     #Calling the mecchanism timed
     start_time = time.time()
-    result_df, thresh_df = binary_mechanism_unbounded_local(2, df, result_df, 0.5, thresh_df)
+    result_df, thresh_df = binary_mechanism_unbounded_local(epsilon, df, result_df, 0.5, thresh_df)
     end_time = time.time()
 
     #print the time it took to run
@@ -53,6 +53,6 @@ def NumMunUnbGeoLoc():
     print("done")
 
 if __name__ == "__main__":
-    NumMunUnbGeoLoc()
+    NumMunUnbGeoLoc(1)
 
 

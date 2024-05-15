@@ -7,7 +7,7 @@ import time
 from utils.muniRegion import *
 
 
-def Bin():
+def Bin(epsilon):
     # Load the dataset
     df_dia = load_dataset("./Data/diabetes_binary_health_indicators_BRFSS2015.csv", 1000000)
 
@@ -20,7 +20,7 @@ def Bin():
 
     #T for Diabetes
     T = len(sigma_dia)  # Number of records in the 'diabetes_binary' column
-    epsilon = 1  # Differential privacy parameter
+    #epsilon = 1  # Differential privacy parameter
 
     # B value used for two level mechanism, B is Block size 
     B = int(math.ceil(math.sqrt(T)))
@@ -45,4 +45,4 @@ def Bin():
     pd.DataFrame(cumulative_sums, columns=['Sum']).to_csv("results/Bin_result.csv", index=False)
 
 if __name__ == "__main__":
-    Bin()
+    Bin(1)
