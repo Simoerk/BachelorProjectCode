@@ -7,6 +7,11 @@ from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.Num import Num
 from DifferentialApplication.Bin import Bin
+from scipy.stats import gaussian_kde
+from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
+from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
+from DifferentialApplication.NumMunUnb import NumMunUnb
+
 
 def convert_df_to_numeric(df):
     for column in df.columns:
@@ -14,39 +19,21 @@ def convert_df_to_numeric(df):
     return df
 
 
-# Load datasets
+# # Load datasets
 real_bin_df = pd.read_csv('results/Bin_result.csv')
 real_num_fil_df  = pd.read_csv('results/num_fil_result.csv')
 real_num_df = pd.read_csv('results/num_result.csv')
-real_nummun_df = pd.read_csv('results/real_consumption_sums.csv')
-real_nummun_df = clip_pr_column(real_nummun_df)
-
-Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
-Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
-Num_df = pd.read_csv('results/Num_noisy_result.csv')
-NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
-
-
-# Pairing noisy and real dataframes
-dataframe_pairs = [
-    ('Bin', Bin_df, real_bin_df),
-    ('Num', Num_df, real_num_df),
-    ('Num_fil', Num_fil_df, real_num_fil_df),
-    ('NumMun', NumMun_df, real_nummun_df)
-]
+real_mun_df = pd.read_csv('results/real_consumption_sums.csv')
+real_reg_df = pd.read_csv('results/regional_consumption_sums.csv')
 
 
 
 # Parameters
-#epsilon = 1
 delta = 0.001
 B = 504
 num_runs = 10
 intermediate_steps = False
-
-
-
-average_outliers = {name: 0 for name, _, __ in dataframe_pairs}
+theta = 0.5
 
 
 #epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]
@@ -64,25 +51,40 @@ for epsilon in epsilons:
     Num(epsilon)
     print("\nRunning MunNum...")
     NumMun(epsilon)
+    print("\nrunning NumMunUnb")
+    NumMunUnb(epsilon)
+    print("\nrunning NumMunUnbGeo")
+    NumMunUnbGeo(epsilon)
+    print("\nrunning NumMunUnbGeoLoc")
+    NumMunUnbGeoLoc(epsilon)
+
+
 
     #update the dataframes
     Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
     Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
     Num_df = pd.read_csv('results/Num_noisy_result.csv')
     NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
+    NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
+    NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
+    NumMunUnb_df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
 
     #Re initialize the dataframe paris
     dataframe_pairs = [
     ('Bin', Bin_df, real_bin_df),
     ('Num', Num_df, real_num_df),
     ('Num_fil', Num_fil_df, real_num_fil_df),
-    ('NumMun', NumMun_df, real_nummun_df)
+    ('NumMun', NumMun_df, real_mun_df),
+    ('NumMunUnb', NumMunUnb_df, real_mun_df),
+    ('NumMunUnbGeo', NumMunUnbGeo_df, real_reg_df),
+    ('NumMunUnbGeoLoc', NumMunUnbGeo_df, real_reg_df)
     ]
 
 
     for name, noisy_df, real_df in dataframe_pairs:
-        if 'HourDK' in real_df.columns:
+        if 'HourDK' in noisy_df.columns:
             noisy_df.drop(columns=['HourDK'], inplace=True)
+        if 'HourDK' in real_df.columns:
             real_df.drop(columns=['HourDK'], inplace=True)
 
         # Convert columns to numeric
@@ -93,7 +95,7 @@ for epsilon in epsilons:
         max_diff = real_df.diff().abs().max().max()
         
 
-        for column in real_df.columns:
+        for column in noisy_df.columns:
             # Scale both dataframes by the maximum difference
             noisy_df[column] = noisy_df[column] / max_diff
             real_df[column] = real_df[column] / max_diff
@@ -111,8 +113,8 @@ for epsilon in epsilons:
     # Loop over each dataframe
     for name, noisy_df, real_df in dataframe_pairs:
         
-        for muni in real_df.columns:
-
+        for muni in noisy_df.columns:
+            
             for s, row in real_df.iterrows():  # t is the index, row is the row data
                 if s == 0:
                     t = 1
@@ -130,15 +132,17 @@ for epsilon in epsilons:
                 elif name == 'NumMun':
                     T = 1098 # T = 1099 approx 1 errors
                     bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
-                else:
+                elif name == 'Num' or name == "Num_fil":
                     T = 27048 #T=27048 approx 27 errrors
                     bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
+                else:
+                    bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
 
                 # Outlier detection
                 if not np.abs(real_value - noisy_value) <= bound:
                     outliers[name].append((muni, t))
                 
-                errors[name].append(np.abs(real_value - noisy_value))
+                errors[name].append((real_value - noisy_value))
 
                     #print(f"\nmuni: {muni}, t: {t}, real_value: {real_value}, noisy_value: {noisy_value}, bound: {bound}")
                     #print(f"real-noisy difference: {np.abs(np.float64(real_value) - np.float64(noisy_value))}")
@@ -163,40 +167,36 @@ for epsilon in epsilons:
         for name, data in outliers.items():
             print(f"{name} - Total Outliers: {len(data)}")
 
+       
 
-
-# Calculate the average number of outliers
-#for name in average_outliers:
-    #average_outliers[name] /= num_runs
-
-# Print the results
-#for name, avg in average_outliers.items():
-    #print(f"{name} - Average Total Outliers: {avg:.2f}")
-
+# First, we'll collect data by name
+name_data = {}
 for epsilon, errors in epsilon_errors.items():
-    print(epsilon)
     for name, err in errors.items():
-        print(f"{name} - Number of Errors: {len(err)}")
+        if name not in name_data:
+            name_data[name] = {}
+        # Convert errors list to a numpy array for processing
+        data = np.array(err)
+        name_data[name][epsilon] = data
 
-        # Sort the error list
-        sorted_err = np.sort(err)
+# Now, plot each name's data with all epsilons on the same plot
+for name, datasets in name_data.items():
+    plt.figure(figsize=(8, 4))
+    for epsilon, data in datasets.items():
+        # Generate a KDE for the error data
+        density = gaussian_kde(data)
 
-        # Generate a KDE for the sorted errors
-        from scipy.stats import gaussian_kde
-        density = gaussian_kde(sorted_err)
-        
-        # Set up the range for the x-values (centered around zero, you might adjust the range as needed)
-        x = np.linspace(-max(abs(sorted_err)), max(abs(sorted_err)), 1000)
-        
-        # Evaluate the density on the x-values
+        # Set up the range for x values
+        x = np.linspace(min(data), max(data), 1000)
         y = density(x)
 
-        # Plotting
-        plt.figure(figsize=(8, 4))
-        plt.plot(x, y, label=f'Epsilon = {epsilon}, {name}')
-        plt.title(f'Error Density Plot for {name} with Epsilon = {epsilon}')
-        plt.xlabel('Error')
-        plt.ylabel('Density')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+        # Plot each epsilon density
+        plt.plot(x, y, label=f'Epsilon = {epsilon}')
+
+    # Finalizing the plot
+    plt.title(f'Error Density for {name} Across Epsilons')
+    plt.xlabel('Error Value')
+    plt.ylabel('Density')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
