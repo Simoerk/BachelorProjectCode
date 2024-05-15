@@ -89,19 +89,22 @@ for epsilon in epsilons:
     # Loop over each dataframe
     for df_name, df in zip(outliers.keys(), dfs):
         for t, row in df.iterrows():  # t is the index of row
-            # Skip the first row since log(1) = 0, which would cause the threshold to be 0
-            if t == 0:
-                bound = ((1 / (theta * epsilon)) * ((np.log2(t + 2))**(1.5+theta)) * np.log2(1 / delta))
-            else:
-                bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
-
             for muni in df.columns:  # muni is each column
+                # Skip the first row since log(1) = 0, which would cause the threshold to be 0
+                if t == 0:
+                    bound = ((1 / (theta * epsilon)) * ((np.log2(t + 2))**(1.5+theta)) * np.log2(1 / delta))
+                else:
+                    bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
+
+            
                 real_value = dfs[3].at[t, muni]
                 noisy_value = row[muni]
                 if not np.abs((real_value) - (noisy_value)) <= bound:
                     outliers[df_name].append((muni, t))
                     
-                errors[df_name].append(np.abs(real_value - noisy_value))
+                errors[df_name].append((real_value - noisy_value))
+
+    epsilon_errors[epsilon] = errors
 
     if intermediate_steps:
         # Print the count of outliers for each DataFrame
@@ -116,6 +119,8 @@ average_outliers = {key: value / num_runs for key, value in total_outliers.items
 # Print the results
 for df_name, avg in average_outliers.items():
     print(f"{df_name} - Average Total Outliers: {avg:.2f}")
+
+
 
 for epsilon, errors in epsilon_errors.items():
     print(epsilon)
