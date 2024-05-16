@@ -37,7 +37,7 @@ theta = 0.5
 
 
 #epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]
-epsilons = [0.5, 1, 1.5]
+epsilons = [0.1, 1, 2]
 
 epsilon_errors = {epsilon: [] for epsilon in epsilons}
 

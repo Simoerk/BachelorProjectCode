@@ -149,21 +149,10 @@ for epsilon in epsilons:
 
 
                         if ratio > exp_epsilon: 
-                             
-                            if test:
-                                print(f"Ratio condition met for {muni} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
-                                print("muni: ", muni)
-                                print("noisy value in before scaling NumMun: ",   NumMun_df[muni][t])
-                                print("np.float64(noisy_t): ", np.float64(noisy_t))
-                                print("np.float64(real_t)", np.float64(real_t))
-                                print("np.float64(real_t_minus_1)", np.float64(real_t_minus_1))
-                                print("Ratio: ", ratio)
-                                print("p_1: ", p_1)
-                                print("p_2: ", p_2)
-                                print("ai: ", ai(i, 0.5))
+                            print(f"Ratio condition met for {muni} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
+                    
                             
-                            
-
+                        
                             if p_1 == 0 and ai(i, 0.5) == 1:
                                 count1 +=1
                             elif p_1 != 0 and ai(i, 0.5) == 1:
@@ -179,18 +168,9 @@ for epsilon in epsilons:
                             outliers[df_name].append((t, muni, ratio))
 
                         else:
-                            if test:
-                                print("failure in: ", df_name)
-                                print("muni: ", muni)
-                                print("t: ", t)
-                                print("ratio: ", ratio, "<=", exp_epsilon)
-                                print("p1: ", p_1, " p_2: ", p_2)
-                                print("np.float64(noisy_t) - np.float64(real_t): ", np.abs(np.float64(noisy_t) - np.float64(real_t)))
-                                print("np.float64(noisy_t) - np.float64(real_t-1): ", np.abs(np.float64(noisy_t) - np.float64(real_t_minus_1)))
-                                print("np.float64(real_t) - np.float64(real_t-1): ", np.abs(np.float64(real_t) - np.float64(real_t_minus_1)))
-                                print("np.float64(noisy_t): ", np.float64(noisy_t))
-                                print("np.float64(real_t): ", np.float64(real_t))
-                                #test=False
+                            if p_1 > 1 or p_2 > 1:
+                                print(f"p_1 = {p_1} and p_2 = {p_2} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
+
 
         print("Outliers for ", df_name)
         print("count1: ", count1)
