@@ -29,7 +29,7 @@ np.random.seed(42)
 
 
 
-epsilons = [Decimal('0.1'), Decimal('1'), Decimal('2')]
+epsilons = [Decimal('0.1'), Decimal('0.5'), Decimal('1'), Decimal('2')]
 
 for epsilon in epsilons:
     print("Epsilon: ", epsilon)

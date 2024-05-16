@@ -37,7 +37,8 @@ theta = 0.5
 
 
 #epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]
-epsilons = [0.1, 1, 2]
+epsilons = [0.1, 0.5, 1, 2]
+epsilons = [2, 1, 0.5, 0.1]
 
 epsilon_errors = {epsilon: [] for epsilon in epsilons}
 
@@ -77,7 +78,7 @@ for epsilon in epsilons:
     ('NumMun', NumMun_df, real_mun_df),
     ('NumMunUnb', NumMunUnb_df, real_mun_df),
     ('NumMunUnbGeo', NumMunUnbGeo_df, real_reg_df),
-    ('NumMunUnbGeoLoc', NumMunUnbGeo_df, real_reg_df)
+    ('NumMunUnbGeoLoc', NumMunUnbGeoLoc_df, real_reg_df)
     ]
 
 
