@@ -27,11 +27,10 @@ unique_times = sorted(df_mun['HourDK'].unique())
 
 df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
 
+df = df.iloc[1:]
 
 df = df.cumsum()
 
-#Make processed csv file
-df = df.iloc[1:]
 
 
 #Make processed csv file MÅSKe fJERN?
