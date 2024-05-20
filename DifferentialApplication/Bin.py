@@ -45,4 +45,4 @@ def Bin(epsilon):
     pd.DataFrame(cumulative_sums, columns=['Sum']).to_csv("results/Bin_result.csv", index=False)
 
 if __name__ == "__main__":
-    Bin(1)
+    Bin(2)

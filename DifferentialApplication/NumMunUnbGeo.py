@@ -18,6 +18,8 @@ def NumMunUnbGeo(epsilon):
     #remove upper quantile
     df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
 
+    #df_real = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh').cumsum.iloc[1:]
+    #df_real.to_csv("results/NumMunUnbGeo__result.csv", index=False)
 
     #downscale
     df_mun['ConsumptionkWh'], thresh = downScale(df_mun, 'ConsumptionkWh')

@@ -141,6 +141,9 @@ for epsilon in epsilons:
                         # Compute the ratio of probabilities and compare it to exp(1)
                         if p_2 == 0:  # Avoid division by zero
                             ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
+                        if p_1 == 0:
+                            print("Error: p_1 is zero")
+                            continue
                         else:
                             ratio = p_1 / p_2
 
