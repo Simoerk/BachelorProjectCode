@@ -20,9 +20,10 @@ def convert_df_to_numeric(df):
     return df
 
 
-np.random.seed(42)
+np.random.seed(42) #random seed such that the tests generated are always the same
 
 # # Load datasets
+
 real_bin_df = pd.read_csv('results/Bin_result.csv')
 real_num_fil_df  = pd.read_csv('results/num_fil_result.csv')
 real_num_df = pd.read_csv('results/num_result.csv')
@@ -64,6 +65,9 @@ for epsilon in epsilons:
 
 
 
+
+
+
     #update the dataframes
     Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
     Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
@@ -98,7 +102,7 @@ for epsilon in epsilons:
         # Calculate the absolute differences and find the maximum difference
         max_diff = real_df.diff().abs().max().max()
         
-        if name != 'Bin':
+        if name != 'Bin': # dont scale down bin as it is already binary
             for column in noisy_df.columns:
                 # Scale both dataframes by the maximum difference
                 noisy_df[column] = noisy_df[column] / max_diff
@@ -145,6 +149,8 @@ for epsilon in epsilons:
                 # Outlier detection
                 if not np.abs(real_value - noisy_value) <= bound:
                     outliers[name].append((muni, t))
+
+
                 
                 errors[name].append((real_value - noisy_value))
 
