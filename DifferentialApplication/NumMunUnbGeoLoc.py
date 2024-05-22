@@ -30,7 +30,7 @@ def NumMunUnbGeoLoc(epsilon):
     df = df.iloc[1:]
 
     # clip the data
-    df_mun = clip_pr_column(df, epsilon)
+    df_mun, _ = clip_pr_column(df, epsilon)
 
     #Downscaling
     df, thresh_df = downScaleDf(df)

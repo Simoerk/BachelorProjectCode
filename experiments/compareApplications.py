@@ -25,6 +25,8 @@ def show_comparison_for_specific_muni(df_list, label_list, muni):
         plt.plot(df[muni], label=lab)
     plt.legend()
     plt.title(f'Comparison of {muni} between the dataframes: {label_list}')
+    plt.xlabel('Number of hours in the given period')
+    plt.ylabel('Consumption in kWh')
     plt.show()
 
 

@@ -245,7 +245,7 @@ def plot_consumption_barplot(df1, df2):
     # Customize the plot
     ax.set_xlabel('Municipalities, Regions and DK')
     ax.set_ylabel('Consumption')
-    ax.set_title('Consumption Comparison for Each Municipality')
+    ax.set_title('Noisy Consumption Comparison for Each Municipality From 2024-01-21T19:00:00 To 2024-03-31T23:00:00')
     ax.set_xticks(x)
     ax.set_xticklabels(municipalities_df2, rotation=45)
     ax.legend()

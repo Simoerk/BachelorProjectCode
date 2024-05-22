@@ -49,7 +49,7 @@ def clipData(dataset, thresh):
 def clip(df, column, epsilon):
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
-    thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted), epsilon)
+    thresh = quantileSelection(df_cons_sorted, 0.99 * np.size(df_cons_sorted), epsilon)
     #print(thresh)
     clippedData = clipData(df_column, thresh)
     return clippedData, thresh
@@ -57,10 +57,12 @@ def clip(df, column, epsilon):
 
 
 def clip_pr_column(df, epsilon):
+    thresh_list = []
     for column in df.columns:
         if column != 'HourDK':
             df[column], thresh = clip(df, column, epsilon)
-    return df
+            thresh_list.append(thresh)
+    return df, thresh_list
 
 #data = [21, 123, 213, 276, 282, 323, 374, 424, 488, 523, 576, 628, 698, 734, 784, 1239, 1419, 12302, 102329]
 

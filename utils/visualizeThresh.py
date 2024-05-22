@@ -1,11 +1,22 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-from clipData import clip
 
-# Load datasets
-real_df = pd.read_csv('results/real_consumption_sums.csv')
 
-# Clip the data to remove outliers
-for col in real_df.columns[1:]:
-    real_df[col] = clip(real_df[col], 0.1, 0.9)
+def plot_consumption_barplot(real_df):
+
+    # Extract municipality numbers
+    municipalities = real_df.columns[1:]
+
+    # Get consumption values for the last hour
+    consumption_values = [real_df[municipality].iloc[-1] for municipality in municipalities]
+
+    # Plotting
+    plt.figure(figsize=(12, 8))
+    plt.bar(municipalities, consumption_values, color='blue')
+    plt.xlabel('Municipality')
+    plt.ylabel('Consumption')
+    plt.title('Real Consumption Data by Municipality')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.show()
