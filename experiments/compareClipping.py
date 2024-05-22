@@ -9,6 +9,9 @@ from utils.clipData import clip
 # Read the CSV file into a DataFrame
 df_mun = load_dataset("data/muni_data.csv", 1000000)
 
+# Ensure MunicipalityNo is of type string
+df_mun['MunicipalityNo'] = df_mun['MunicipalityNo'].astype(str)
+
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
@@ -19,21 +22,25 @@ clipped_dfs = [df_mun.copy() for _ in thresholds]
 for df, thresh in zip(clipped_dfs, thresholds):
     df['ConsumptionkWh'], _ = clip(df, 'ConsumptionkWh', thresh)
 
-# Pivot, compute cumulative sum, and drop rows with NaN values for each DataFrame
-def pivot_cumsum_dropna(df):
-    df_pivot = df.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh').cumsum()
-    return df_pivot.dropna()
+# Pivot the original and clipped dataframes
+df_mun = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+df_mun = df_mun.iloc[1:]
+df_mun = df_mun.cumsum()
 
-df_mun = pivot_cumsum_dropna(df_mun)
-clipped_dfs = [pivot_cumsum_dropna(df) for df in clipped_dfs]
-
-print(df_mun)
+for i, df in enumerate(clipped_dfs):
+    df = df.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+    df = df.iloc[1:]
+    df = df.cumsum()
+    clipped_dfs[i] = df  # Ensure the modified DataFrame is assigned back
 
 # Show comparison between actual and local noisy data for a specific municipality
 def show_comparison_for_specific_muni(df_list, label_list, muni):
     plt.figure()
     for df, label in zip(df_list, label_list):
-        plt.plot(df[muni], label=label)
+        if str(muni) in df.columns:
+            plt.plot(df[str(muni)], label=label)
+        else:
+            print(f"Municipality {muni} not found in DataFrame with label {label}.")
     plt.legend()
     plt.title(f'Comparison of {muni} between the dataframes: {label_list}')
     plt.show()
