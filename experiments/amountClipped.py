@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
+import time
 from utils.clipData import clip_pr_column
 from utils.clipData import clip
 from utils.load_dataset import load_dataset
@@ -10,6 +11,14 @@ df_mun = load_dataset("data/muni_data.csv", 1000000)
 
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
+
+# Find the largest value in df_mun["ConsumptionkWh"]
+max_val = df_mun["ConsumptionkWh"].max()
+print(f"Max value: {max_val}")
+
+# Find the largest value in df_mun["MunicipalityNo = 101"]
+max_val_101 = df_mun[df_mun["MunicipalityNo"] == 101]["ConsumptionkWh"].max()
+print(f"Max value 101: {max_val_101}")
 
 # Set the privacy budget
 epsilon = 1
@@ -28,8 +37,11 @@ def global_clip():
 
     actual_global_df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
 
+    #remove first column HourDK
+    #actual_global_df = actual_global_df.iloc[:, 1:]
+
     #remove first row to account for uneven time intervals
-    #actual_global_df = actual_global_df.iloc[1:]
+    actual_global_df = actual_global_df.iloc[1:]
 
     #count the number of values in the dataframe equal to the threshold
     count = 0
@@ -56,9 +68,12 @@ def local_clip():
 
     #pivot to make the municipalities the columns
     df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
+
+    #remove first column HourDK
+    #df = df.iloc[:, 1:]
     
     # remove first row to account for uneven time intervals
-    #df = df.iloc[1:]
+    df = df.iloc[1:]
 
     # clip the data
     actual_local_df, local_thresh_list = clip_pr_column(df, epsilon)
