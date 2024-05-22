@@ -12,6 +12,9 @@ df_mun = load_dataset("data/muni_data.csv", 1000000)
 # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
+# Copy the dataset
+df_mun_2 = df_mun.copy()
+
 # Find the largest value in df_mun["ConsumptionkWh"]
 max_val = df_mun["ConsumptionkWh"].max()
 print(f"Max value: {max_val}")
@@ -31,14 +34,9 @@ def global_clip():
     #clip the data
     df_mun['ConsumptionkWh'], global_thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
 
-    print(f"Global thresh: {global_thresh}")
-
-    #print("df_mun[ConsumptionkWh]: ", df_mun['ConsumptionkWh'])
+    #print(f"Global thresh: {global_thresh}")
 
     actual_global_df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
-
-    #remove first column HourDK
-    #actual_global_df = actual_global_df.iloc[:, 1:]
 
     #remove first row to account for uneven time intervals
     actual_global_df = actual_global_df.iloc[1:]
@@ -64,13 +62,10 @@ def global_clip():
 # Locally clip the data
 def local_clip():
     #find the total amount of consumption in the dataset
-    total_consumption_before = df_mun['ConsumptionkWh'].sum()
+    total_consumption_before = df_mun_2['ConsumptionkWh'].sum()
 
     #pivot to make the municipalities the columns
-    df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
-
-    #remove first column HourDK
-    #df = df.iloc[:, 1:]
+    df = df_mun_2.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
     
     # remove first row to account for uneven time intervals
     df = df.iloc[1:]
@@ -81,7 +76,7 @@ def local_clip():
     #count the number of values in the dataframe equal to the threshold
     count = 0
     for column, local_thresh in zip(actual_local_df.columns, local_thresh_list):
-        print(f"Local thresh: {local_thresh}")
+        #print(f"Local thresh: {local_thresh}")
         for index in actual_local_df.index:
             if actual_local_df[column][index] == local_thresh:
                 count += 1
@@ -96,9 +91,28 @@ def local_clip():
     return count, removed_consumption
 
 
+global_count_list = []
+removed_consumption_global_list = []
+
+local_count_list = []
+removed_consumption_local_list = []
+
 # Run the global and local clipping
-global_count, removed_consumption_global = global_clip()
-local_count, removed_consumption_local = local_clip()
+for _ in range(10):
+    global_count, removed_consumption_global = global_clip()
+    global_count_list.append(global_count)
+    removed_consumption_global_list.append(removed_consumption_global)
+
+for _ in range(10):
+    local_count, removed_consumption_local = local_clip()
+    local_count_list.append(local_count)
+    removed_consumption_local_list.append(removed_consumption_local)
+
+global_count = np.mean(global_count_list)
+removed_consumption_global = np.mean(removed_consumption_global_list)
+
+local_count = np.mean(local_count_list)
+removed_consumption_local = np.mean(removed_consumption_local_list)
 
 print(f"Global count: {global_count}")
 print(f"Removed consumption global: {removed_consumption_global}")
