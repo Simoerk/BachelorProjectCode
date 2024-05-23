@@ -118,7 +118,7 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
                 # Add Laplacian noise to alpha_hat_i
                 #lap = laplace_mechanism(ai(i, theta),epsilon)
                 #lap = laplace_mechanism(epsilon)
-                alpha_hat2D[k][i] = laplace_mechanism(alpha2D[k][i], ai(i, theta)*3,epsilon)
+                alpha_hat2D[k][i] = laplace_mechanism(alpha2D[k][i], ai(i, theta),epsilon)
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
                 k+=1
 
