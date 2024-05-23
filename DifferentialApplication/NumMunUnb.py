@@ -60,7 +60,7 @@ def NumMunUnb(epsilon):
         
         stream = mun_df['ConsumptionkWh'].tolist()
 
-        B, alpha_hat, t_last = mod_binary_mechanism(epsilon, stream, 0.5)
+        B = mod_binary_mechanism(epsilon, stream, 0.5)
         
 
         # Calculate the difference in length between the two lists

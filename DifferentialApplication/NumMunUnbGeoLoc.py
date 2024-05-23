@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
-from Mechanisms.BinaryMechanism2DLocal import binary_mechanism_unbounded_local
+from Mechanisms.BinaryMechanism2DLocal import binary_mechanism_geo_local
 from utils.clipData import *
 from utils.scale import downScaleDf
 from utils.scale import upScaleDf
@@ -37,7 +37,7 @@ def NumMunUnbGeoLoc(epsilon):
 
     #Calling the mecchanism timed
     start_time = time.time()
-    result_df, thresh_df = binary_mechanism_unbounded_local(epsilon, df, result_df, 0.5, thresh_df)
+    result_df, thresh_df = binary_mechanism_geo_local(epsilon, df, result_df, 0.5, thresh_df)
     end_time = time.time()
 
     #print the time it took to run

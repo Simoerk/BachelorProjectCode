@@ -127,8 +127,8 @@ for epsilon in epsilons:
                         real_t_minus_1_decimal = Decimal(str(real_t_minus_1))
 
                         if name == "Bin":
-                            p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/epsilon)))
-                            p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/epsilon)))
+                            p_1 = (Decimal('1') / (Decimal('2') * (Decimal('1')/(Decimal('2')*epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(Decimal('2')*epsilon)))))
+                            p_2 = (Decimal('1') / (Decimal('2') * (Decimal('1')/((Decimal('2')*epsilon)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/((Decimal('2')*epsilon))))))
                         elif name == "Num":
                             p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T)))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(epsilon/log2_decimal(T)))))
                             p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/(epsilon/log2_decimal(T)))))
@@ -148,7 +148,7 @@ for epsilon in epsilons:
                         if ratio > exp_epsilon and name != "Bin":  
                             outliers[name].append((t, muni, ratio))
 
-                        elif ratio > Decimal('2')*exp_epsilon and name == "Bin":
+                        elif ratio > exp_epsilon and name == "Bin":
                             outliers[name].append((t, muni, ratio))
 
                         else:

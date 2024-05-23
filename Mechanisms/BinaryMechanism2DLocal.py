@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore', category=FutureWarning, message=".*Series.__ge
 
 
 # Define the modified binary mechanism as an unbounded function
-def binary_mechanism_unbounded_local(epsilon, df, result_df, theta, scale_df):
+def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
 
     print("begin binary mechanism unbounded")
 
