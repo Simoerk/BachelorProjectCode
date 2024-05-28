@@ -156,6 +156,13 @@ for epsilon in epsilons:
                                 print("ratio: ", ratio)
                                 print("p_1: ", p_1)
                                 print("p_2: ", p_2)
+                        if epsilon == Decimal('5') and ratio < exp_epsilon:
+                            if ratio > (exp_epsilon-Decimal('50')):
+                                print("epsilon : ", epsilon)
+                                print("epsilon.exp(): ", epsilon.exp())
+                                print("ratio: ", ratio)
+                                print("p_1: ", p_1)
+                                print("p_2: ", p_2)
                                 
                         
                                 

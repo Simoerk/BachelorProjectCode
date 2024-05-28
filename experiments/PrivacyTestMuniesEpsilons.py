@@ -5,6 +5,8 @@ from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.NumMunUnb import NumMunUnb
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
+
+import scipy.stats as stats
 import math
 from utils.laplace import *
 from decimal import Decimal, getcontext
@@ -22,14 +24,13 @@ def ai_decimal(i, epsilon):
     # Example conversion, replace with your actual scale logic
     return Decimal(ai(i, epsilon))
 
-epsilons = [Decimal('0.1'), Decimal('1'), Decimal('2')]
-# Import and clip the real data
-#real_df = pd.read_csv('results/real_consumption_sums.csv')
-#real_df = clip_pr_column(real_df)
+#epsilons = [Decimal('0.1'), Decimal('1'), Decimal('2')]
+epsilons = [0.1, 1, 2]
 
 
 
 for epsilon in epsilons:
+    print("\n")
     print("Epsilon: ", epsilon)
 
     # Run the differential privacy applications
@@ -129,33 +130,50 @@ for epsilon in epsilons:
                         real_t_decimal = Decimal(str(real_t))
                         real_t_minus_1_decimal = Decimal(str(real_t_minus_1))
 
+                        T = len(df)
+
                         if df_name == "NumMun_df": #import scipy.stats.laplace.pdf(x, scale)
                             # Calculate probabilities using Decimal for high precision
-                            p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/epsilon)))
-                            p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/epsilon)))
+                            #p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/epsilon)))
+                            #p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/epsilon)))
+
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(np.log(T)/epsilon))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(np.log(T)/epsilon))
+
+                            #print("p_1_old: ", p_1_old)
+                            #print("p_2_old: ", p_2_old)
+                            #print("p_1: ", p_1)
+                            #print("p_2: ", p_2)
+
+
                         else: 
                             # Calculate probabilities using Decimal for high precision
-                            p_1 = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (ai_decimal(i, 0.5)/epsilon)))
-                            p_2 = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (ai_decimal(i, 0.5)/epsilon)))
+                            #p_1_old = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (ai_decimal(i, 0.5)/epsilon)))
+                            #p_2_old = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (ai_decimal(i, 0.5)/epsilon)))
                             
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(ai(i, 0.5)/np.float64(epsilon)))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(ai(i, 0.5)/np.float64(epsilon)))
+
                         # Compute the ratio of probabilities and compare it to exp(1)
                         if p_2 == 0:  # Avoid division by zero
-                            ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
+                            #ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
+                            ratio = np.inf()
                         if p_1 == 0:
-                            ratio = Decimal('Infinity')
+                            #ratio = Decimal('Infinity')
+                            ratio = np.inf()
                             continue
                         else:
                             ratio = p_1 / p_2
                             ratio_2 = p_2 / p_1
 
-                        epsilon = Decimal(epsilon)
-                        exp_epsilon = epsilon.exp()
+                        #epsilon = Decimal(epsilon)
+                        #exp_epsilon = epsilon.exp()
+                        exp_epsilon = np.exp(epsilon)
 
 
                         if ratio > exp_epsilon or ratio_2 > exp_epsilon: 
                             print(f"Ratio condition met for {muni} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
                     
-                            
                         
                             if p_1 == 0 and ai(i, 0.5) == 1:
                                 count1 +=1
