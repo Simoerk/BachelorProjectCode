@@ -164,14 +164,13 @@ for epsilon in epsilons:
                             continue
                         else:
                             ratio = p_1 / p_2
-                            ratio_2 = p_2 / p_1
 
                         #epsilon = Decimal(epsilon)
                         #exp_epsilon = epsilon.exp()
                         exp_epsilon = np.exp(epsilon)
 
 
-                        if ratio > exp_epsilon or ratio_2 > exp_epsilon: 
+                        if ratio > exp_epsilon: 
                             print(f"Ratio condition met for {muni} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
                     
                         
