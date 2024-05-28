@@ -132,6 +132,7 @@ for epsilon in epsilons:
                 if not np.abs(real_value - noisy_value) <= bound:
                     outliers[name].append((muni, t))
 
+                error = real_value - noisy_value
                 # Scale up the error before appending
                 if name != 'Bin':
                     error = (real_value - noisy_value) * max_diffs[name]
