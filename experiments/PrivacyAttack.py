@@ -22,7 +22,7 @@ def ai_decimal(i, epsilon):
     # Example conversion, replace with your actual scale logic
     return Decimal(ai(i, epsilon))
 
-epsilons = [Decimal('0.1'), Decimal('1'), Decimal('2')]
+epsilons = [Decimal('0.5'), Decimal('5')]
 # Import and clip the real data
 #real_df = pd.read_csv('results/real_consumption_sums.csv')
 #real_df = clip_pr_column(real_df)
@@ -129,7 +129,7 @@ for epsilon in epsilons:
                         real_t_decimal = Decimal(str(real_t))
                         real_t_minus_1_decimal = Decimal(str(real_t_minus_1))
 
-                        if df_name == "NumMun_df": #import scipy.stats.laplace.pdf(x, scale)
+                        if df_name == "NumMun_df":
                             # Calculate probabilities using Decimal for high precision
                             p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/epsilon)))
                             p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/epsilon)))
@@ -142,55 +142,25 @@ for epsilon in epsilons:
                         if p_2 == 0:  # Avoid division by zero
                             ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
                         if p_1 == 0:
-                            ratio = Decimal('Infinity')
+                            print("Error: p_1 is zero")
                             continue
                         else:
                             ratio = p_1 / p_2
-                            ratio_2 = p_2 / p_1
 
-                        epsilon = Decimal(epsilon)
                         exp_epsilon = epsilon.exp()
-
-
-                        if ratio > exp_epsilon or ratio_2 > exp_epsilon: 
-                            print(f"Ratio condition met for {muni} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
-                    
-                            
                         
-                            if p_1 == 0 and ai(i, 0.5) == 1:
-                                count1 +=1
-                            elif p_1 != 0 and ai(i, 0.5) == 1:
-                                count2 += 1
-                            elif p_1 == 0 and ai(i, 0.5) != 1:
-                                count3 += 1
-                            elif p_1 != 0 and ai(i, 0.5) != 1:
-                                count4 += 1
-                            elif np.float64(noisy_t) < 0:
-                                count5 += 1
-                            else:
-                                count6 += 1
-                            outliers[df_name].append((t, muni, ratio))
+                        if epsilon == Decimal('0.5') and ratio < exp_epsilon:
+                            if ratio > (exp_epsilon-Decimal('0.01')):
+                                print("epsilon : ", epsilon)
+                                print("epsilon.exp(): ", epsilon.exp())
+                                print("ratio: ", ratio)
+                                print("p_1: ", p_1)
+                                print("p_2: ", p_2)
+                                
+                        
+                                
+                      
 
-                        else:
-                            if p_1 > 1 or p_2 > 1:
-                                print(f"p_1 = {p_1} and p_2 = {p_2} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
+                        
 
 
-        print("Outliers for ", df_name)
-        print("count1: ", count1)
-        count1 = 0
-        print("count2: ", count2)
-        count2=0
-        print("count3: ", count3)
-        count3=0
-        print("count4: ", count4)
-        count4=0
-        print("count5: ", count5)
-        count5=0
-        print("\n")
-
-    # Print the count of outliers for each DataFrame
-    for name, data in outliers.items():
-        print(f"Epsilon: {epsilon} Application: {name} - Total Outliers: {len(data)}")
-
-    

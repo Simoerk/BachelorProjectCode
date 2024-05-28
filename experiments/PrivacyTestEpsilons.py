@@ -144,11 +144,12 @@ for epsilon in epsilons:
 
                         
                         exp_epsilon = epsilon.exp()
+                        exp_epsilon_2 = (Decimal('2')*exp_epsilon).exp()
 
                         if ratio > exp_epsilon and name != "Bin":  
                             outliers[name].append((t, muni, ratio))
 
-                        elif ratio > exp_epsilon and name == "Bin":
+                        elif ratio > exp_epsilon_2 and name == "Bin":
                             outliers[name].append((t, muni, ratio))
 
                         else:
@@ -156,7 +157,7 @@ for epsilon in epsilons:
                                 print("\n", "muni: ", name)
                                 print("muni: ", muni)
                                 print("t: ", t)
-                                print("ratio: ", ratio, "<=", exp)
+                                print("ratio: ", ratio, "<=", exp_epsilon)
                                 print("p1: ", p_1, " p_2: ", p_2)
                                 print("np.float64(noisy_t) - np.float64(real_t): ", np.abs(np.float64(noisy_t) - np.float64(real_t)))
                                 print("np.float64(noisy_t) - np.float64(real_t-1): ", np.abs(np.float64(noisy_t) - np.float64(real_t_minus_1)))
