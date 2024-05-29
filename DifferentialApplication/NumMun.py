@@ -96,4 +96,4 @@ def NumMun(epsilon):
     print("done")
 
 if __name__ == "__main__":
-    NumMun(0.1)
+    NumMun(1)
