@@ -1,23 +1,26 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
+from DifferentialApplication.NumMunUnb import NumMunUnb
+from DifferentialApplication.NumMun import NumMun
 from experiments.compareApplications import show_comparison_for_specific_muni
 
 
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/real_consumption_sums.csv')
-NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
-NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
-NumMunUnb_df =  pd.read_csv('results/NumMunUnb_noisy_result.csv')
-NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
+#NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
+#NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
+#NumMunUnb_df =  pd.read_csv('results/NumMunUnb_noisy_result.csv')
+#NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
 #remove regions and DK in the last column of the geographical data
 #NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
 #NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
 
 
-def compare_epsilons_across_applications(muni):
+def compare_epsilons_across_applications():
     epsilons = [0.1, 0.3, 0.5, 1, 1.5, 5]
 
     for epsilon in epsilons:
@@ -60,5 +63,48 @@ def find_closest_muni_to_avg():
     return closest_muni
 
 
+def compare_applications_across_epsilons(muni):
+    epsilons = [0.1, 0.3, 0.5, 1, 1.5, 5]
+    
+    plt.figure()
+    for epsilon in epsilons:
+        NumMun(epsilon)
+        df = pd.read_csv('results/NumMun_noisy_result.csv')
+        plt.plot(df[muni], label=f"NumMun with epsilon: {epsilon}")
+    plt.plot(actual_df[muni], label="Actual")
+    plt.legend()
+    plt.title(f'Comparison of {muni} between the dataframe NumMun and the actual data')
+    plt.show()
 
-compare_epsilons_across_applications(find_closest_muni_to_avg())
+    plt.figure()
+    for epsilon in epsilons:
+        NumMunUnb(epsilon)
+        df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
+        plt.plot(df[muni], label=f"NumMunUnb with epsilon: {epsilon}")
+    plt.plot(actual_df[muni], label="Actual")
+    plt.legend()
+    plt.title(f'Comparison of {muni} between the dataframe NumMunUnb and the actual data')
+    plt.show()
+
+    plt.figure()
+    for epsilon in epsilons:
+        NumMunUnbGeo(epsilon)
+        df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
+        plt.plot(df[muni], label=f"NumMunUnbGeo with epsilon: {epsilon}")
+    plt.plot(actual_df[muni], label="Actual")
+    plt.legend()
+    plt.title(f'Comparison of {muni} between the dataframe NumMunUnbGeo and the actual data')
+    plt.show()
+
+    plt.figure()
+    for epsilon in epsilons:
+        NumMunUnbGeoLoc(epsilon)
+        df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
+        plt.plot(df[muni], label=f"NumMunUnbGeoLoc with epsilon: {epsilon}")
+    plt.plot(actual_df[muni], label="Actual")
+    plt.legend()
+    plt.title(f'Comparison of {muni} between the dataframe NumMunUnbGeoLoc and the actual data')
+    plt.show()
+
+
+compare_applications_across_epsilons('101')

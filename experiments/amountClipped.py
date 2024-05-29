@@ -28,8 +28,9 @@ epsilon = 1
 
 # Globally clip the data
 def global_clip():
+
     #find the total amount of consumption in the dataset
-    total_consumption_before = df_mun['ConsumptionkWh'].sum()
+    total_consumption_before_global = df_mun["ConsumptionkWh"].sum()
 
     #clip the data
     df_mun['ConsumptionkWh'], global_thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
@@ -49,26 +50,30 @@ def global_clip():
                 count += 1
 
     #find the total amount of consumption removed from the dataset after global clipping
-    total_consumption_after = 0
+    total_consumption_after_global = 0
     for column in actual_global_df.columns:
-        total_consumption_after += actual_global_df[column].sum()
+        total_consumption_after_global += actual_global_df[column].sum()
 
-    removed_consumption = total_consumption_before - total_consumption_after
+    removed_consumption_global = total_consumption_before_global - total_consumption_after_global
 
-    return count, removed_consumption
+    return count, removed_consumption_global
     
 
 
 # Locally clip the data
 def local_clip():
-    #find the total amount of consumption in the dataset
-    total_consumption_before = df_mun_2['ConsumptionkWh'].sum()
 
     #pivot to make the municipalities the columns
     df = df_mun_2.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
     
     # remove first row to account for uneven time intervals
     df = df.iloc[1:]
+
+    #find the total amount of consumption in the dataset
+    total_consumption_before_local = 0
+    for column in df.columns:
+        total_consumption_before_local += df[column].sum()
+
 
     # clip the data
     actual_local_df, local_thresh_list = clip_pr_column(df, epsilon)
@@ -82,13 +87,13 @@ def local_clip():
                 count += 1
     
     #find the total amount of consumption removed from the dataset after global clipping
-    total_consumption_after = 0
+    total_consumption_after_local = 0
     for column in actual_local_df.columns:
-        total_consumption_after += actual_local_df[column].sum()
+        total_consumption_after_local += actual_local_df[column].sum()
 
-    removed_consumption = total_consumption_before - total_consumption_after
+    removed_consumption_local = total_consumption_before_local - total_consumption_after_local
 
-    return count, removed_consumption
+    return count, removed_consumption_local
 
 
 global_count_list = []

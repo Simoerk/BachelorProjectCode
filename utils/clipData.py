@@ -62,7 +62,3 @@ def clip_pr_column(df, epsilon):
             df[column], thresh = clip(df, column, epsilon)
             thresh_list.append(thresh)
     return df, thresh_list
-
-#data = [21, 123, 213, 276, 282, 323, 374, 424, 488, 523, 576, 628, 698, 734, 784, 1239, 1419, 12302, 102329]
-
-#print(quantileSelection(data, 0.999 * np.size(data)))

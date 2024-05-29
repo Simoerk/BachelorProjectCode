@@ -11,16 +11,16 @@ true_data101_2 = true_data101[:-1]
 differences = []
 
 def simulateDifferentialAttack(epsilon):
-    for _ in range(10):
+    for _ in range(3):
         # Load the noisy data
         NumMunUnbGeoLoc(epsilon)
         noisy_data = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
-        mun101 = noisy_data['101']
+        mun101 = noisy_data['825']
 
         # Make a copy of the noisy data
         NumMunUnbGeoLoc(epsilon)
         noisy_data_copy = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
-        mun101_copy = noisy_data_copy['101']
+        mun101_copy = noisy_data_copy['825']
 
         # Remove last element of mun101_copy
         mun101_copy = mun101_copy[:-1]
