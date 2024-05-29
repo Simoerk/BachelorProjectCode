@@ -14,6 +14,10 @@ from utils.muniRegion import *
 
 
 def NumMun(epsilon):
+
+    epsilon = epsilon/2
+
+
     # Differential privacy on Dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
 
