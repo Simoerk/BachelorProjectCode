@@ -16,7 +16,8 @@ def NumMunUnbGeoLoc(epsilon):
     # Group by HourDK and MunicipalityNo and sum the ConsumptionkWh
     df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
-
+    # split epsilon because two mechanisms
+    epsilon = epsilon/2
 
     # create the result df
     result_df = pd.DataFrame()

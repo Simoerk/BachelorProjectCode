@@ -1,5 +1,4 @@
 *.pyc
 __pycache__/
-results/
-data/
-Data/
+*.csv
+*.png

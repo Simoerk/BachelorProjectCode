@@ -5,13 +5,12 @@ from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.NumMunUnb import NumMunUnb
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
-
-import scipy.stats as stats
 import math
 from utils.laplace import *
 from decimal import Decimal, getcontext
 from utils.load_dataset import load_dataset
 from utils.clipData import clip
+import scipy.stats as stats
 
 # Set the precision (number of decimal places)
 getcontext().prec = 49
@@ -24,13 +23,14 @@ def ai_decimal(i, epsilon):
     # Example conversion, replace with your actual scale logic
     return Decimal(ai(i, epsilon))
 
-#epsilons = [Decimal('0.1'), Decimal('1'), Decimal('2')]
-epsilons = [0.1, 1, 2]
+epsilons = [0.5, 5]
+# Import and clip the real data
+#real_df = pd.read_csv('results/real_consumption_sums.csv')
+#real_df = clip_pr_column(real_df)
 
 
 
 for epsilon in epsilons:
-    print("\n")
     print("Epsilon: ", epsilon)
 
     # Run the differential privacy applications
@@ -123,14 +123,14 @@ for epsilon in epsilons:
                         bin_t = [int(x) for x in bin(t)[2:].zfill(num_bits)]
                         bin_t.reverse()
                         i = next(i for i, bit in enumerate(bin_t) if bit != 0)
+
+                        T = len(df)
                         
                         
                         # noisy_t, real_t, real_t_minus_1 need to be Decimal
                         noisy_t_decimal = Decimal(str(noisy_t))
                         real_t_decimal = Decimal(str(real_t))
                         real_t_minus_1_decimal = Decimal(str(real_t_minus_1))
-
-                        T = len(df)
 
                         if df_name == "NumMun_df": #import scipy.stats.laplace.pdf(x, scale)
                             # Calculate probabilities using Decimal for high precision
@@ -145,7 +145,6 @@ for epsilon in epsilons:
                             #print("p_1: ", p_1)
                             #print("p_2: ", p_2)
 
-
                         else: 
                             # Calculate probabilities using Decimal for high precision
                             #p_1_old = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (ai_decimal(i, 0.5)/epsilon)))
@@ -156,58 +155,34 @@ for epsilon in epsilons:
 
                         # Compute the ratio of probabilities and compare it to exp(1)
                         if p_2 == 0:  # Avoid division by zero
-                            #ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
-                            ratio = np.inf()
+                            ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
                         if p_1 == 0:
-                            #ratio = Decimal('Infinity')
-                            ratio = np.inf()
+                            print("Error: p_1 is zero")
                             continue
                         else:
                             ratio = p_1 / p_2
 
-                        #epsilon = Decimal(epsilon)
-                        #exp_epsilon = epsilon.exp()
                         exp_epsilon = np.exp(epsilon)
-
-
-                        if ratio > exp_epsilon: 
-                            print(f"Ratio condition met for {muni} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
-                    
                         
-                            if p_1 == 0 and ai(i, 0.5) == 1:
-                                count1 +=1
-                            elif p_1 != 0 and ai(i, 0.5) == 1:
-                                count2 += 1
-                            elif p_1 == 0 and ai(i, 0.5) != 1:
-                                count3 += 1
-                            elif p_1 != 0 and ai(i, 0.5) != 1:
-                                count4 += 1
-                            elif np.float64(noisy_t) < 0:
-                                count5 += 1
-                            else:
-                                count6 += 1
-                            outliers[df_name].append((t, muni, ratio))
+                        if epsilon == 0.5 and ratio < exp_epsilon:
+                            if ratio > (exp_epsilon-0.01):
+                                print("epsilon : ", epsilon)
+                                print("epsilon.exp(): ", epsilon.exp())
+                                print("ratio: ", ratio)
+                                print("p_1: ", p_1)
+                                print("p_2: ", p_2)
+                        if epsilon == 5 and ratio < exp_epsilon:
+                            if ratio > (exp_epsilon-50):
+                                print("epsilon : ", epsilon)
+                                print("epsilon.exp(): ", epsilon.exp())
+                                print("ratio: ", ratio)
+                                print("p_1: ", p_1)
+                                print("p_2: ", p_2)
+                                
+                        
+                                
+                      
 
-                        else:
-                            if p_1 > 1 or p_2 > 1:
-                                print(f"p_1 = {p_1} and p_2 = {p_2} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
                         
 
-        print("Outliers for ", df_name)
-        print("count1: ", count1)
-        count1 = 0
-        print("count2: ", count2)
-        count2=0
-        print("count3: ", count3)
-        count3=0
-        print("count4: ", count4)
-        count4=0
-        print("count5: ", count5)
-        count5=0
-        print("\n")
 
-    # Print the count of outliers for each DataFrame
-    for name, data in outliers.items():
-        print(f"Epsilon: {epsilon} Application: {name} - Total Outliers: {len(data)}")
-
-    
