@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
-from Mechanisms.BinaryMechanism2D import binary_mechanism_unbounded
+from Mechanisms.BinaryMechanism2D import binary_mechanism_geo
 from utils.clipData import clip
 from utils.muniRegion import give_region
 from utils.load_dataset import load_dataset
@@ -9,6 +9,9 @@ from utils.scale import downScale, upScale
 import time
 
 def NumMunUnbGeo(epsilon):
+
+    epsilon = epsilon/2
+
     # Differential privacy on Dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
 
@@ -42,7 +45,7 @@ def NumMunUnbGeo(epsilon):
 
     #Calling the mechanism timed
     start_time = time.time()
-    result_df = binary_mechanism_unbounded(epsilon, df, result_df, 0.5)
+    result_df = binary_mechanism_geo(epsilon, df, result_df, 0.5)
     end_time = time.time()
 
     #Print the time

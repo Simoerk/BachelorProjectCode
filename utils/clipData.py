@@ -49,7 +49,7 @@ def clipData(dataset, thresh):
 def clip(df, column, epsilon):
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
-    thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted), epsilon)
+    thresh = quantileSelection(df_cons_sorted, 0.99 * np.size(df_cons_sorted), epsilon)
     clippedData = clipData(df_column, thresh)
     return clippedData, thresh
 

@@ -45,4 +45,4 @@ def mod_binary_mechanism(epsilon, stream, theta):
 
         t_newlast = t
     
-    return B, alpha_hat, t_newlast+1
+    return B

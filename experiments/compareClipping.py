@@ -16,11 +16,11 @@ df_mun['MunicipalityNo'] = df_mun['MunicipalityNo'].astype(str)
 df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
 # Clip data with different thresholds
-thresholds = [0.1, 0.5, 1, 2, 5]
-clipped_dfs = [df_mun.copy() for _ in thresholds]
+epsilons = [0.1, 0.5, 1, 2, 5]
+clipped_dfs = [df_mun.copy() for _ in epsilons]
 
-for df, thresh in zip(clipped_dfs, thresholds):
-    df['ConsumptionkWh'], _ = clip(df, 'ConsumptionkWh', thresh)
+for df, epsilon in zip(clipped_dfs, epsilons):
+    df['ConsumptionkWh'], _ = clip(df, 'ConsumptionkWh', epsilon)
 
 # Pivot the original and clipped dataframes
 df_mun = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
@@ -45,6 +45,6 @@ def show_comparison_for_specific_muni(df_list, label_list, muni):
     plt.title(f'Comparison of {muni} between the dataframes: {label_list}')
     plt.show()
 
-labels = ['df_mun'] + [f'clipped{thresh}' for thresh in thresholds]
+labels = ['df_mun'] + [f'clipped{epsilon}' for epsilon in epsilons]
 for muni in [101, 825]:
     show_comparison_for_specific_muni([df_mun] + clipped_dfs, labels, muni)

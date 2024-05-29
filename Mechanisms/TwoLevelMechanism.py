@@ -6,7 +6,7 @@ from utils.laplace import laplace_mechanism
 def two_level_mechanism(T, epsilon, sigma, B):
     # Initialize alpha and beta
     alpha = np.zeros(T)
-    beta = np.zeros(T // B + (T % B > 0))  
+    beta = np.zeros(T // B + (T % B > 0))  # this is one longer than need to be. Could be simplified using floor.
     
     # Mechanism
     for t in range(1, T + 1):
