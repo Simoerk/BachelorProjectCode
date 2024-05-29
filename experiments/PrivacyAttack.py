@@ -10,6 +10,7 @@ from utils.laplace import *
 from decimal import Decimal, getcontext
 from utils.load_dataset import load_dataset
 from utils.clipData import clip
+import scipy.stats as stats
 
 # Set the precision (number of decimal places)
 getcontext().prec = 49
@@ -22,7 +23,7 @@ def ai_decimal(i, epsilon):
     # Example conversion, replace with your actual scale logic
     return Decimal(ai(i, epsilon))
 
-epsilons = [Decimal('0.5'), Decimal('5')]
+epsilons = [0.5, 5]
 # Import and clip the real data
 #real_df = pd.read_csv('results/real_consumption_sums.csv')
 #real_df = clip_pr_column(real_df)
@@ -122,6 +123,8 @@ for epsilon in epsilons:
                         bin_t = [int(x) for x in bin(t)[2:].zfill(num_bits)]
                         bin_t.reverse()
                         i = next(i for i, bit in enumerate(bin_t) if bit != 0)
+
+                        T = len(df)
                         
                         
                         # noisy_t, real_t, real_t_minus_1 need to be Decimal
@@ -129,15 +132,27 @@ for epsilon in epsilons:
                         real_t_decimal = Decimal(str(real_t))
                         real_t_minus_1_decimal = Decimal(str(real_t_minus_1))
 
-                        if df_name == "NumMun_df":
+                        if df_name == "NumMun_df": #import scipy.stats.laplace.pdf(x, scale)
                             # Calculate probabilities using Decimal for high precision
-                            p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/epsilon)))
-                            p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/epsilon)))
+                            #p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/epsilon)))
+                            #p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/epsilon)) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/epsilon)))
+
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(np.log(T)/epsilon))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(np.log(T)/epsilon))
+
+                            #print("p_1_old: ", p_1_old)
+                            #print("p_2_old: ", p_2_old)
+                            #print("p_1: ", p_1)
+                            #print("p_2: ", p_2)
+
                         else: 
                             # Calculate probabilities using Decimal for high precision
-                            p_1 = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (ai_decimal(i, 0.5)/epsilon)))
-                            p_2 = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (ai_decimal(i, 0.5)/epsilon)))
+                            #p_1_old = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (ai_decimal(i, 0.5)/epsilon)))
+                            #p_2_old = (Decimal('1') / (Decimal('2') * (ai_decimal(i, 0.5)/epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (ai_decimal(i, 0.5)/epsilon)))
                             
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(ai(i, 0.5)/np.float64(epsilon)))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(ai(i, 0.5)/np.float64(epsilon)))
+
                         # Compute the ratio of probabilities and compare it to exp(1)
                         if p_2 == 0:  # Avoid division by zero
                             ratio = Decimal('Infinity')  # ratio to infinity if p_2 is zero because large
@@ -147,17 +162,17 @@ for epsilon in epsilons:
                         else:
                             ratio = p_1 / p_2
 
-                        exp_epsilon = epsilon.exp()
+                        exp_epsilon = np.exp(epsilon)
                         
-                        if epsilon == Decimal('0.5') and ratio < exp_epsilon:
-                            if ratio > (exp_epsilon-Decimal('0.01')):
+                        if epsilon == 0.5 and ratio < exp_epsilon:
+                            if ratio > (exp_epsilon-0.01):
                                 print("epsilon : ", epsilon)
                                 print("epsilon.exp(): ", epsilon.exp())
                                 print("ratio: ", ratio)
                                 print("p_1: ", p_1)
                                 print("p_2: ", p_2)
-                        if epsilon == Decimal('5') and ratio < exp_epsilon:
-                            if ratio > (exp_epsilon-Decimal('50')):
+                        if epsilon == 5 and ratio < exp_epsilon:
+                            if ratio > (exp_epsilon-50):
                                 print("epsilon : ", epsilon)
                                 print("epsilon.exp(): ", epsilon.exp())
                                 print("ratio: ", ratio)

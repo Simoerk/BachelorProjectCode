@@ -191,7 +191,7 @@ for epsilon in epsilons:
                         else:
                             if p_1 > 1 or p_2 > 1:
                                 print(f"p_1 = {p_1} and p_2 = {p_2} at time {t+1} in {df_name} with ratioe: ", ratio, ">", exp_epsilon)
-
+                        
 
         print("Outliers for ", df_name)
         print("count1: ", count1)

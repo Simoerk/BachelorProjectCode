@@ -5,6 +5,7 @@ import math
 from DifferentialApplication.Num import Num
 from DifferentialApplication.Bin import Bin
 from decimal import Decimal, getcontext
+import scipy.stats as stats
 
 
 def log2_decimal(x):
@@ -29,15 +30,15 @@ np.random.seed(42)
 
 
 
-epsilons = [Decimal('0.1'), Decimal('0.5'), Decimal('1'), Decimal('2')]
+epsilons = [0.1, 0.5, 1, 2]
 
 for epsilon in epsilons:
     print("Epsilon: ", epsilon)
 
 
-    Bin(np.float64(epsilon))
+    Bin(epsilon)
 
-    Num(np.float64(epsilon))
+    Num(epsilon)
 
 
 
@@ -69,8 +70,8 @@ for epsilon in epsilons:
     # Parameters
   
     #B = 504
-    T = Decimal(len(real_num_df))
-    T_fil = Decimal(len(real_num_fil_df))
+    T = len(real_num_df)
+    T_fil = len(real_num_fil_df)
 
     print("Scaling...")
     for name, noisy_df, real_df in dataframe_pairs:
@@ -127,14 +128,23 @@ for epsilon in epsilons:
                         real_t_minus_1_decimal = Decimal(str(real_t_minus_1))
 
                         if name == "Bin":
-                            p_1 = (Decimal('1') / (Decimal('2') * (Decimal('1')/(Decimal('2')*epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(Decimal('2')*epsilon)))))
-                            p_2 = (Decimal('1') / (Decimal('2') * (Decimal('1')/((Decimal('2')*epsilon)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/((Decimal('2')*epsilon))))))
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(1/epsilon))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(1/epsilon))
+
+                            #p_1 = (Decimal('1') / (Decimal('2') * (Decimal('1')/(Decimal('2')*epsilon))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(Decimal('2')*epsilon)))))
+                            #p_2 = (Decimal('1') / (Decimal('2') * (Decimal('1')/((Decimal('2')*epsilon)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/((Decimal('2')*epsilon))))))
                         elif name == "Num":
-                            p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T)))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(epsilon/log2_decimal(T)))))
-                            p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/(epsilon/log2_decimal(T)))))
+                            #p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T)))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(epsilon/log2_decimal(T)))))
+                            #p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/(epsilon/log2_decimal(T)))))
+                            
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(1/(epsilon/np.log(T))))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(1/(epsilon/np.log(T))))
                         else:
-                            p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T_fil)))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(epsilon/log2_decimal(T_fil)))))
-                            p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T_fil)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/(epsilon/log2_decimal(T_fil)))))
+                            p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(1/(epsilon/np.log(T_fil))))
+                            p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(1/(epsilon/np.log(T_fil))))
+
+                            #p_1 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T_fil)))) * (np.exp(-abs(noisy_t_decimal - real_t_decimal) / (Decimal('1')/(epsilon/log2_decimal(T_fil)))))
+                            #p_2 = (Decimal('1') / (Decimal('2') * Decimal('1')/(epsilon/log2_decimal(T_fil)))) * (np.exp(-abs(noisy_t_decimal - real_t_minus_1_decimal) / (Decimal('1')/(epsilon/log2_decimal(T_fil)))))
                        
                         if p_2 == 0:  # Avoid division by zero
                             ratio = np.inf  # Set ratio to infinity if p_2 is zero
@@ -143,8 +153,8 @@ for epsilon in epsilons:
                             
 
                         
-                        exp_epsilon = epsilon.exp()
-                        exp_epsilon_2 = (Decimal('2')*exp_epsilon).exp()
+                        exp_epsilon = np.exp(epsilon)
+                        exp_epsilon_2 = np.exp(2*epsilon)
 
                         if ratio > exp_epsilon and name != "Bin":  
                             outliers[name].append((t, muni, ratio))
