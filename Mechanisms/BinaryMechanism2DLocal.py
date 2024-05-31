@@ -6,15 +6,14 @@ from utils.muniRegion import *
 import sys
 import warnings
 
-
+# Removing warning from a future version of python
 warnings.filterwarnings('ignore', category=FutureWarning, message=".*Series.__getitem__ treating keys as positions is deprecated.*")
 
 
-
-# Define the modified binary mechanism as an unbounded function
+# Function that implements a local geographical unbounded binary mechanism 
 def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
 
-    print("begin binary mechanism unbounded")
+    print("begin binary mechanism unbounded geo loc")
 
     # Get the region dictionary
     region_dict = give_regionDictionary()
@@ -62,13 +61,10 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
     # Optionally, to reduce fragmentation, reassign a copy to itself
     scale_df = scale_df.copy()
 
-    #print("Updated scale_df: ", scale_df)
-
     t_last = 1
 
+    # Loop through each time step
     for t in range(t_last, t_last+num_rows):
-
-        #print("time: ", t-1)
 
         # Determine the number of bits needed for binary representation of t
         num_bits = int(math.log2(t)) + 1
@@ -79,21 +75,21 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
         i = next(i for i, bit in enumerate(bin_t) if bit != 0)
         k = 0
         
+        # Initialize regions
         for region in regional_values:
             regional_values[region] = 0.0
         
-
+        # Loop through each municipality
         for muni_number in give_region():
             # Check if the municipality number exists as a column in the DataFrame
             muni_number = int(muni_number)
 
             if muni_number in df.columns:
 
-
                 if muni_number not in result_df.columns:
                     result_df[muni_number] = None
-            
-            
+
+                # Extend the alpha lists
                 for alpha in alpha2D:
                     if len(alpha) < num_bits:
                         alpha.extend([0])
@@ -108,6 +104,7 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
                     if muni_number not in problem_list:
                         problem_list.append(muni_number)
 
+                # Add the value to the regional sum
                 regional_values[give_region().get(str(muni_number))] += (sum(alpha2D[k][j] for j, bit in enumerate(bin_t) if bit == 1)) * scale_df.loc['max_val', muni_number]
             
                 # Reset previous values to 0
@@ -115,9 +112,7 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
                     alpha2D[k][j] = 0
                     alpha_hat2D[k][j] = 0
 
-                # Add Laplacian noise to alpha_hat_i
-                #lap = laplace_mechanism(ai(i, theta),epsilon)
-                #lap = laplace_mechanism(epsilon)
+                # Add Laplacian noise to alpha_hat_i using the ai function in laplace
                 alpha_hat2D[k][i] = laplace_mechanism(alpha2D[k][i], ai(i, theta),epsilon)
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
                 k+=1
@@ -128,14 +123,15 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
                 
 
         DK = 0.0
+        # Calculate the total sum of all regions and get the DK value
         for region in regional_values:
             DK += regional_values[region]
-            #regional_data_df.at[t-1, region] = (regional_values[region]/regional_tresh[region]) + laplace_mechanism(epsilon)
             regional_data_df.at[t-1, region] = laplace_mechanism((regional_values[region]/regional_tresh[region]),ai(i, theta),epsilon)
             
+        # Add noise to DK value
         regional_data_df.at[t-1, "DK"] = laplace_mechanism((DK/max_region_thresh),ai(i, theta),epsilon)
-        #regional_data_df.at[t-1, "DK"] = (DK/max_region_thresh + laplace_mechanism(epsilon))
 
+    # Concatenate the result DataFrame with the regional data DataFrame and return the result
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)
     return result_df_con, scale_df
 

@@ -1,6 +1,7 @@
 import pandas as pd
 from utils.muniRegion import *
 
+# Experiment to check the consistency of NumMunUnbGeo's resulting dataset
 
 # Reading the data
 NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')

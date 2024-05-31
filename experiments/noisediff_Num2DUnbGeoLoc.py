@@ -1,9 +1,9 @@
 import pandas as pd
 from utils.load_dataset import load_dataset
 
+# The function to compare two datasets 
+# and identify the largest, median, and total differences in each common column 
 def compare_datasets(df1, df2):
-    """Compare two datasets and identify the largest, median, and total differences in each common column,
-    including the HourDK of the largest difference and the values that were compared."""
     print("Comparing datasets...")
 
     # Identify common columns between the two DataFrames, assuming 'HourDK' is not a value to be compared directly
@@ -41,6 +41,7 @@ def compare_datasets(df1, df2):
     else:
         print("No significant differences found or no common numeric columns.")
 
+# Main function
 def main():
     # Load datasets
     df_mun1 = load_dataset("results/Num2DUnbGeoLoc_noisy_result.csv", 1000000)

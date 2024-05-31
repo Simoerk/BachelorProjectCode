@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.scale import downScaleDf, upScaleDf, upScale, downScale
-import math
 from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.Num import Num
@@ -12,25 +11,22 @@ from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 from DifferentialApplication.NumMunUnb import NumMunUnb
 
+# Experiment that calculates the utility of the Bin, Num, NumMun and NumMunUnb mechanisms
 
-
+# Function to convert a DataFrame to numeric
 def convert_df_to_numeric(df):
     for column in df.columns:
         df[column] = pd.to_numeric(df[column], errors='coerce')
     return df
 
-
 np.random.seed(42) #random seed such that the tests generated are always the same
 
 # # Load datasets
-
 real_bin_df = pd.read_csv('results/Bin_result.csv')
 real_num_fil_df  = pd.read_csv('results/num_fil_result.csv')
 real_num_df = pd.read_csv('results/num_result.csv')
 real_mun_df = pd.read_csv('results/real_consumption_sums.csv')
 real_reg_df = pd.read_csv('results/regional_consumption_sums.csv')
-
-
 
 # Parameters
 delta = 0.001
@@ -39,17 +35,15 @@ num_runs = 10
 intermediate_steps = False
 theta = 0.5
 
-
-#epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]
-#epsilons = [0.1, 0.5, 1, 2]
+# Epsilons to test
 epsilons = [2, 1, 0.5, 0.1]
 
+# Initialize container for total outliers count
 epsilon_errors = {epsilon: [] for epsilon in epsilons}
 
+# Run applications for each epsilon
 for epsilon in epsilons:
-
     print("\nrunning epsilon: ", epsilon)
-
     print("\nRunning Bin...")
     Bin(epsilon)
     print("\nRunning Mun...")
@@ -64,11 +58,7 @@ for epsilon in epsilons:
     NumMunUnbGeoLoc(epsilon)
 
 
-
-
-
-
-    #update the dataframes
+    # Update the dataframes
     Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
     Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
     Num_df = pd.read_csv('results/Num_noisy_result.csv')
@@ -77,7 +67,7 @@ for epsilon in epsilons:
     NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
     NumMunUnb_df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
 
-    #Re initialize the dataframe paris
+    # Re initialize the dataframe paris
     dataframe_pairs = [
     ('Bin', Bin_df, real_bin_df),
     ('Num', Num_df, real_num_df),
@@ -88,7 +78,7 @@ for epsilon in epsilons:
     ('NumMunUnbGeoLoc', NumMunUnbGeoLoc_df, real_reg_df)
     ]
 
-
+    # Calculate the length of the dataframes        
     for name, noisy_df, real_df in dataframe_pairs:
         if 'HourDK' in noisy_df.columns:
             noisy_df.drop(columns=['HourDK'], inplace=True)
@@ -112,9 +102,7 @@ for epsilon in epsilons:
         index = next(i for i, pair in enumerate(dataframe_pairs) if pair[0] == name)
         dataframe_pairs[index] = (name, noisy_df, real_df)
 
-
-
-
+    # Initialize containers for outliers and errors
     outliers = {name: [] for name, _, __ in dataframe_pairs}
     errors = {name: [] for name, _, __ in dataframe_pairs}
 
@@ -154,30 +142,17 @@ for epsilon in epsilons:
                 
                 errors[name].append((real_value - noisy_value))
 
-                    #print(f"\nmuni: {muni}, t: {t}, real_value: {real_value}, noisy_value: {noisy_value}, bound: {bound}")
-                    #print(f"real-noisy difference: {np.abs(np.float64(real_value) - np.float64(noisy_value))}")
-
-
-                
-            
 
     # Aggregate results from this run
     for name in outliers:
-        #average_outliers[name] += len(outliers[name])
         print("Outlier count: " , name, ": ", len(outliers[name]))
 
-    
-
     epsilon_errors[epsilon] = errors
-    #print("errors: ", errors)
-
 
     if intermediate_steps:
         # Print the count of outliers for each DataFrame
         for name, data in outliers.items():
             print(f"{name} - Total Outliers: {len(data)}")
-
-       
 
 # First, we'll collect data by name
 name_data = {}

@@ -2,6 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Experiment that shows the standard deviation of the differences 
+# between the actual data and the result of NumMunUnbGeoLoc
+
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/regional_consumption_sums.csv')
 result_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
@@ -45,7 +48,7 @@ print("avg_dis: ", avg_dis)
 # Calculate the standard deviation of the differences
 std_dev = std_deviation(actual_df, result_df)
 
-# Plot the average discrepancy
+# Plot the average deviation
 plt.figure(figsize=(10, 6))
 plt.plot(avg_dis.index, avg_dis.values, marker='o', linestyle='-')
 plt.title('Average deviation between Actual and NumMunUnbGeoLoc')

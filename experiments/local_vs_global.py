@@ -4,6 +4,8 @@ import numpy as np
 
 # UNDER CONSTRUCTION
 
+# This file is used to compare the results of the local and global applications with plots  
+
 # Make sure to run the following files:
 # Generate_pure_dataset.py , Num2DUnbGeo.py , Num2DUnbGeoLoc.py
 # They will generate the needed csv files

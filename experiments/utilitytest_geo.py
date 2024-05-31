@@ -4,13 +4,13 @@ from utils.scale import downScaleDf, upScaleDf, upScale, downScale
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 
+# Experiment that calculates the utility of the NumMunUnbGeoLoc and NumMunUnbGeo mechanisms
 
+# Function to convert a DataFrame to numeric
 def convert_df_to_numeric(df):
     for column in df.columns:
         df[column] = pd.to_numeric(df[column], errors='coerce')
     return df
-
-
 
 # Parameters
 epsilon = 1
@@ -19,13 +19,13 @@ delta = 0.001
 num_runs = 3
 intermediate_steps = False
 
-
+# Load the real data sums
 real_df = pd.read_csv('results/regional_consumption_sums.csv')
-
 
 # Initialize container for total outliers count
 total_outliers = {'NumMunUnbGeo_df': 0, 'NumMunUnbGeoLoc_df': 0, "real_df": 0}
 
+# epsilon parameter
 epsilon = 1
 
 
@@ -44,19 +44,15 @@ for _ in range(num_runs):
     NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
 
 
-
+    # The columns of regions and Denmark is removed
     NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, -6:]
     NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, -6:]
     real_df = real_df.iloc[:, -6:]
-
-
 
     # List of dataframes for processing
     dfs = [NumMunUnbGeo_df, NumMunUnbGeoLoc_df, real_df]
     #outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc_df']}
     outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
-
-
 
     #Scale down. using global_max because we know the max is larger than the absolute of the smallest
     max_diffs = []
@@ -72,14 +68,10 @@ for _ in range(num_runs):
     # Find the global maximum difference across all columns and DataFrames
     global_max = max(max_diffs)
 
-
-
-
+    # Scale the DataFrames
     for df in dfs:
         for column in df.columns:
             df[column] = (df[column] - 0) / (global_max - 0)
-
-
 
     # Loop over each dataframe
     for df_name, df in zip(outliers.keys(), dfs):
@@ -105,8 +97,6 @@ for _ in range(num_runs):
         # Print the count of outliers for each DataFrame
         for df_name, municipality_data in outliers.items():
             print(f"{df_name} - Total Outliers: {len(municipality_data)}")
-
-
 
 
 # Calculate averages

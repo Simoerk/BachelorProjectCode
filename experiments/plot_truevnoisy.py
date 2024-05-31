@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Experiment to compare the summary statistics of the actual and noisy datasets
+
 def load_dataset(file_path):
     """Load dataset from a CSV file."""
     print(f"Loading dataset from {file_path}...")
@@ -8,15 +10,9 @@ def load_dataset(file_path):
     print("Dataset loaded successfully!")
     return data
 
+# Plots the comparison between true and noisy data for specified columns
 def plot_comparison(true_df, noisy_df, columns, title_prefix=''):
-    """
-    Plots comparisons between true and noisy data for specified columns.
-    Args:
-    - true_df (DataFrame): DataFrame containing the true data.
-    - noisy_df (DataFrame): DataFrame containing the noisy data.
-    - columns (list): List of column names to plot.
-    - title_prefix (str): Optional prefix for the plot title to indicate the column.
-    """
+    
     plt.figure(figsize=(12, 8))
     
     # Plot each column.
@@ -33,19 +29,12 @@ def plot_comparison(true_df, noisy_df, columns, title_prefix=''):
     plt.tight_layout()
     plt.show()
 
-
+# Plots the comparison between true and noisy data for specified columns
 def plot_comparison(true_df, noisy_df, columns, title_prefix=''):
-    """
-    Plots comparisons between true and noisy data for specified columns, each on a separate subplot.
-    Args:
-    - true_df (DataFrame): DataFrame containing the true data.
-    - noisy_df (DataFrame): DataFrame containing the noisy data.
-    - columns (list): List of column names to plot.
-    - title_prefix (str): Optional prefix for the plot title to indicate the column.
-    """
+
     # Determine the number of subplots needed
     num_columns = len(columns)
-    plt.figure(figsize=(12, num_columns * 4))  # Adjust the figure size as needed
+    plt.figure(figsize=(12, num_columns * 4)) # Adjust height based on number of columns
 
     for i, column in enumerate(columns):
         if column in true_df.columns and column in noisy_df.columns:
@@ -62,8 +51,7 @@ def plot_comparison(true_df, noisy_df, columns, title_prefix=''):
     plt.tight_layout()
     plt.show()
 
-
-
+# Main function to run the comparison
 def main():
     # Load datasets
     df_mun1 = load_dataset("results/Num2DUnbGeoLoc_noisy_result.csv")
@@ -73,14 +61,10 @@ def main():
     df_mun1['HourDK'] = pd.to_datetime(df_mun1['HourDK'])
     df_mun2['HourDK'] = pd.to_datetime(df_mun2['HourDK'])
 
-    # Example usage: Compare specific columns
-    columns_to_compare = ['101', '201', '151']  # Add more column IDs based on your interest
+    columns_to_compare = ['101', '201', '151'] # Specify columns to compare
     plot_comparison(df_mun1, df_mun2, columns_to_compare, title_prefix='Column')
 
-
-
-
-
+# Main function runs when the file is executed
 if __name__ == "__main__":
     main()
 

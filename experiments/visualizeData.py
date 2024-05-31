@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Experiment that visualize the data from the NumMunUnbGeoLoc and real data
+
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/regional_consumption_sums.csv')
 result_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
@@ -108,11 +110,9 @@ regions = {
         "851": "Nordjylland",
     }
 
+# Function that creates plots of the data
 def visualize_data(data):
-    # Read the CSV file into a DataFrame
 
-    
-    #df = pd.read_csv(data)
     df = data
 
     # Extract relevant columns (municipality numbers)
@@ -155,7 +155,7 @@ def visualize_data(data):
     plt.show()
 
 
-
+# Plot the aggregated consumption for each region
 def plot_consumption(df1, df2):
     # Extract relevant columns (municipality numbers)
     municipality_columns = df1.columns[1:]
@@ -203,7 +203,7 @@ def plot_consumption(df1, df2):
     plt.tight_layout()
     plt.show()
 
-
+# Plot a bar plot comparing the actual consumption with the noisy consumption
 def plot_consumption_barplot(df1, df2):
     # Remove extra columns from df2
     df2 = df2.iloc[:, :len(df1.columns)]

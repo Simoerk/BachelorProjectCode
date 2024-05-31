@@ -4,6 +4,8 @@ import numpy as np
 
 # UNDER CONSTRUCTION
 
+# This file is used to compare the results of the different applications with plots
+
 # Make sure to run the following files:
 # Generate_pure_dataset.py , NumMunUnbGeo.py , NumMunUnbGeoLoc.py
 # They will generate the needed csv files
@@ -14,11 +16,11 @@ NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
 NumMunUnb_df =  pd.read_csv('results/NumMunUnb_noisy_result.csv')
 NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
 
-#remove regions and DK in the last column of the geographical data
+# Remove regions and DK in the last column of the geographical data
 NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
 NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
 
-#Show comparison between actual and local noisy data for a specific municipality
+# Show comparison between actual and local noisy data for a specific municipality
 def show_comparison_for_specific_muni(df_list, label_list, muni):
     plt.figure()
     for (df, lab) in zip(df_list, label_list):
@@ -29,7 +31,6 @@ def show_comparison_for_specific_muni(df_list, label_list, muni):
     plt.ylabel('Consumption in kWh')
     plt.show()
 
-
+# Show the comparison for a specific municipality
 show_comparison_for_specific_muni([actual_df, NumMunUnbGeoLoc_df, NumMunUnbGeo_df, NumMunUnb_df, NumMun_df], ['Actual', 'NumMunUnbGeoLoc', 'NumMunUnbGeo', 'NumMunUnb', 'NumMun'], '825')
-
 show_comparison_for_specific_muni([actual_df, NumMunUnbGeoLoc_df, NumMunUnbGeo_df, NumMunUnb_df, NumMun_df], ['Actual', 'NumMunUnbGeoLoc', 'NumMunUnbGeo', 'NumMunUnb', 'NumMun'], '101')

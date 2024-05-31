@@ -1,3 +1,5 @@
+# Implementation of range queries on data
+
 # Function to perform range queries on floating-point numbers
 def el_query(lst, start, end):
     return (lst[end]-lst[start]) * 3561633.986

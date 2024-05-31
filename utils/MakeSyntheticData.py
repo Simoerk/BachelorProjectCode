@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.scale import downScaleDf, upScaleDf, upScale, downScale
-import math
 from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.Num import Num
@@ -12,6 +11,9 @@ from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 from DifferentialApplication.NumMunUnb import NumMunUnb
 
+# util to attempt making synthetic data for the different applications
+
+# Function to convert all columns in a dataframe to numeric
 def convert_df_to_numeric(df):
     for column in df.columns:
         df[column] = pd.to_numeric(df[column], errors='coerce')
@@ -23,18 +25,16 @@ def calculate_differences(df):
     return diff_df
 
 
-# should be saved to differences_df.to_csv(f"results/Synthetic/{name}_syn_epsilon={epsilon}.csv", index=False)
+# Should be saved to differences_df.to_csv(f"results/Synthetic/{name}_syn_epsilon={epsilon}.csv", index=False)
 
-# epsilons to test
+# Epsilons to test
 epsilons = [2, 1, 0.5]
-#epsilons = [1]
 
 epsilon_errors = {epsilon: [] for epsilon in epsilons}
 
+# Loop through the epsilons
 for epsilon in epsilons:
-
     print("\nrunning epsilon: ", epsilon)
-
     print("\nRunning Bin...")
     Bin(epsilon)
     print("\nRunning Mun...")
@@ -67,8 +67,6 @@ for epsilon in epsilons:
         "NumMunUnbGeo_noisy": NumMunUnbGeo_df,
         "NumMunUnb_noisy": NumMunUnb_df
     }
-
-    
 
     # Calculate differences for each dataframe and save to new CSV files
     for name, df in noisy_dfs.items():

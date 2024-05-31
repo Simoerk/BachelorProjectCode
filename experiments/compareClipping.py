@@ -45,6 +45,7 @@ def show_comparison_for_specific_muni(df_list, label_list, muni):
     plt.title(f'Comparison of {muni} between the dataframes: {label_list}')
     plt.show()
 
+# Show the comparison for a specific municipality
 labels = ['df_mun'] + [f'clipped{epsilon}' for epsilon in epsilons]
 for muni in [101, 825]:
     show_comparison_for_specific_muni([df_mun] + clipped_dfs, labels, muni)

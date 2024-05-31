@@ -2,28 +2,15 @@ import numpy as np
 import pandas as pd
 import math
 from utils.laplace import laplace_mechanism
-
-# def countDataset(D, start, end):
-#     count = 0
-#     for i in range(np.size(D)):
-#         if D[i] >= start and D[i] <= end:
-#             count += 1
-#     return count
     
 # Adds noise to the count of the dataset from start to mid
 def noisyCount(D, start, end, epsilon):
     count = end - start
-    # Unsure of we are adding the correct noise
-    #privacy_budget = 0.5
-    #scale = np.log(np.max(D)) / (2 * privacy_budget)
-    #scale = np.log(len(D)) / (2 * privacy_budget)
-    #noise = np.random.normal(0, scale)
-    #noise = laplace_mechanism(1, 1)
     scale = math.log2(len(D)) / (epsilon)
     noise = np.random.laplace(0, scale)
     return count + noise
 
-# Threshold is decided privately
+# Function that decides threshold privately with binary search  
 def quantileSelection(D, m, epsilon):
     left = 0
     right = len(D)-1
@@ -49,12 +36,12 @@ def clipData(dataset, thresh):
 def clip(df, column, epsilon):
     df_column = df[column]
     df_cons_sorted = np.sort(df_column)
-    thresh = quantileSelection(df_cons_sorted, 0.99 * np.size(df_cons_sorted), epsilon)
+    # Threshold is set to the 99.9% quantile
+    thresh = quantileSelection(df_cons_sorted, 0.999 * np.size(df_cons_sorted), epsilon)
     clippedData = clipData(df_column, thresh)
     return clippedData, thresh
 
-
-
+# Clips all columns in a dataset using the clip function
 def clip_pr_column(df, epsilon):
     thresh_list = []
     for column in df.columns:

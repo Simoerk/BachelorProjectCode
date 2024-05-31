@@ -7,7 +7,7 @@ from DifferentialApplication.Bin import Bin
 from decimal import Decimal, getcontext
 import scipy.stats as stats
 
-
+# Function to calculate the natural logarithm of x with base 2 in decimal
 def log2_decimal(x):
     # Ensure x is a Decimal instance
     x = Decimal(x)
@@ -17,6 +17,7 @@ def log2_decimal(x):
     # Use change of base formula: log2(x) = ln(x) / ln(2)
     return ln_x / ln_2
 
+# Function to convert a DataFrame to numeric
 def convert_df_to_numeric(df):
     for column in df.columns:
         df[column] = pd.to_numeric(df[column], errors='coerce')
@@ -28,35 +29,21 @@ getcontext().prec = 49
 #random seed for testing
 np.random.seed(42)
 
-
-
 epsilons = [0.1, 0.5, 1, 2]
 
 for epsilon in epsilons:
     print("Epsilon: ", epsilon)
 
-
     Bin(epsilon)
-
     Num(epsilon)
-
-
 
     # Load datasets
     real_bin_df = pd.read_csv('results/Bin_result.csv')
-
     real_num_fil_df  = pd.read_csv('results/num_fil_result.csv')
-
     real_num_df = pd.read_csv('results/num_result.csv')
-
     Bin_df = pd.read_csv('results/Bin_noisy_result.csv')
-
     Num_fil_df = pd.read_csv('results/Num_fil_noisy_result.csv')
-
     Num_df = pd.read_csv('results/Num_noisy_result.csv')
-
-
-
 
     # Pairing noisy and real dataframes
     dataframe_pairs = [
@@ -65,11 +52,7 @@ for epsilon in epsilons:
         ('Num_fil', Num_fil_df, real_num_fil_df),
     ]
 
-
-
-    # Parameters
-  
-    #B = 504
+    # Calculate the length of the dataframes
     T = len(real_num_df)
     T_fil = len(real_num_fil_df)
 
@@ -86,7 +69,6 @@ for epsilon in epsilons:
         # Calculate the absolute differences and find the maximum difference
         max_diff = real_df.diff().abs().max().max()
         
-
         for column in real_df.columns:
             # Scale both dataframes by the maximum difference
             noisy_df[column] = noisy_df[column] / max_diff
@@ -97,13 +79,9 @@ for epsilon in epsilons:
         dataframe_pairs[index] = (name, noisy_df, real_df)
 
     print("Done scaling...")
-            
 
 
     outliers = {name: [] for name, _, __ in dataframe_pairs}
-
-    
- 
 
     print("running check...")
     # Loop over each dataframe
@@ -150,8 +128,6 @@ for epsilon in epsilons:
                             ratio = np.inf  # Set ratio to infinity if p_2 is zero
                         else:
                             ratio = p_1 / p_2
-                            
-
                         
                         exp_epsilon = np.exp(epsilon)
                         exp_epsilon_2 = np.exp(2*epsilon)

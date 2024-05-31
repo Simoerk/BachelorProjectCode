@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import math
 
+# The util with laplace mechanism and ai function
+
 # Function to apply the Laplace mechanism along with the value for differential privacy 
 def laplace_mechanism(value, sensitivity, epsilon):
     # The sensitivity of a sum query is 1

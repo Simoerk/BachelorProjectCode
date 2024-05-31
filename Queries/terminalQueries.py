@@ -1,8 +1,11 @@
 import os
 import pandas as pd
 
+
+# Function to aggregate consumption by interval
 def aggregate_consumption_by_interval(df, municipality_numbers, start_time, end_time):
     
+    # Convert the municipality numbers to a list
     municipality_numbers_list = municipality_numbers.split(",")
     total_con = 0
 
@@ -28,11 +31,13 @@ def main():
 
     print("DataFrame loaded successfully.")
 
+    # For terminal queries to the user
     while True:
         municipality_number = str(input("Enter the municipality numbers: "))
         start_time = input("Enter the start time (YYYY-MM-DDTHH:MM:SS format): ")
         end_time = input("Enter the end time (YYYY-MM-DDTHH:MM:SS format): ")
 
+        # Call the function to aggregate consumption by interval on user input
         consumption_in_interval = aggregate_consumption_by_interval(df, municipality_number, start_time, end_time)
         print(f"Total consumption for Municipality {municipality_number} between {start_time} and {end_time}: {consumption_in_interval} kWh")
 

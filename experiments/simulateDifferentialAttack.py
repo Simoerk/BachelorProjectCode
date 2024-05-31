@@ -3,7 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 
-# Load the datasets
+# Experiment that attempts to attack the privacy of the NumMunUnbGeoLoc mechanism
+
+# Load the dataset with real consumption sums   
 true_data = pd.read_csv('results/real_consumption_sums.csv')
 true_data101 = true_data['101']
 true_data101_2 = true_data101[:-1]

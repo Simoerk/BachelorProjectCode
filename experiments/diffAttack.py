@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 from utils.scale import downScale
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 
+# Experiment that attempts to attack the privacy of the NumMunUnbGeoLoc mechanism 
+# in a simple manner 
+
 # Calculate the likelihood of obtaining the noisy outputs
 def laplace_likelihood(x, noisy_x, scale):
     return stats.laplace.pdf(noisy_x - x, scale=scale)

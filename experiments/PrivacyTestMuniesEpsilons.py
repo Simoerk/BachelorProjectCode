@@ -5,7 +5,6 @@ from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.NumMunUnb import NumMunUnb
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
-
 import scipy.stats as stats
 import math
 from utils.laplace import *
@@ -51,21 +50,12 @@ for epsilon in epsilons:
     real_df = real_df.iloc[1:]
     real_df = real_df.cumsum()
     real_df.to_csv("results/real_consumption_sums_test.csv", index=False)
-    #Make processed csv file
-    #real_df = real_df.iloc[1:]
-    #Make processed csv file MÅSKe fJERN?
-    #real_df.insert(0, 'HourDK', unique_times[1:])
-
-    
-
-
 
     # Load the noisy data
     #NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')
     NumMunUnbGeo_df = pd.read_csv('results/NumMunUnbGeo_noisy_result.csv')
     NumMunUnb_df = pd.read_csv('results/NumMunUnb_noisy_result.csv')
     NumMun_df = pd.read_csv('results/NumMun_noisy_result.csv')
-
 
     #NumMunUnbGeoLoc_df = NumMunUnbGeoLoc_df.iloc[:, :-6]
     NumMunUnbGeo_df = NumMunUnbGeo_df.iloc[:, :-6]
