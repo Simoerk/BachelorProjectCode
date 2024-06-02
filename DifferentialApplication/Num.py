@@ -26,7 +26,7 @@ def Num(epsilon):
 
     # We make two arrays
     # One without high values in the dataset, bad for privacy
-    # One with high values in the dataset
+    # One with high values in the dataset, better for utlity
 
     # Scale the unfiltered array to be between 0 and 1
     min_val_flip = 0
