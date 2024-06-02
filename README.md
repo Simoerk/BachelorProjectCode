@@ -18,7 +18,7 @@ python -m foldername.filename
 
 
 Folders:
-data - all data used by the applications and utilities.
+data - all data used by the applications and utilities. To make muniData.csv run utils.dataExtractor.
 DifferentialApplication: The different DifferenetialApplications
 experiments: experiments on differing aspects of the implementation
 Mechanisms: implementations of differentially private mechanisms
