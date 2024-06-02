@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from Mechanisms.BinaryMechanism2D import binary_mechanism_geo
 from utils.clipData import clip
@@ -9,7 +8,7 @@ import time
 # NumMunUnbGeo(epsilon) applies the binary mechanism to the electricity dataset from Energinet
 def NumMunUnbGeo(epsilon):
 
-    # To preserve epsilon differential privacy
+    # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
     epsilon = epsilon/2
 
     # Load dataset with Municipality, time and housing/heating category
@@ -24,7 +23,7 @@ def NumMunUnbGeo(epsilon):
     # Downscale
     df_mun['ConsumptionkWh'], thresh = downScale(df_mun, 'ConsumptionkWh')
 
-    #Create result dataframe
+    # Create result dataframe
     result_df = pd.DataFrame()
     unique_times = sorted(df_mun['HourDK'].unique())
     result_df['HourDK'] = unique_times[1:]
@@ -32,8 +31,8 @@ def NumMunUnbGeo(epsilon):
     # Pivot such that the columns represent the municipalities
     df = df_mun.pivot(index='HourDK', columns='MunicipalityNo', values='ConsumptionkWh')
 
-
-    # Remove first row to account for uneven time intervals in the dataset
+    # Remove first row to account for uneven time intervals in the dataset. 
+    # Should be done before clipping and scaling for correctness, but this causes some smaller problems when clipping.
     df = df.iloc[1:]
 
     # Calling the unbounded geographical binary mechanism with timer
@@ -53,6 +52,6 @@ def NumMunUnbGeo(epsilon):
     result_df.to_csv("results/NumMunUnbGeo_noisy_result.csv", index=False)
     print("done")
 
-# Main loop that runs when the file is executed 
+# Main function that runs when the file is executed 
 if __name__ == "__main__":  
     NumMunUnbGeo(1)

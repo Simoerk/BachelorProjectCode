@@ -25,8 +25,8 @@ def Num(epsilon):
     sigma_el_filtered = sigma_el_flipped[(sigma_el_flipped < upper_quantile)]
 
     # We make two arrays
-    # One without high values in the dataset, bad for privacy
-    # One with high values in the dataset, better for utlity
+    # - One without high values in the dataset, good for privacy
+    # - One with high values in the dataset, good for utlity
 
     # Scale the unfiltered array to be between 0 and 1
     min_val_flip = 0
@@ -49,11 +49,11 @@ def Num(epsilon):
     B_t = binary_mechanism(T, epsilon, sigma_el_flipped_scaled)
     end_time = time.time()
 
-    #print the time it took to run the mechanism loop
+    # Print the time it took to run the mechanism loop
     duration = end_time - start_time
     print(f"The unfiltered data for the function took {duration} seconds to run.")
 
-    #scale up again
+    # Scale up again
     B_t = np.array(B_t)
     B_t = B_t * (max_val_flip - min_val_flip) + min_val_flip
 
@@ -84,6 +84,6 @@ def Num(epsilon):
 
     print("done")
 
-# Main loop to run the Num function when running this file
+# Main function that runs when the file is executed
 if __name__ == "__main__":
     Num(1)

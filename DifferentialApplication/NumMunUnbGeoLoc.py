@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from Mechanisms.BinaryMechanism2DLocal import binary_mechanism_geo_local
 from utils.clipData import *
@@ -10,7 +9,7 @@ import time
 # NumMunUnbGeo(epsilon) applies the binary mechanism to the electricity dataset from Energinet
 def NumMunUnbGeoLoc(epsilon):
 
-    # To preserve epsilon differential privacy
+    # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
     epsilon = epsilon/2
 
     # Load dataset with Municipality, time and housing/heating category
@@ -53,7 +52,7 @@ def NumMunUnbGeoLoc(epsilon):
     thresh_df.to_csv("results/NumMunUnbGeoLoc_noisy_thresh.csv", index=False)
     print("done")
 
-# Main loop that runs when the file is executed
+# Main function that runs when the file is executed
 if __name__ == "__main__":
     NumMunUnbGeoLoc(1)
 

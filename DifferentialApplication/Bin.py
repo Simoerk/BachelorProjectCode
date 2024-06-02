@@ -31,18 +31,17 @@ def Bin(epsilon):
     estimates = list(two_level_mechanism(T, epsilon, sigma_dia, B))
     end_time = time.time()
 
-    #print the time it took to run the mechanism loop
+    # Print the time it took to run the mechanism loop
     duration = end_time - start_time
     print(f"The function took {duration} seconds to run.")
 
     print("Mechanism applied successfully!")
 
-
-    #Save results
+    # Save results
     pd.DataFrame({'Sum': estimates}).to_csv("results/Bin_noisy_result.csv", index=False)
     cumulative_sums = np.cumsum(sigma_dia)
     pd.DataFrame(cumulative_sums, columns=['Sum']).to_csv("results/Bin_result.csv", index=False)
 
-# Main loop to run the Bin function when running this file
+# Main function that runs when the file is executed
 if __name__ == "__main__":
     Bin(1)

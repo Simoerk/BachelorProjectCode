@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from Mechanisms.ModBinaryMechanism import mod_binary_mechanism
 from utils.clipData import clip
@@ -9,7 +8,7 @@ import time
 # NumMunUnb(epsilon) applies the binary mechanism to the electricity dataset from Energinet
 def NumMunUnb(epsilon):
 
-    # To preserve epsilon differential privacy  
+    # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
     epsilon = epsilon/2
 
     # Load dataset with Municipality, time and housing/heating category
@@ -74,6 +73,6 @@ def NumMunUnb(epsilon):
     result_df.to_csv("results/NumMunUnb_noisy_result.csv", index=False)
     print("done")
 
-# Main loop to run the NumMunUnb function when running this file
+# Main function that runs when the file is executed
 if __name__ == "__main__":
     NumMunUnb(1)

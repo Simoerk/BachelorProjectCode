@@ -10,7 +10,7 @@ from utils.muniRegion import *
 # NumMun(epsilon) applies the binary mechanism to the electricity dataset from Energinet
 def NumMun(epsilon):
 
-    # To preserve epsilon differential privacy
+    # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
     epsilon = epsilon/2
 
     # Load dataset with Municipality, time and housing/heating category
@@ -30,11 +30,10 @@ def NumMun(epsilon):
     unique_times = sorted(df_mun['HourDK'].unique())[1:]
     result_df['HourDK'] = unique_times
 
-
     mun_len = 0
     i = 0
 
-    #Used for timing the mechanism loop
+    # Used for timing the mechanism loop
     start_time = time.time()
 
     # Loop through each unique MunicipalityNo 
@@ -66,7 +65,7 @@ def NumMun(epsilon):
 
     end_time = time.time()
 
-    #print the time it took to run the mechanism loop
+    # Print the time it took to run the mechanism loop
     duration = end_time - start_time
     print(f"The function took {duration} seconds to run.")
 
@@ -79,6 +78,6 @@ def NumMun(epsilon):
 
     print("done")
 
-# Main loop to run the NumMun function when running this file
+# Main function that runs when the file is executed
 if __name__ == "__main__":
     NumMun(1)
