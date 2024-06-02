@@ -45,4 +45,4 @@ def Bin(epsilon):
 
 # Main loop to run the Bin function when running this file
 if __name__ == "__main__":
-    Bin(2)
+    Bin(1)

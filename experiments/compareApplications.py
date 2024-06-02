@@ -1,13 +1,21 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-
+from DifferentialApplication.NumMun import NumMun
+from DifferentialApplication.NumMunUnb import NumMunUnb
+from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
+from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 
 # This file is used to compare the results of the different applications with plots
 
-# Make sure to run the following files:
-# Generate_pure_dataset.py , NumMunUnbGeo.py , NumMunUnbGeoLoc.py
+# Make sure to run the files:
 # They will generate the needed csv files
+
+NumMun(1)
+NumMunUnb(1)
+NumMunUnbGeo(1)
+NumMunUnbGeoLoc(1)
+
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/real_consumption_sums.csv')
 NumMunUnbGeoLoc_df = pd.read_csv('results/NumMunUnbGeoLoc_noisy_result.csv')

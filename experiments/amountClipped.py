@@ -4,6 +4,9 @@ from utils.clipData import clip_pr_column
 from utils.clipData import clip
 from utils.load_dataset import load_dataset
 
+#Test the difference between global and local clipping, and how much is actually clipped. 
+# Change the quantile in clipData.py to change the quantile.
+
 # Load the dataset
 df_mun = load_dataset("data/muni_data.csv", 1000000)
 
