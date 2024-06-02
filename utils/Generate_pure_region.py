@@ -17,7 +17,6 @@ def sum_by_region(df_melted):
 
 def main():
     df = load_dataset("results/real_consumption_sums.csv", 1000000)
-    region_mapping = give_region()
     
     df_regions = pd.DataFrame()
     df_regions['HourDK'] = df['HourDK']

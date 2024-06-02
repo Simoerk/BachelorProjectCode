@@ -21,16 +21,6 @@ actual_df = actual_df[result_df.columns]
 # Make a copy of the DataFrames
 diff_df_copy = actual_df.copy()
 
-# Calculate the standard deviation of the differences between the actual and result DataFrames
-def std_deviation(actual_df, result_df):
-    # Calculate the absolute difference between corresponding elements of actual_df and result_df
-    std_df = actual_df.sub(result_df).abs()
-    
-    # Calculate the standard deviation of the differences for each column
-    std_dev = std_df.std()
-
-    return std_dev
-
 # Find the average discrepancy of the actual and result DataFrames
 def avg_discrepancy(actual_df, result_df):
     for i in actual_df.columns:
@@ -45,23 +35,11 @@ avg_dis = avg_discrepancy(actual_df, result_df)
 
 print("avg_dis: ", avg_dis)
 
-# Calculate the standard deviation of the differences
-std_dev = std_deviation(actual_df, result_df)
-
 # Plot the average deviation
 plt.figure(figsize=(10, 6))
 plt.plot(avg_dis.index, avg_dis.values, marker='o', linestyle='-')
-plt.title('Average deviation between Actual and NumMunUnbGeoLoc')
+plt.title('Average discrepancy between Actual and NumMunUnbGeoLoc')
 plt.xlabel('Municipalities, Regions and DK')
 plt.ylabel('Average deviation')
 plt.grid(True)
 plt.show()
-
-# Plot the standard deviation of the differences
-# plt.figure(figsize=(10, 6))
-# plt.plot(std_dev.index, std_dev.values, marker='o', linestyle='-')
-# plt.title('Standard deviation of the differences between Actual and Result DataFrames')
-# plt.xlabel('Municipality Number')
-# plt.ylabel('Standard deviation')
-# plt.grid(True)
-# plt.show()

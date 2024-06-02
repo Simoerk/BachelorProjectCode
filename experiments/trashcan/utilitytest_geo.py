@@ -4,7 +4,7 @@ from utils.scale import downScaleDf, upScaleDf, upScale, downScale
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 
-# Experiment that calculates the utility of the NumMunUnbGeoLoc and NumMunUnbGeo mechanisms
+# Experiment that checks the utility of the NumMunUnbGeoLoc and NumMunUnbGeo mechanisms
 
 # Function to convert a DataFrame to numeric
 def convert_df_to_numeric(df):
@@ -54,7 +54,7 @@ for _ in range(num_runs):
     #outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc_df']}
     outliers = {name: [] for name in ['NumMunUnbGeo_df', 'NumMunUnbGeoLoc', "real_df"]}
 
-    #Scale down. using global_max because we know the max is larger than the absolute of the smallest
+    # Scale down using global_max because we know the max is larger than the absolute of the smallest
     max_diffs = []
     real_df_num = dfs[2].apply(pd.to_numeric)
     for column in real_df_num.columns:
