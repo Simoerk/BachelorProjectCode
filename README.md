@@ -15,14 +15,19 @@ python -m foldername.filename
 
 
 
+
+
 Folders:
-data - all data used by the applications and utilities
+data - all data used by the applications and utilities. To get muniData run utils.dataExtractor
 DifferentialApplication: The different DifferenetialApplications
 experiments: experiments on differing aspects of the implementation
 Mechanisms: implementations of differentially private mechanisms
 Queris - simple query modules
 results - folder tha tresults of running anything ends in, apart from dataExtractor, as this saves to data.
 utils - helping modules and different utilities.
+
+
+
 
 
 
