@@ -12,10 +12,10 @@ def two_level_mechanism(T, epsilon, sigma, B):
     
     # Loops through each time step in the stream
     for t in range(1, T + 1):
-        alpha[t-1] = laplace_mechanism(sigma[t-1],1,epsilon)
+        alpha[t-1] = laplace_mechanism(sigma[t-1], 1, epsilon)
         q, r = divmod(t, B)
         if r == 0:  # Check if t is at the end of a bucket
-            beta[q-1] = laplace_mechanism(sum(sigma[t-B+1:t]),1,epsilon)
+            beta[q-1] = laplace_mechanism(sum(sigma[t-B+1:t]), 1, epsilon)
         
         # Calculate D(t)
         D_t = sum(beta[:q]) + sum(alpha[q*B+1:t])

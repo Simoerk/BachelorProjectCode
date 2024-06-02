@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 
-# util to extract data from Energinet's API 
+# Util to extract data from Energinet's API
 
 response = requests.get(
     url='https://api.energidataservice.dk/dataset/PrivIndustryConsumptionHour?limit=2000000')

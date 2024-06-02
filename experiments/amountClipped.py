@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 from utils.clipData import clip_pr_column
 from utils.clipData import clip
-from utils.load_dataset import load_dataset
+from utils.loadDataset import load_dataset
 
-#Test the difference between global and local clipping, and how much is actually clipped. 
+# Test the difference between global and local clipping, and how much is actually clipped. 
 # Change the quantile in clipData.py to change the quantile.
 
 # Load the dataset

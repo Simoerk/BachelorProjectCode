@@ -7,7 +7,7 @@ import scipy.stats as stats
 import math
 from utils.laplace import *
 from decimal import Decimal, getcontext
-from utils.load_dataset import load_dataset
+from utils.loadDataset import load_dataset
 from utils.clipData import clip
 
 # Experiment to find if any indexes immidiately next to eachother 

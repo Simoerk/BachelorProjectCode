@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils.scale import downScaleDf, upScaleDf, upScale, downScale
+from utils.scaleData import downScaleDf, upScaleDf, upScale, downScale
 from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.NumMunUnb import NumMunUnb
@@ -8,7 +8,7 @@ from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 import math
 from utils.laplace import *
 from decimal import Decimal, getcontext
-from utils.load_dataset import load_dataset
+from utils.loadDataset import load_dataset
 from utils.clipData import clip
 import scipy.stats as stats
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from Mechanisms.BinaryMechanism import binary_mechanism
-from utils.load_dataset import load_dataset
+from utils.loadDataset import load_dataset
 import time
 
 # Num(epsilon) applies the binary mechanism to the electricity dataset from Energinet

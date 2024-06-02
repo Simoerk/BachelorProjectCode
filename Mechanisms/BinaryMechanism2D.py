@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import math
 from utils.laplace import *
@@ -50,6 +49,7 @@ def binary_mechanism_geo(epsilon, df, result_df, theta):
 
         # Loops through each municipality
         for muni_number in give_region():
+            
             # Check if the municipality number exists as a column in the DataFrame
             muni_number = int(muni_number)
             if muni_number in df.columns:

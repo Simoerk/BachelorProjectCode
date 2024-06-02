@@ -1,11 +1,7 @@
-import numpy as np
-import pandas as pd
 import math
 from utils.laplace import *
-import warnings
 
-
-# Function that implements the modified binary mechanism as an unbounded function
+# Function that implements the modified binary mechanism as an unbounded mechanism
 def mod_binary_mechanism(epsilon, stream, theta):
     # Initialize alphas
     alpha = []
@@ -38,7 +34,7 @@ def mod_binary_mechanism(epsilon, stream, theta):
             alpha_hat[j] = 0
 
         # Add Laplacian noise to alpha_hat_i with the ai function in laplace
-        alpha_hat[i] = laplace_mechanism(alpha[i],ai(i, theta),epsilon)
+        alpha_hat[i] = laplace_mechanism(alpha[i], ai(i, theta), epsilon)
         
         # Sum for output and append to B
         B.append(sum(alpha_hat[j] for j, bit in enumerate(bin_t) if bit == 1))

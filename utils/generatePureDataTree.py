@@ -1,10 +1,8 @@
 import pandas as pd
-from utils.muniRegion import give_region
 from utils.muniRegion import give_regionDictionary
-from utils.load_dataset import load_dataset
+from utils.loadDataset import load_dataset
 
-# util to generate a dataset with the cumulative sum of the real consumption data from Energinet
-# with regions
+# Util to generate a dataset with the cumulative sum of the real consumption data from Energinet with regions
 
 def map_municipalities_to_regions(df, region_mapping):
     df_melted = df.melt(id_vars='HourDK', var_name='MunicipalityNo', value_name='ConsumptionkWh')

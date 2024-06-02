@@ -1,9 +1,8 @@
-import numpy as np
 import pandas as pd
 from Mechanisms.BinaryMechanism import binary_mechanism
 from utils.clipData import clip
-from utils.load_dataset import load_dataset
-from utils.scale import downScale, upScale
+from utils.loadDataset import load_dataset
+from utils.scaleData import downScale, upScale
 import time
 from utils.muniRegion import *
 

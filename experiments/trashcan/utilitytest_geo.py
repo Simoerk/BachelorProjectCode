@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils.scale import downScaleDf, upScaleDf, upScale, downScale
+from utils.scaleData import downScaleDf, upScaleDf, upScale, downScale
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 

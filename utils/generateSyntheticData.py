@@ -1,17 +1,12 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from utils.scale import downScaleDf, upScaleDf, upScale, downScale
-from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.Num import Num
 from DifferentialApplication.Bin import Bin
-from scipy.stats import gaussian_kde
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 from DifferentialApplication.NumMunUnbGeo import NumMunUnbGeo
 from DifferentialApplication.NumMunUnb import NumMunUnb
 
-# util to attempt making synthetic data for the different applications
+# Util to attempt making synthetic data for the different applications
 
 # Function to convert all columns in a dataframe to numeric
 def convert_df_to_numeric(df):

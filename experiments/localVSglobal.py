@@ -10,7 +10,7 @@ from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 NumMunUnbGeo(1)
 NumMunUnbGeoLoc(1)
 
-# Run utils.Generate_pure_region.py to generate regional_consumption_sums.csv
+# Run utils.generatePureDataTree.py to generate regional_consumption_sums.csv
 
 # Read the CSV files into DataFrames
 actual_df = pd.read_csv('results/regional_consumption_sums.csv')

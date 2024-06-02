@@ -1,6 +1,6 @@
 import pandas as pd
 
-# util to count entries in the dataset
+# Util to count entries in the dataset
 
 # Read the CSV file into a DataFrame
 df = pd.read_csv("muni_data.csv")

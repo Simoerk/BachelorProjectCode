@@ -1,6 +1,4 @@
 import numpy as np
-import pandas as pd
-import math
 
 # The util with laplace mechanism and ai function
 

@@ -35,7 +35,7 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
     regional_values, regional_tresh = initialize_region_dictionaries()
 
 
-    #Find scales for regions
+    # Find scales for regions
     max_region_thresh = 0.0
     # Create an empty DataFrame with these regions as columns
     regional_scale_df = pd.DataFrame(columns=regions)
@@ -126,10 +126,10 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
         # Calculate the total sum of all regions and get the DK value
         for region in regional_values:
             DK += regional_values[region]
-            regional_data_df.at[t-1, region] = laplace_mechanism((regional_values[region]/regional_tresh[region]),ai(i, theta)*3,epsilon)
+            regional_data_df.at[t-1, region] = laplace_mechanism((regional_values[region]/regional_tresh[region]), ai(i, theta)*3, epsilon)
             
         # Add noise to DK value
-        regional_data_df.at[t-1, "DK"] = laplace_mechanism((DK/max_region_thresh),ai(i, theta)*3,epsilon)
+        regional_data_df.at[t-1, "DK"] = laplace_mechanism((DK/max_region_thresh), ai(i, theta)*3, epsilon)
 
     # Concatenate the result DataFrame with the regional data DataFrame and return the result
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)

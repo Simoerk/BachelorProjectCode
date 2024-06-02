@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import scipy.stats as stats
 import matplotlib.pyplot as plt
-from utils.scale import downScale
+from utils.scaleData import downScale
 from DifferentialApplication.NumMunUnbGeoLoc import NumMunUnbGeoLoc
 
 # Experiment that attempts to attack the privacy of the NumMunUnbGeoLoc mechanism 

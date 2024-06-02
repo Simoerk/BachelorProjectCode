@@ -1,9 +1,9 @@
 import pandas as pd
 from Mechanisms.BinaryMechanism2DLocal import binary_mechanism_geo_local
 from utils.clipData import *
-from utils.scale import downScaleDf
-from utils.scale import upScaleDf
-from utils.load_dataset import load_dataset
+from utils.scaleData import downScaleDf
+from utils.scaleData import upScaleDf
+from utils.loadDataset import load_dataset
 import time
 
 # NumMunUnbGeo(epsilon) applies the binary mechanism to the electricity dataset from Energinet

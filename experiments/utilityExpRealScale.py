@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from utils.scale import downScaleDf, upScaleDf, upScale, downScale
-from utils.clipData import clip_pr_column
 from DifferentialApplication.NumMun import NumMun
 from DifferentialApplication.Num import Num
 from DifferentialApplication.Bin import Bin
