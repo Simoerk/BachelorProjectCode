@@ -1,5 +1,6 @@
 import csv
 
+# Function to sort a CSV file by a specific column
 def sort_csv(input_file, output_file):
     # Read the CSV file and store its rows in a list
     with open(input_file, 'r') as csvfile:

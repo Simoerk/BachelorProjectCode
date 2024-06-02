@@ -1,6 +1,8 @@
 import math
 import matplotlib.pyplot as plt
 
+# Visualize the modified mechanism error bounds for different theta, epsilon, and t, same delta
+
 # Define values
 thetas = [0.1, 0.2, 0.4, 0.5, 0.6, 1, 1.5, 2]
 epsilons = [0.1, 0.2, 0.5, 1, 1.5, 2]

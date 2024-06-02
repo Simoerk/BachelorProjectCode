@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# UNDER CONSTRUCTION
 
 # This file is used to compare the results of the different applications with plots
 

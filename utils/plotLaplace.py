@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#To visualize the laplace distribution for different sensitivity and epsilon values
+
+
+
+# Define the Laplace distribution
 def laplace_distribution(x, sensitivity, epsilon):
     b = sensitivity / epsilon
     return (1 / (2 * b)) * np.exp(-np.abs(x) / b)

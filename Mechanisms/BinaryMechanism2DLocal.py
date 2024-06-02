@@ -113,7 +113,7 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
                     alpha_hat2D[k][j] = 0
 
                 # Add Laplacian noise to alpha_hat_i using the ai function in laplace
-                alpha_hat2D[k][i] = laplace_mechanism(alpha2D[k][i], ai(i, theta),epsilon)
+                alpha_hat2D[k][i] = laplace_mechanism(alpha2D[k][i], ai(i, theta)*3,epsilon)
                 result_df.loc[t-1, muni_number] = (sum(alpha_hat2D[k][j] for j, bit in enumerate(bin_t) if bit == 1))
                 k+=1
 
@@ -126,10 +126,10 @@ def binary_mechanism_geo_local(epsilon, df, result_df, theta, scale_df):
         # Calculate the total sum of all regions and get the DK value
         for region in regional_values:
             DK += regional_values[region]
-            regional_data_df.at[t-1, region] = laplace_mechanism((regional_values[region]/regional_tresh[region]),ai(i, theta),epsilon)
+            regional_data_df.at[t-1, region] = laplace_mechanism((regional_values[region]/regional_tresh[region]),ai(i, theta)*3,epsilon)
             
         # Add noise to DK value
-        regional_data_df.at[t-1, "DK"] = laplace_mechanism((DK/max_region_thresh),ai(i, theta),epsilon)
+        regional_data_df.at[t-1, "DK"] = laplace_mechanism((DK/max_region_thresh),ai(i, theta)*3,epsilon)
 
     # Concatenate the result DataFrame with the regional data DataFrame and return the result
     result_df_con = pd.concat([result_df, regional_data_df], axis=1)

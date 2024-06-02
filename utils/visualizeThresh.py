@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-
+# Function to plot the consumption data as barplot
 def plot_consumption_barplot(real_df):
 
     # Extract municipality numbers

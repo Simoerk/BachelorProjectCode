@@ -1,5 +1,6 @@
 from collections import Counter
 
+# Function to return a list of all municipalities
 def give_muni():
     muni = [
         "101", "201", "151", "400", "153", "155", "240", "210", "147", "250",
@@ -15,6 +16,7 @@ def give_muni():
     ]
     return muni
 
+# Function to return a dictionary of municipalities and their corresponding regions
 def give_region():
     data = {
         "101": "Hovedstaden",
@@ -118,12 +120,14 @@ def give_region():
     }
     return data
 
+# Function to count the number of municipalities in each region
 def count_regions():
     data = give_region()  # Retrieve the data from your function
     region_counts = Counter(data.values())  # Count occurrences of each region
     counts_only = list(region_counts.values())  # Extract only the counts
     return counts_only
 
+# Function to count the number of municipalities in a given region
 def count_municipalities_in_region(region):
     # Get the region dictionary from the give_region function
     regions = give_region()
@@ -133,7 +137,7 @@ def count_municipalities_in_region(region):
     
     return region_count
 
-
+# Function to return a dictionary of regions and their corresponding municipalities
 def give_regionDictionary():
     # Initialize the list of municipalities for each region
     regionDictionary = {
@@ -150,7 +154,7 @@ def give_regionDictionary():
     return regionDictionary
 
 
-
+# Function to reorder a DataFrame based on the order of regions in a region dictionary
 def order_dataframe_by_region(df, region_dict):
     """Reorder DataFrame columns based on the order of regions in the region_dict."""
     # Extract region order preserving uniqueness and order from the dictionary
@@ -160,6 +164,7 @@ def order_dataframe_by_region(df, region_dict):
     return df_ordered
 
 
+# Function to initialize dictionaries for regional values and thresholds
 def initialize_region_dictionaries():
     # Use the give_regionDictionary function to get the region dictionary
     region_dict = give_regionDictionary()

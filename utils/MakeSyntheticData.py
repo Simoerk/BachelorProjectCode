@@ -25,8 +25,6 @@ def calculate_differences(df):
     return diff_df
 
 
-# Should be saved to differences_df.to_csv(f"results/Synthetic/{name}_syn_epsilon={epsilon}.csv", index=False)
-
 # Epsilons to test
 epsilons = [2, 1, 0.5]
 
