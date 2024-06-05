@@ -123,14 +123,16 @@ for epsilon in epsilons:
                 # Check the specific dataframe and set the bound
                 if name == 'Bin': #B = sqrt(T), so approx T^0.25 = 12 errors with 0.001 prob
                     bound = (1 / epsilon) * np.sqrt(((t+1) / B) + B) * np.log(1 / delta)
-                elif name == 'NumMun':
-                    T = len(noisy_df) # T = 1099 approx 1 errors
-                    bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
                 elif name == 'Num' or name == "Num_fil":
                     T = len(noisy_df) #T=27048 approx 27 errrors
                     bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
-                else:
+                elif name == 'NumMun':
+                    T = len(noisy_df) # T = 1099 approx 1 errors
+                    bound = (1 / epsilon) * np.log(T) * np.sqrt(np.log(t+1)) * np.log(1 / delta)
+                elif name == "NumMunUnb":
                     bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * np.log2(1 / delta))
+                else:
+                    bound = ((1 / (theta * epsilon)) * ((np.log2(t + 1))**(1.5+theta)) * 3 * np.log2(1 / delta))
 
                 # Outlier detection
                 if not np.abs(real_value - noisy_value) <= bound:
