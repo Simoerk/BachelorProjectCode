@@ -46,9 +46,6 @@ for epsilon in epsilons:
     adjusted_log2_real.loc[:1,'Hovedstaden'] = log2_real.loc[:1,'Hovedstaden'] - first_real_value
     adjusted_log2_real.loc[:1,'DK'] = log2_real.loc[:1,'DK'] - first_real_value
 
-
-
-
     # Prepare list for MLE with original indices
     data_for_mle = []
     original_indices = []
@@ -65,9 +62,6 @@ for epsilon in epsilons:
 
     # Convert to numpy array
     data_for_mle = np.array(data_for_mle)
-    #print(data_for_mle)
-    #print(len(data_for_mle))
-    #print(len(original_indices))
 
     # Define the noise parameters
     theta = 0.5
@@ -95,8 +89,6 @@ for epsilon in epsilons:
             b = scale_param(i)
             likelihood += np.log((1 / (2 * b)) * np.exp(- np.abs(elm - X) / b))
         return -likelihood  # Negative because we minimize
-
-    #np.log(1 / (2 * b)) - np.abs(elm - X) / b
 
     # Initial guess for X (mean of data_for_mle)
     initial_X = np.mean(data_for_mle)
