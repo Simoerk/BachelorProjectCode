@@ -36,12 +36,7 @@ def NumMunUnbGeo(epsilon):
     # Should be done before clipping and scaling for correctness, but this causes some smaller problems when clipping.
     df = df.iloc[1:]
 
-    first_index = df.index[0]
-    print("original value: ", df.at[first_index, 101])
-    df.at[first_index, 101] = 0.5
-    print("new value: ", df.at[first_index, 101])
-
-    # Uncomment to save the downscaled result dataframe to results
+    # Uncomment to save the downscaled result dataframe to results in order to run MLEattack.py
     # df.to_csv("results/NumMunUnbGeo_downscaled_result.csv")
 
     # Calling the unbounded geographical binary mechanism with timer
@@ -53,7 +48,8 @@ def NumMunUnbGeo(epsilon):
     duration = end_time - start_time
     print(f"The function took {duration} seconds to run.")
 
-    result_df.to_csv("results/NumMunUnbGeo_downscaled_noisy_result.csv")
+    # Uncomment to save the downscaled noisy result dataframe to results in order to run MLEattack.py
+    #result_df.to_csv("results/NumMunUnbGeo_downscaled_noisy_result.csv")
 
     # Upscale
     for col in result_df.columns[1:]:  # Skip the first column (HourDK)
