@@ -10,7 +10,8 @@ import time
 def NumMunUnbGeoLoc(epsilon):
 
     # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
-    epsilon = epsilon/2
+    epsilonMech = epsilon * 0.9
+    epsilonClip = epsilon * 0.1
 
     # Load dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
@@ -30,14 +31,14 @@ def NumMunUnbGeoLoc(epsilon):
     df = df.iloc[1:]
 
     # Clip the data
-    df_mun, _ = clip_pr_column(df, epsilon)
+    df_mun, _ = clip_pr_column(df, epsilonClip)
 
     # Downscale
     df, thresh_df = downScaleDf(df)
 
     # Calling the local unbounded geographical binary mechanism with timer
     start_time = time.time()
-    result_df, thresh_df = binary_mechanism_geo_local(epsilon, df, result_df, 0.5, thresh_df)
+    result_df, thresh_df = binary_mechanism_geo_local(epsilonMech, df, result_df, 0.5, thresh_df)
     end_time = time.time()
 
     # Print the time it took to run

@@ -9,7 +9,8 @@ import time
 def NumMunUnbGeo(epsilon):
 
     # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
-    epsilon = epsilon/2
+    epsilonMech = epsilon * 0.9
+    epsilonClip = epsilon * 0.1
 
     # Load dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
@@ -18,7 +19,7 @@ def NumMunUnbGeo(epsilon):
     df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
     # Remove upper quantile with the clipping method
-    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
+    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilonClip)
 
     # Downscale
     df_mun['ConsumptionkWh'], thresh = downScale(df_mun, 'ConsumptionkWh')
@@ -41,7 +42,7 @@ def NumMunUnbGeo(epsilon):
 
     # Calling the unbounded geographical binary mechanism with timer
     start_time = time.time()
-    result_df = binary_mechanism_geo(epsilon, df, result_df, 0.5)
+    result_df = binary_mechanism_geo(epsilonMech, df, result_df, 0.5)
     end_time = time.time()
 
     # Print the time

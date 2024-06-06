@@ -9,7 +9,8 @@ import time
 def NumMunUnb(epsilon):
 
     # To preserve epsilon differential privacy because two epsilon differential privacy mechanisms are called
-    epsilon = epsilon/2
+    epsilonMech = epsilon * 0.9
+    epsilonClip = epsilon * 0.1
 
     # Load dataset with Municipality, time and housing/heating category
     df_mun = load_dataset("data/muni_data.csv", 1000000)
@@ -18,7 +19,7 @@ def NumMunUnb(epsilon):
     df_mun = df_mun.groupby(['HourDK', 'MunicipalityNo'])['ConsumptionkWh'].sum().reset_index(name='ConsumptionkWh')
 
     # Remove upper quantile with the clipping method
-    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilon)
+    df_mun['ConsumptionkWh'], thresh = clip(df_mun, 'ConsumptionkWh', epsilonClip)
 
     # Downscale
     df_mun['ConsumptionkWh'], thresh = downScale(df_mun, 'ConsumptionkWh')
@@ -52,7 +53,7 @@ def NumMunUnb(epsilon):
         stream = mun_df['ConsumptionkWh'].tolist()
 
         # Call unbounded binary mechanism function with theta 0.5 and store its list output in B
-        B = mod_binary_mechanism(epsilon, stream, 0.5)
+        B = mod_binary_mechanism(epsilonMech, stream, 0.5)
         
         # Add the results as a new column in the result DataFrame, named by the MunicipalityNo
         result_df[str(mun_no)] = B
