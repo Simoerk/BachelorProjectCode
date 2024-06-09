@@ -39,6 +39,8 @@ def compare_applications_across_epsilons(muni):
     plt.plot(actual_df[muni], label="Actual")
     plt.legend()
     plt.title(f'Comparison of {muni} between the dataframe NumMun and the actual data')
+    plt.xlabel('Number of hours in the given period')
+    plt.ylabel('Consumption in kWh')
     plt.show()
 
     plt.figure()
@@ -49,6 +51,8 @@ def compare_applications_across_epsilons(muni):
     plt.plot(actual_df[muni], label="Actual")
     plt.legend()
     plt.title(f'Comparison of {muni} between the dataframe NumMunUnb and the actual data')
+    plt.xlabel('Number of hours in the given period')
+    plt.ylabel('Consumption in kWh')
     plt.show()
 
     plt.figure()
@@ -59,6 +63,8 @@ def compare_applications_across_epsilons(muni):
     plt.plot(actual_df[muni], label="Actual")
     plt.legend()
     plt.title(f'Comparison of {muni} between the dataframe NumMunUnbGeo and the actual data')
+    plt.xlabel('Number of hours in the given period')
+    plt.ylabel('Consumption in kWh')
     plt.show()
 
     plt.figure()
@@ -69,6 +75,8 @@ def compare_applications_across_epsilons(muni):
     plt.plot(actual_df[muni], label="Actual")
     plt.legend()
     plt.title(f'Comparison of {muni} between the dataframe NumMunUnbGeoLoc and the actual data')
+    plt.xlabel('Number of hours in the given period')
+    plt.ylabel('Consumption in kWh')
     plt.show()
 
 

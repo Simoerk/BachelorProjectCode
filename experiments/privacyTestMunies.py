@@ -96,10 +96,14 @@ for epsilon in epsilons:
                 if df_name == "NumMun_df": 
                     p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(np.log(T)/epsilon))
                     p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(np.log(T)/epsilon))
+                
+                if df_name == "NumMunUnb_df": 
+                    p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(np.log(T)/epsilon))
+                    p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(np.log(T)/epsilon))
 
                 else: 
-                    p_1 = stats.laplace.pdf(noisy_t - real_t, scale=(ai(i, 0.5)/np.float64(epsilon)))
-                    p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=(ai(i, 0.5)/np.float64(epsilon)))
+                    p_1 = stats.laplace.pdf(noisy_t - real_t, scale=((ai(i, 0.5)*3)/np.float64(epsilon)))
+                    p_2 = stats.laplace.pdf(noisy_t - real_t_minus_1, scale=((ai(i, 0.5)*3)/np.float64(epsilon)))
 
                 # Compute the ratio of probabilities and compare it to exp(1)
                 if p_2 == 0:  # Avoid division by zero
