@@ -82,5 +82,5 @@ def compare_applications_across_epsilons(muni):
 
 # Outcomment the function you want to run:
 
-compare_applications_across_epsilons('101')
-compare_epsilons_across_applications('510')
+compare_applications_across_epsilons('510')
+#compare_epsilons_across_applications('510')
