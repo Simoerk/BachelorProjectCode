@@ -13,8 +13,11 @@ for epsilon in epsilons:
 
     NumMunUnbGeo(epsilon)
 
-    # Run the main function from utils.generatePureDataTree with results/NumMunUnbGeo_downscaled_noisy_result.csv as input
+    # Run the main function from utils.generatePureDataTree 
+    # with results/NumMunUnbGeo_downscaled_noisy_result.csv as input
     # and results/NumMunUnbGeo_downscaled_region_result.csv as output
+    # results/NumMunUnbGeo_downscaled_noisy_result.csv is generated using the NumMunUnbGeo application
+    # by uncommenting the line where the downscaled data is saved to a CSV file
     #gPDT.main()
     
 
