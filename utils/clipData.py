@@ -2,7 +2,10 @@ import numpy as np
 import pandas as pd
 import math
 from utils.laplace import laplace_mechanism
-    
+import warnings
+
+warnings.filterwarnings('ignore', category=FutureWarning, message=".*Series.__getitem__ treating keys as positions is deprecated.*")
+
 # Adds noise to the count of the dataset from start to mid
 def noisyCount(D, start, end, epsilon):
     count = end - start

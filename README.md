@@ -33,8 +33,11 @@ is the current working directory
 
 Depending on what version of python you are running, the python command might be fx python3
 
+
 To extract relevant data from Energinet run the following command using the util dataExtractor.py
 python -m utils.dataExtractor
+
+the result will be saved to \data
 
 How to run individual Differential applications:
 python -m DifferentialApplication.name
@@ -42,11 +45,20 @@ python -m DifferentialApplication.name
 ex:
 python -m DifferentialApplication.NumMunUnbGeoLoc
 
-This is the same for running any file, such as experiments, utils or query.
-python -m foldername.filename
+All results are saved to /results.
 
-To generate pure aggregate sum files, run the following commands
+
+To generate pure aggregate sum files for the experiments, run the following commands:
 
 python -m utils.generatePureData
 python -m utils.generatePureDataTree
+
+All results are saved to /results.
+Make sure to run all of the applications before anything else. Then run neccecary utils. Then experiments.
+
+To run any any file, such as experiments, utils or query: 
+python -m foldername.filename
+
+
+
 
